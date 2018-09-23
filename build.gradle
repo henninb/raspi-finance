@@ -1,0 +1,213 @@
+buildscript {
+    ext.someVariable = '1.0'
+    ext {
+        springBootVersion = '1.5.12.RELEASE'
+        apacheCamelVersion = '2.21.0'
+        kotlinVersion = '1.2.31'
+        qualityPluginVersion='3.0.0'
+        codenarcPluginVersion='0.20.0'
+    }
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+        //gradlePluginPortal()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}"
+        //classpath "org.jfrog.buildinfo:build-info-extractor-gradle:latest.release"
+        //classpath "ru.vyarus:gradle-quality-plugin:${qualityPluginVersion}"
+    }
+}
+
+apply plugin: 'groovy'
+apply plugin: 'java'
+apply plugin: 'kotlin'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'codenarc'
+//apply plugin: 'findbugs'
+apply plugin: 'maven'
+//apply plugin: 'org.flywaydb.flyway'
+//apply plugin: 'com.jfrog.artifactory'
+//apply plugin: 'ru.vyarus.quality'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+springBoot {
+    //mainClass = "example.Application"
+}
+
+sourceSets {
+    //main.kotlin.srcDirs = []
+    //main.java.srcDirs = ['src/main/java', 'src/main/kotlin']
+    //main.resources.srcDirs = ['src/main/resources']
+    main.java.srcDirs += 'src/main/kotlin'
+}
+
+compileKotlin {
+    //kotlinOptions.suppressWarnings = true
+}
+
+wrapper {
+    gradleVersion="4.1"
+}
+
+dependencies {
+    //Kotlin
+    compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
+    compile("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
+    //compile("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.2")
+
+    //Groovy
+    //compile("org.codehaus.groovy:groovy")
+
+    //Codenarc
+    codenarc "org.codenarc:CodeNarc:${codenarcPluginVersion}"
+
+    //Spring Boot
+    compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
+    compile("org.springframework.boot:spring-boot-starter-thymeleaf:${springBootVersion}")
+    //compile("org.springframework.boot:spring-boot-starter-data-mongodb:${springBootVersion}")
+    //compile("org.springframework.boot:spring-boot-starter-jersey:${springBootVersion}")
+    compile("org.springframework.boot:spring-boot-starter-tomcat:${springBootVersion}")
+    compile("org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}")
+    compile("org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}")
+    //compile("org.springframework.boot:spring-boot-starter-jdbc:${springBootVersion}")
+    //compile("org.springframework.boot:spring-boot-starter-security:${springBootVersion}")
+    //compile("org.springframework.boot:spring-boot-starter-activemq:${springBootVersion}")
+    //compile("org.springframework.boot:spring-boot-starter-data-redis:${springBootVersion}")
+    //testCompile("org.springframework.boot:spring-security-test:${springBootVersion}")
+    testCompile("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
+
+    //Camel
+    compile("org.apache.camel:camel-spring-boot-starter:${apacheCamelVersion}")
+    compile("org.apache.camel:camel-core:${apacheCamelVersion}")
+    //compile("org.apache.camel:camel-sql:${apacheCamelVersion}")
+    //compile("org.apache.camel:camel-kafka:${apacheCamelVersion}")
+    //compile("org.apache.camel:camel-spring-boot:${apacheCamelVersion}")
+    //compile("org.apache.camel:camel-ssh:${apacheCamelVersion}")
+    //compile("org.apache.camel:camel-jdbc:${apacheCamelVersion}")
+    //compile("org.apache.camel:camel-ftp:${apacheCamelVersion}")
+    //compile("org.apache.camel:camel-stream:${apacheCamelVersion}")
+    //compile("org.apache.camel:camel-jpa:${apacheCamelVersion}")
+    //compile("org.apache.camel:camel-spring-redis:${apacheCamelVersion}")
+    //compile("org.apache.camel:camel-jms:${apacheCamelVersion}")
+    //compile("org.apache.camel:camel-http:${apacheCamelVersion}")
+    //compile("org.apache.camel:camel-http4:${apacheCamelVersion}")
+    //testCompile("org.apache.camel:camel-test:${apacheCamelVersion}")
+
+    //Logstash
+    compile("net.logstash.logback:logstash-logback-encoder:5.0")
+
+    //Lombock
+    //compile("org.projectlombok:lombok:1.16.20")
+
+    //ActiveMQ
+    //compile("org.apache.activemq:activemq-all:5.10.0")
+    //compile("org.apache.activemq:activemq-broker:5.15.2")
+    //compile("org.apache.activemq:activemq-client:5.15.2")
+
+    //postgres
+    //compile("postgresql:postgresql:9.4.1208-jdbc42-atlassian-hosted")
+    compile("org.postgresql:postgresql:9.4-1206-jdbc42")
+
+    //mongodb
+    //compile("org.mongodb:mongodb-driver:3.5.0")
+    //compile("org.mongodb:mongo-java-driver:3.5.0")
+
+    //rabbitmq
+    //compile("com.rabbitmq:amqp-client:3.6.6")
+
+    //IBM MQ
+    //compile("com.ibm.mq:dhbcore:7.0.1.9")
+    //compile("com.ibm:com.ibm.mq:7.0.1")
+    //compile("com.ibm:com.ibm.mqjms:7.0.1")
+    //compile("com.ibm:com.ibm.mq.jmqi:7.0.1")
+    ////compile("javax.jms:javax.jms:1.1")
+    //compile("javax.jms:javax.jms-api:2.0.1")
+    //compile("javax:javaee-api:7.0")
+
+    //Spring
+    //compile("org.springframework:spring-jms:5.0.1.RELEASE")
+    compile("org.springframework.batch:spring-batch-core:3.0.8.RELEASE")
+    //compile("org.springframework.data:spring-data-rest-core:2.0.0.RELEASE")
+    //compile("org.springframework:spring-oxm:5.0.5.RELEASE")
+
+    //Kafka
+    //compile("org.apache.kafka:kafka-clients:0.11.0.0")
+    //compile("org.springframework.kafka:spring-kafka:1.0.2.RELEASE")
+
+    //Jolokia
+    compile("org.jolokia:jolokia-core:1.5.0")
+
+    //oracle
+    //compile("com.oracle:ojdbc7:12.1.0.2")
+
+    //hibernate
+    compile("org.hibernate:hibernate-core:5.0.6.Final")
+    compile("org.hibernate:hibernate-entitymanager:5.0.6.Final")
+    compile("org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final")
+
+    //flyway
+    //compile("org.flywaydb:flyway-core:4.2.0")
+
+    //h2 database
+    //compile("com.h2database:h2:1.4.196")
+    //runtime("com.h2database:h2:1.4.196")
+
+    //onetime
+
+    //other
+    //compile("org.liquibase:liquibase-core:3.5.3")
+    //compile("org.apache.commons:commons-csv:1.1")
+    //compile("org.jasypt:jasypt:1.9.2")
+    compile("com.google.guava:guava:23.0")
+    //compile("javax.persistence:persistence-api:1.0")
+    testCompile("junit:junit:4.12")
+    //compile("org.jsoup:jsoup:1.10.3")
+    //runtime("org.apache.tomcat:tomcat-jdbc:9.0.1")
+    //plugin("org.apache.camel:camel-maven-plugin:2.19.3")
+    //runtime("org.apache.camel:camel-maven-plugin:2.19.3")
+    //runtime("com.sparkjava:spark-core:2.5.4")
+    //compile("com.google.code.gson:gson:2.8.2")
+    //compile("com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.9.2")
+    //compile("org.python:jython-standalone:2.7.1")
+    //compile("com.jcraft:jsch:0.1.54")
+    //compile("com.samskivert:jmustache:1.13")
+    //compile("com.github.spullara.mustache.java:compiler:0.9.5")
+    //compile("org.fluttercode.datafactory:datafactory:0.8")
+    //compile("digest:digest:1.4.6")
+}
+
+//defaultTasks = ['clean']
+
+//setEnvVarRunConfiguration 'Application', 'CUSTOM_PORT', '8000'
+//setEnvVarRunConfiguration 'Application', 'BANNER', 'none.txt'
+//
+//def setEnvVarRunConfiguration( final String configuration, final String envName, final String envValue ) {
+//    final javaExecRunConfiguration = { task -> task instanceof JavaExec && task.name == "run $configuration" }
+//    tasks.matching(javaExecRunConfiguration).all { environment envName, envValue }
+//}
+
+//gradle writePom, need maven plugin
+task writePom {
+    doLast {
+        pom {
+            project {
+                groupId 'example'
+                artifactId 'project'
+                version '1.0'
+            }
+        }.writeTo("pom.xml")
+    }
+}
