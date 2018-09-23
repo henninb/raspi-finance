@@ -7,20 +7,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-/*
- Annotation | Meaning                                             |
- +------------+-----------------------------------------------------+
- | @Component | generic stereotype for any Spring-managed component |
- | @Repository| stereotype for persistence layer                    |
- | @Service   | stereotype for service layer                        |
- | @Controller| stereotype for presentation layer (spring-mvc)      |
- +------------+-----------------------------------------------------+
-*/
 @Service
 public class TransactionService {
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
@@ -44,6 +34,15 @@ public class TransactionService {
         }
         catch( Exception ex ) {
             System.out.println(ex);
+        }
+    }
+
+    public void insertTransaction(Transaction transaction) {
+        Transaction result = transactionRepository.saveAndFlush(transaction);
+        if( transaction.getGuid().equals(result.getGuid()) ) {
+            LOGGER.info("INFO: transactionRepository.saveAndFlush success.");
+        } else {
+            LOGGER.info("WARN: transactionRepository.saveAndFlush failure.");
         }
     }
 
