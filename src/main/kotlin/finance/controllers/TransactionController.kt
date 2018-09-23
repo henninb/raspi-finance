@@ -40,14 +40,14 @@ class TransactionController {
         return transaction
     }
 
-    @PostMapping(path = arrayOf("/addTransactionPost"), consumes = arrayOf("application/json"), produces = arrayOf("application/json"))
+    @PostMapping(path = arrayOf("/insertTransactionPost"), consumes = arrayOf("application/json"), produces = arrayOf("application/json"))
     fun addMember(@RequestBody member: String) {
         //code
     }
 
-    //http://localhost:8080/transactions/addTransaction?accountNameOwner=brian_chase&transactionDate=123&description=test&category=test&amount=0.01&cleared=0&notes=empty
-    @GetMapping(value = "/addTransaction")
-    fun addTransaction(@RequestParam accountNameOwner: String, @RequestParam transactionDate: String,
+    //http://localhost:8080/transactions/insertTransaction?accountNameOwner=brian_chase&transactionDate=0&description=test&category=test&amount=0.01&cleared=0&notes=empty
+    @GetMapping(value = "/insertTransaction")
+    fun insertTransaction(@RequestParam accountNameOwner: String, @RequestParam transactionDate: String,
                        @RequestParam description: String, @RequestParam category: String, @RequestParam amount: String,
                        @RequestParam cleared: String, @RequestParam notes: String): String {
         val restResult = RestResult()
@@ -73,11 +73,13 @@ class TransactionController {
             transaction.cleared = 0
             //notes, optional
             transaction.notes = notes
-            transactionService!!.save(transaction)
+            //TODO: need to fix the save
+            //transactionService!!.save(transaction)
+            transactionService!!.insertTransaction(transaction)
 
             restResult.message = "Successfully processed add message."
             restResult.resultCode = 0
-            restResult.guid = transaction.guid
+            restResult.guid = transaction.guid!!
             restResult.setDate(ZonedDateTime.now())
 
             resultString = mapper.writeValueAsString(restResult)
