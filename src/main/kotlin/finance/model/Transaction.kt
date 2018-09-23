@@ -1,13 +1,18 @@
 package finance.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import javax.persistence.*
-import com.google.common.hash.Hashing.sha256
+import finance.util.TransactionDeserializer
+import finance.util.TransactionSerializer
 import java.sql.Date
 
 
 @Entity(name = "TransactionEntity")
 @Table(name = "t_transaction")
+@JsonDeserialize(using = TransactionDeserializer::class)
+@JsonSerialize(using = TransactionSerializer::class)
 class Transaction {
 
     constructor()
@@ -49,6 +54,3 @@ class Transaction {
     @JsonIgnore
     private val extra: String? = null
 }
-
-
-
