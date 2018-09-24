@@ -1,19 +1,21 @@
 --set client_min_messages = warning;
 
---DROP DATABASE finance_db;
+--REVOKE CONNECT ON DATABASE finance_db FROM PUBLIC, henninb;
 
-DROP TABLE IF EXISTS finance_db
+DROP DATABASE IF EXISTS finance_db;
 CREATE DATABASE finance_db;
+GRANT ALL PRIVILEGES ON DATABASE finance_db TO henninb;
+\connect finance_db;
 
-DROP TABLE t_transaction;
-DROP TABLE t_transaction_reoccur;
-DROP TABLE t_account;
-DROP TABLE t_summary;
+DROP TABLE IF EXISTS t_transaction;
+DROP TABLE IF EXISTS t_transaction_reoccur;
+DROP TABLE IF EXISTS t_account;
+DROP TABLE IF EXISTS t_summary;
 
-DROP SEQUENCE t_account_account_id_seq CASCADE;
+DROP SEQUENCE IF EXISTS t_account_account_id_seq CASCADE;
 CREATE SEQUENCE t_account_account_id_seq START WITH 1001; 
 
-CREATE TABLE t_account(
+CREATE TABLE IF NOT EXISTS t_account(
   --account_id INTEGER DEFAULT nextval('t_account_account_id_seq') PRIMARY KEY NOT NULL,
   account_id INTEGER DEFAULT nextval('t_account_account_id_seq') NOT NULL,
   --account_id INTEGER NOT NULL,
@@ -56,7 +58,7 @@ END;
 $$ LANGUAGE PLPGSQL;
 
 
-DROP SEQUENCE t_summary_summary_id_seq CASCADE;
+DROP SEQUENCE IF EXISTS t_summary_summary_id_seq CASCADE;
 CREATE SEQUENCE t_summary_summary_id_seq start with 1;
 
 CREATE TABLE IF NOT EXISTS t_summary (
@@ -70,7 +72,7 @@ CREATE TABLE IF NOT EXISTS t_summary (
 );
 
 --Actually nextval will advance sequence and return the new value
-select nextval('t_summary_summary_id_seq');
+SELECT NEXTVAL('t_summary_summary_id_seq');
 
 --CREATE extension "uuid-ossp";
 --SELECT uuid_generate_v4();
@@ -79,11 +81,11 @@ select nextval('t_summary_summary_id_seq');
 
 --WITH vars AS (SELECT uuid_generate_v4() AS uuid) select vars.uuid;
 
-DROP SEQUENCE t_transaction_transaction_id_seq CASCADE;
+DROP SEQUENCE IF EXISTS t_transaction_transaction_id_seq CASCADE;
 CREATE SEQUENCE t_transaction_transaction_id_seq start with 1001;
 
 --http://www.w3resource.com/PostgreSQL/unique.php
-CREATE TABLE IF NOT EXISTS  t_transaction (
+CREATE TABLE IF NOT EXISTS t_transaction (
   --account_id INTEGER REFERENCES stores( store_id ),
   account_id INTEGER,
   account_type CHAR(10),
