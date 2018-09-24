@@ -65,3 +65,5 @@ SELECT notes FROM t_transaction WHERE notes like '%  %';
 RAISE NOTICE 'Two or more spaces in the category';
 SELECT NULL AS 'Two or more spaces in the category';
 SELECT category FROM t_transaction WHERE category like '%  %';
+
+--COPY (SELECT * FROM t_transaction) TO 'c:\finance_db.csv' WITH (FORMAT csv, HEADER true);
