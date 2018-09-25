@@ -7,14 +7,13 @@ CREATE DATABASE finance_db;
 GRANT ALL PRIVILEGES ON DATABASE finance_db TO henninb;
 \connect finance_db;
 
-DROP TABLE IF EXISTS t_transaction;
-DROP TABLE IF EXISTS t_transaction_reoccur;
-DROP TABLE IF EXISTS t_account;
-DROP TABLE IF EXISTS t_summary;
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-DROP SEQUENCE IF EXISTS t_account_account_id_seq CASCADE;
+--create the SEQUENCE prior to the table.
+--DROP SEQUENCE IF EXISTS t_account_account_id_seq CASCADE;
 CREATE SEQUENCE t_account_account_id_seq START WITH 1001; 
 
+DROP TABLE IF EXISTS t_account;
 CREATE TABLE IF NOT EXISTS t_account(
   --account_id INTEGER DEFAULT nextval('t_account_account_id_seq') PRIMARY KEY NOT NULL,
   account_id INTEGER DEFAULT nextval('t_account_account_id_seq') NOT NULL,
@@ -30,39 +29,34 @@ CREATE TABLE IF NOT EXISTS t_account(
   date_added TIMESTAMP
 );
 
+
+--ALTER TABLE t_account ADD PRIMARY KEY (account_id);
+--ALTER TABLE t_account ALTER COLUMN account_id set DEFAULT nextval('t_account_account_id_seq');
+--ALTER TABLE t_account ADD DEFAULT nextval('t_account_account_id_seq') (account_id);
+
 --create unique index account_id_idx on t_account(account_id);
 CREATE UNIQUE INDEX account_name_owner_idx on t_account(account_name_owner);
 
---ALTER TABLE t_account ADD PRIMARY KEY (account_id);
-
---ALTER TABLE t_account ALTER COLUMN account_id set DEFAULT nextval('t_account_account_id_seq');
---ALTER TABLE t_account ADD DEFAULT nextval('t_account_account_id_seq') (account_id);
 
 CREATE OR REPLACE FUNCTION fn_upd_ts_account() RETURNS TRIGGER AS 
 $$
 BEGIN
   NEW.date_updated := CURRENT_TIMESTAMP;
-   --OLD.date_updated := CURRENT_TIMESTAMP;
   RETURN NEW;
 END;
 $$ LANGUAGE PLPGSQL;
 
-
-CREATE OR REPLACE FUNCTION fn_upd_ts_transaction() RETURNS TRIGGER AS 
-$$
-BEGIN
-  NEW.date_updated := CURRENT_TIMESTAMP;
-   --OLD.date_updated := CURRENT_TIMESTAMP;
-  RETURN NEW;
-END;
-$$ LANGUAGE PLPGSQL;
+CREATE TRIGGER tr_upd_ts_account BEFORE UPDATE ON t_account FOR EACH ROW EXECUTE PROCEDURE fn_upd_ts_account();
 
 
-DROP SEQUENCE IF EXISTS t_summary_summary_id_seq CASCADE;
-CREATE SEQUENCE t_summary_summary_id_seq start with 1;
+--create the SEQUENCE prior to the table.
+--DROP SEQUENCE IF EXISTS t_summary_summary_id_seq CASCADE;
+CREATE SEQUENCE t_summary_summary_id_seq start with 1001;
 
+DROP TABLE IF EXISTS t_summary;
 CREATE TABLE IF NOT EXISTS t_summary (
-  summary_id serial PRIMARY KEY,
+  summary_id INTEGER DEFAULT nextval('t_summary_summary_id_seq') NOT NULL,
+  --summary_id serial PRIMARY KEY,
   guid CHAR(70),
   account_name_owner CHAR(40) NOT NULL,
   totals DECIMAL(12,2) NOT NULL,
@@ -72,21 +66,18 @@ CREATE TABLE IF NOT EXISTS t_summary (
 );
 
 --Actually nextval will advance sequence and return the new value
-SELECT NEXTVAL('t_summary_summary_id_seq');
+--SELECT NEXTVAL('t_summary_summary_id_seq');
 
---CREATE extension "uuid-ossp";
---SELECT uuid_generate_v4();
+-- ************************************** --
+-- *** t_transaction table operations *** --
+-- ************************************** --
 
---SELECT guid FROM t_summary ORDER BY date_added DESC LIMIT 1;
-
---WITH vars AS (SELECT uuid_generate_v4() AS uuid) select vars.uuid;
-
-DROP SEQUENCE IF EXISTS t_transaction_transaction_id_seq CASCADE;
+--create the SEQUENCE prior to the table.
+--DROP SEQUENCE IF EXISTS t_transaction_transaction_id_seq CASCADE;
 CREATE SEQUENCE t_transaction_transaction_id_seq start with 1001;
 
---http://www.w3resource.com/PostgreSQL/unique.php
+DROP TABLE IF EXISTS t_transaction;
 CREATE TABLE IF NOT EXISTS t_transaction (
-  --account_id INTEGER REFERENCES stores( store_id ),
   account_id INTEGER,
   account_type CHAR(10),
   account_name_owner CHAR(40) NOT NULL,
@@ -98,6 +89,7 @@ CREATE TABLE IF NOT EXISTS t_transaction (
   category VARCHAR(50),
   amount DECIMAL(12,2) NOT NULL,
   cleared INTEGER,
+  reoccurring BOOLEAN DEFAULT FALSE,
   notes VARCHAR(100),
   date_updated TIMESTAMP,
   date_added TIMESTAMP
@@ -105,32 +97,47 @@ CREATE TABLE IF NOT EXISTS t_transaction (
   --CONSTRAINT t_transaction_unique UNIQUE (guid)
 );
 
---SELECT * FROM information_schema.constraint_table_usage WHERE table_name = 't_transaction';
+CREATE UNIQUE INDEX guid_idx ON t_transaction(guid);
 
+CREATE OR REPLACE FUNCTION fn_ins_ts_transaction() RETURNS TRIGGER AS 
+$$
+BEGIN
+  NEW.date_added := CURRENT_TIMESTAMP;
+  RETURN NEW;
+END;
+$$ LANGUAGE PLPGSQL;
+
+CREATE TRIGGER tr_ins_ts_transactions BEFORE UPDATE ON t_transaction FOR EACH ROW EXECUTE PROCEDURE fn_ins_ts_transaction();
+
+CREATE OR REPLACE FUNCTION fn_upd_ts_transaction() RETURNS TRIGGER AS 
+$$
+BEGIN
+  NEW.date_updated := CURRENT_TIMESTAMP;
+  RETURN NEW;
+END;
+$$ LANGUAGE PLPGSQL;
+
+CREATE TRIGGER tr_upd_ts_transactions BEFORE UPDATE ON t_transaction FOR EACH ROW EXECUTE PROCEDURE fn_upd_ts_transaction();
+
+
+--SELECT * FROM information_schema.constraint_table_usage WHERE table_name = 't_transaction';
 --ALTER TABLE t_transaction DROP CONSTRAINT guid_idx;
 --ALTER TABLE sample.public.employee DROP CONSTRAINT test_const
-
-CREATE UNIQUE INDEX guid_idx ON t_transaction(guid);
 --DROP INDEX guid_idx;
-
 --DROP TRIGGER tr_upd_ts_account  on t_account;
 --DROP TRIGGER tr_upd_ts_transactions  on t_transaction;
+--DROP TABLE IF EXISTS t_transaction_reoccur;
 
-CREATE TRIGGER tr_upd_ts_transactions
-BEFORE UPDATE ON t_transaction FOR EACH ROW EXECUTE PROCEDURE fn_upd_ts_transaction();
-
-CREATE TABLE IF NOT EXISTS t_transaction_reoccur (
-  account_id INTEGER,
-  account_type CHAR(10),
-  account_name_owner CHAR(40) NOT NULL,
-  guid CHAR(70) NOT NULL,
-  sha256 CHAR(70),
-  transaction_date TIMESTAMP NOT NULL,
-  description VARCHAR(75) NOT NULL,
-  category VARCHAR(50),
-  amount DECIMAL(12,2) NOT NULL,
-  cleared INTEGER,
-  notes VARCHAR(100)
-);
-
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+--CREATE TABLE IF NOT EXISTS t_transaction_reoccur (
+--  account_id INTEGER,
+--  account_type CHAR(10),
+--  account_name_owner CHAR(40) NOT NULL,
+--  guid CHAR(70) NOT NULL,
+--  sha256 CHAR(70),
+--  transaction_date TIMESTAMP NOT NULL,
+--  description VARCHAR(75) NOT NULL,
+--  category VARCHAR(50),
+--  amount DECIMAL(12,2) NOT NULL,
+--  cleared INTEGER,
+--  notes VARCHAR(100)
+--);
