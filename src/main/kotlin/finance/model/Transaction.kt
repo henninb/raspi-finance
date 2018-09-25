@@ -17,7 +17,7 @@ class Transaction {
 
     constructor()
 
-    constructor(guid: String, accountType: String, accountNameOwner: String, transactionDate: Date, description: String, category: String, amount: Double, cleared: Int, notes: String, dateUpdated: Date, dateAdded: Date, sha256: String) {
+    constructor(guid: String, accountType: String, accountNameOwner: String, transactionDate: Date, description: String, category: String, amount: Double, cleared: Int, reoccurring: Boolean, notes: String, dateUpdated: Date, dateAdded: Date, sha256: String) {
         this.transactionId = transactionId
         this.guid = guid
         this.accountType = accountType
@@ -27,6 +27,7 @@ class Transaction {
         this.category = category
         this.amount = amount
         this.cleared = cleared
+        this.reoccurring = reoccurring
         this.notes = notes
         this.dateUpdated = dateUpdated
         this.dateAdded = dateAdded
@@ -46,6 +47,7 @@ class Transaction {
     var amount: Double = 0.toDouble()
     @Column(name = "cleared")
     var cleared: Int = 0
+    var reoccurring: Boolean = true;
     var notes: String? = null
     var dateUpdated: java.sql.Date? = null
     var dateAdded: java.sql.Date? = null

@@ -26,10 +26,11 @@ class TransactionDeserializer @JvmOverloads constructor(vc: Class<*>? = null) : 
 
         val amount = (DecimalFormat("#.##").format(node.get("amount").asDouble())).toDouble()
         val cleared = node.get("cleared").asInt()
+        val reoccurring = node.get("reoccurring").asBoolean()
         val transactionDate = Date(node.get("transactionDate").asLong() * 1000)
         val dateUpdated = Date(node.get("dateUpdated").asLong() * 1000)
         val dateAdded = Date(node.get("dateAdded").asLong() * 1000)
 
-        return Transaction(guid, accountType, accountNameOwner, transactionDate, description, category, amount, cleared, notes, dateUpdated, dateAdded, sha256)
+        return Transaction(guid, accountType, accountNameOwner, transactionDate, description, category, amount, cleared, reoccurring, notes, dateUpdated, dateAdded, sha256)
     }
 }
