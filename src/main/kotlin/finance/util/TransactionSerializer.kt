@@ -22,6 +22,7 @@ class TransactionSerializer @JvmOverloads constructor(t: Class<Transaction>? = n
         jgen.writeStringField("category", transaction.category)
         jgen.writeStringField("notes", transaction.notes)
         jgen.writeNumberField("cleared", transaction.cleared)
+        jgen.writeBooleanField("reoccurring", transaction.reoccurring)
         jgen.writeStringField("amount", java.lang.Double.toString(transaction.amount))
         jgen.writeNumberField("transactionDate", transaction.transactionDate!!.time / 1000)
         jgen.writeNumberField("dateUpdated", transaction.dateUpdated!!.time / 1000)

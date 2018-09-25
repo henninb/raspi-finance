@@ -101,19 +101,20 @@ dependencies {
     //compile("org.apache.camel:camel-stream:${apacheCamelVersion}")
     //compile("org.apache.camel:camel-jpa:${apacheCamelVersion}")
     //compile("org.apache.camel:camel-spring-redis:${apacheCamelVersion}")
-    //compile("org.apache.camel:camel-jms:${apacheCamelVersion}")
+    compile("org.apache.camel:camel-jms:${apacheCamelVersion}")
     //compile("org.apache.camel:camel-http:${apacheCamelVersion}")
     //compile("org.apache.camel:camel-http4:${apacheCamelVersion}")
     //testCompile("org.apache.camel:camel-test:${apacheCamelVersion}")
 
     //Logstash
     compile("net.logstash.logback:logstash-logback-encoder:5.0")
+    compile("ch.qos.logback:logback-classic:1.1.11")
 
     //Lombock
     //compile("org.projectlombok:lombok:1.16.20")
 
     //ActiveMQ
-    //compile("org.apache.activemq:activemq-all:5.10.0")
+    compile("org.apache.activemq:activemq-all:5.10.0")
     //compile("org.apache.activemq:activemq-broker:5.15.2")
     //compile("org.apache.activemq:activemq-client:5.15.2")
 
@@ -138,7 +139,7 @@ dependencies {
     //compile("javax:javaee-api:7.0")
 
     //Spring
-    //compile("org.springframework:spring-jms:5.0.1.RELEASE")
+    compile("org.springframework:spring-jms:5.0.1.RELEASE")
     compile("org.springframework.batch:spring-batch-core:3.0.8.RELEASE")
     //compile("org.springframework.data:spring-data-rest-core:2.0.0.RELEASE")
     //compile("org.springframework:spring-oxm:5.0.5.RELEASE")

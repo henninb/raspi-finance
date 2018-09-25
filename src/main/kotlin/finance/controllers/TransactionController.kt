@@ -45,9 +45,9 @@ class TransactionController {
         //code
     }
 
-    //http://localhost:8080/transactions/insertTransaction?accountNameOwner=brian_chase&transactionDate=0&description=test&category=test&amount=0.01&cleared=0&notes=empty
+    //http://localhost:8080/transactions/insertTransaction?accountNameOwner=brian_chase&acccountType=credit&transactionDate=0&description=test&category=test&amount=0.01&cleared=0&notes=empty
     @GetMapping(value = "/insertTransaction")
-    fun insertTransaction(@RequestParam accountNameOwner: String, @RequestParam transactionDate: String,
+    fun insertTransaction(@RequestParam accountNameOwner: String, @RequestParam accountType: String, @RequestParam transactionDate: String,
                        @RequestParam description: String, @RequestParam category: String, @RequestParam amount: String,
                        @RequestParam cleared: String, @RequestParam notes: String): String {
         val restResult = RestResult()
@@ -58,7 +58,7 @@ class TransactionController {
             transaction.guid = UUID.randomUUID().toString()
             //accountNameOwner, required
             transaction.accountNameOwner = accountNameOwner
-
+            transaction.accountType = accountType
             //transactionDate, if empty then now
             val date = java.sql.Date(Calendar.getInstance().time.time)
             //transaction.setTransactionDate(transactionDate);
@@ -71,6 +71,7 @@ class TransactionController {
             transaction.amount = java.lang.Double.parseDouble(amount)
             //cleared, false unless set to true
             transaction.cleared = 0
+            transaction.reoccurring = false
             //notes, optional
             transaction.notes = notes
             //TODO: need to fix the save
