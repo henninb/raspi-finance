@@ -3,14 +3,14 @@
 
     <!-- Basic file appender for handling logging. -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOGS}/application_log.log</file>
+        <file>${LOGS}/finance_db.log</file>
         <append>true</append>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!-- Rollover daily -->
-            <fileNamePattern>${LOGS}/application_log.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
-            <!-- or whenever the file size reaches 100MB -->
+            <fileNamePattern>${LOGS}/finance_db.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <!-- MB max log size -->
             <maxFileSize>20MB</maxFileSize>
-            <!-- Keep 10 days worth of logs -->
+            <!-- days worth of logs -->
             <maxHistory>10</maxHistory>
             <totalSizeCap>2GB</totalSizeCap>
         </rollingPolicy>

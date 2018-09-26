@@ -1,3 +1,5 @@
+https://www.thomasvitale.com/https-spring-boot-ssl-certificate/
+
 gradle dependencyInsight --dependency slf4j-log4j12
 gradle dependencyInsight --dependency log4j-over-slf4j
 
@@ -34,3 +36,22 @@ Delete
 Update
 ActiveMQ
 SSL
+
+
+export DATASOURCE=jdbc:postgresql://192.168.100.25:5432/finance_db
+export DATASOURCE_USERNAME=henninb
+export DATASOURCE_PASSWORD=monday1
+export JSON_FILES_INPUT_PATH=c:\usr\finance_data\json_in
+export SERVER_PORT=8080
+export AMQ_BROKER=localhost
+export AMQ_USER=
+export AMQ_PWD=
+export SSL_TRUSTSTORE=
+export SSL_TRUSTSTORE_PASSOWRD=
+export SSL_KEYSTORE=
+export SSL_KEYSTORE_PASSOWRD=
+export LOGS=logs
+
+gradle bootRun
+
+java -jar build/libs/raspi_finance.jar --spring.config.location=src/main/resources/application.properties
