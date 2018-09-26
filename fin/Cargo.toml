@@ -1,0 +1,10 @@
+[package]
+name = "fin-cli"
+version = "0.1.0"
+authors = ["Brian <henninb@msn.com>"]
+
+[dependencies]
+#rocket = "0.3.16"
+#rocket_codegen = "0.3.16"
+hyper = "0.10"
+#hyper = "0.12.10"
