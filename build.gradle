@@ -173,6 +173,9 @@ dependencies {
     //onetime
 
     //other
+
+    //compile group: 'org.apache.tomcat', name: 'tomcat-coyote', version: '9.0.12'
+
     //compile("org.liquibase:liquibase-core:3.5.3")
     //compile("org.apache.commons:commons-csv:1.1")
     //compile("org.jasypt:jasypt:1.9.2")
