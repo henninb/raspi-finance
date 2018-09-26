@@ -1,10 +1,10 @@
-package finance.util
+package finance.utils
 
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
-import finance.model.Transaction
+import finance.models.Transaction
 
 import java.io.IOException
 import java.sql.Date

@@ -2,7 +2,7 @@ package finance.processors
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException
-import finance.model.Transaction
+import finance.models.Transaction
 import org.apache.camel.Exchange
 import org.apache.camel.Processor
 //import org.slf4j.Logger
