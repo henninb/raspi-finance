@@ -1,13 +1,13 @@
-package finance.model
+package finance.models
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import javax.persistence.*
-import finance.util.TransactionDeserializer
-import finance.util.TransactionSerializer
+import finance.utils.TransactionDeserializer
+import finance.utils.TransactionSerializer
 import java.sql.Date
-
 
 @Entity(name = "TransactionEntity")
 @Table(name = "t_transaction")
@@ -41,7 +41,7 @@ class Transaction {
     var accountId: Int? = null
     var accountType: String? = null
     var accountNameOwner: String? = null
-    var transactionDate: java.sql.Date? = null
+    var transactionDate: Date? = null
     var description: String? = null
     var category: String? = null
     var amount: Double = 0.toDouble()
@@ -49,10 +49,17 @@ class Transaction {
     var cleared: Int = 0
     var reoccurring: Boolean = true;
     var notes: String? = null
-    var dateUpdated: java.sql.Date? = null
-    var dateAdded: java.sql.Date? = null
+    var dateUpdated: Date? = null
+    var dateAdded: Date? = null
     var sha256: String? = null
 
-    @JsonIgnore
-    private val extra: String? = null
+    //@JsonIgnore
+    //private val extra: String? = null
+
+    override fun toString(): String = mapper.writeValueAsString(this)
+
+    companion object {
+        @JsonIgnore
+        private val mapper = ObjectMapper()
+    }
 }

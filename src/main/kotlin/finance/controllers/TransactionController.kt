@@ -2,10 +2,9 @@ package finance.controllers
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
-import finance.model.Transaction
+import finance.models.Transaction
 import finance.services.TransactionService
-import finance.pojo.RestResult
-import org.slf4j.Logger
+import finance.pojos.ResultMessage
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
@@ -50,8 +49,8 @@ class TransactionController {
     fun insertTransaction(@RequestParam accountNameOwner: String, @RequestParam accountType: String, @RequestParam transactionDate: String,
                        @RequestParam description: String, @RequestParam category: String, @RequestParam amount: String,
                        @RequestParam cleared: String, @RequestParam notes: String): String {
-        val restResult = RestResult()
-        var resultString = ""
+        val resultMessage = ResultMessage()
+        var resultString:String = ""
         val transaction = Transaction()
 
         try {
@@ -78,18 +77,18 @@ class TransactionController {
             //transactionService!!.save(transaction)
             transactionService!!.insertTransaction(transaction)
 
-            restResult.message = "Successfully processed add message."
-            restResult.resultCode = 0
-            restResult.guid = transaction.guid!!
-            restResult.setDate(ZonedDateTime.now())
+            resultMessage.message = "Successfully processed add message."
+            resultMessage.resultCode = 0
+            resultMessage.guid = transaction.guid!!
+            resultMessage.setDate(ZonedDateTime.now())
 
-            resultString = mapper.writeValueAsString(restResult)
+            resultString = mapper.writeValueAsString(resultMessage)
         } catch (jpe: JsonProcessingException) {
-            restResult.message = "Failure to processed add message: " + "Exception: " + jpe + " Exception message:" + jpe.message
-            restResult.resultCode = 200
+            resultMessage.message = "Failure to processed add message: " + "Exception: " + jpe + " Exception message:" + jpe.message
+            resultMessage.resultCode = 200
         } catch (e: Exception) {
-            restResult.message = "Failure to processed add message: " + "Exception: " + e + " Exception message:" + e.message
-            restResult.resultCode = 201
+            resultMessage.message = "Failure to processed add message: " + "Exception: " + e + " Exception message:" + e.message
+            resultMessage.resultCode = 201
         }
 
         return resultString
@@ -98,8 +97,8 @@ class TransactionController {
     //http://localhost:8080/transactions/deleteTransaction/340c315d-39ad-4a02-a294-84a74c1c7ddc
     @GetMapping(value = "/deleteTransaction/{guid}")
     fun deleteTransaction(@PathVariable guid: String): String {
-        val restResult = RestResult()
-        var resultString = ""
+        val restResult = ResultMessage()
+        var resultString : String = ""
         restResult.guid = guid
 
         LOGGER.info(guid)
@@ -115,14 +114,14 @@ class TransactionController {
             restResult.resultCode = 0
             restResult.setDate(ZonedDateTime.now())
             resultString = mapper.writeValueAsString(restResult)
-            return resultString
+            //return resultString
         } catch (ex: Exception) {
             LOGGER.info(ex.message)
             restResult.message = "Failure to processed delete message: " + "Exception: " + ex + " Exception message:" + ex.message
             restResult.resultCode = 100
             restResult.setDate(ZonedDateTime.now())
             resultString = mapper.writeValueAsString(restResult)
-            return resultString
+            //return resultString
         } finally {
             return resultString
         }

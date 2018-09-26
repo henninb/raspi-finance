@@ -1,5 +1,6 @@
 package finance.routes
 
+import finance.models.Transaction
 import finance.processors.InsertTransactionProcessor
 import finance.processors.JsonTransactionProcessor
 import org.apache.camel.builder.RouteBuilder
@@ -25,12 +26,29 @@ class FileConsumerRoute : RouteBuilder() {
     override fun configure() {
         LOGGER.info("jsonFilesInputPath: " + jsonFilesInputPath)
         from("file:" + jsonFilesInputPath + "?delete=true&moveFailed=.failedWithErrors")
+                //.noAutoStartup()
+                //.split(body())
+                //.useOriginalMessage()
                 .choice()
-                .`when`(header("CamelFileName").endsWith(".json")).log("\$simple{file:onlyname.noext}_\$simple{date:now:yyyyMMdd}.json").process(jsonTransactionProcessor).process(insertTransactionProcessor).to("file:" + jsonFilesInputPath + File.separator + ".processed")
-                .`when`(header("CamelFileName").endsWith(".txt")).to("file:" + jsonFilesInputPath + File.separator + ".notProcessed")
-
-                .otherwise().to("file:" + jsonFilesInputPath + File.separator + ".notProcessed")
+                .`when`(header("CamelFileName").endsWith(".json"))
+                    .log("\$simple{file:onlyname.noext}_\$simple{date:now:yyyy-MM-dd}.json")
+                    .process(jsonTransactionProcessor)
+                    .to("direct:processTransactions")
+                    .log("completed")
+                    //.to("file:" + jsonFilesInputPath + File.separator + ".processed")
+                    //.to("file:" + jsonFilesInputPath + File.separator + ".processed?fileName=\${header.CamelSplitIndex}.json")
+                .otherwise()
+                    .to("file:" + jsonFilesInputPath + File.separator + ".notProcessed")
                 .end()
+
+                from("direct:processTransactions")
+                        .split(body())
+                        .process(insertTransactionProcessor)
+                        //.convertBodyTo(Transaction::class.java)
+                        .convertBodyTo(String::class.java)
+                        //.log("\${body}")
+                        .to("file:" + jsonFilesInputPath + File.separator + ".processed?fileName=\${id}.json&autoCreate=true")
+                        .end()
     }
 
     companion object {

@@ -1,4 +1,4 @@
-package finance.config
+package finance.configs
 
 import org.apache.activemq.spring.ActiveMQConnectionFactory
 import org.apache.activemq.ActiveMQSslConnectionFactory
@@ -101,8 +101,8 @@ open class JmsConfig {
             activeMQSslConnectionFactory.password = amqPassword
             activeMQSslConnectionFactory.brokerURL = amqBrokerUrl
         } catch (e: Exception) {
-            //LOGGER.error(e.getMessage());
-            e.printStackTrace()
+            LOGGER.error(e.message)
+            //e.printStackTrace()
         }
 
         return activeMQSslConnectionFactory
@@ -124,8 +124,8 @@ open class JmsConfig {
             activeMQSslConnectionFactory.userName = amqUsername
             activeMQSslConnectionFactory.password = amqPassword
         } catch (e: Exception) {
-            //LOGGER.error(e.getMessage());
-            e.printStackTrace()
+            LOGGER.error(e.message)
+            //e.printStackTrace()
         }
 
         return activeMQSslConnectionFactory
