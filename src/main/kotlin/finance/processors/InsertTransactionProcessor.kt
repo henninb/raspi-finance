@@ -26,7 +26,9 @@ class InsertTransactionProcessor : Processor {
     @Throws(Exception::class)
     override fun process(exchange: Exchange) {
         try {
-            val transaction = exchange.`in`.getBody(Transaction::class.java)
+            val payload = exchange.`in`.getBody(String::class.java)
+            val transaction: Transaction = JsonTransactionProcessor.mapper.readValue(payload, Transaction::class.java)
+
             transactionFailure = transaction
             transactionService!!.insertTransaction(transaction)
             LOGGER.info("transaction insert: guild: " + transaction.guid + " description: " + transaction.description)
@@ -36,7 +38,7 @@ class InsertTransactionProcessor : Processor {
             resultMessage.guid = transaction.guid!!
             resultMessage.setDate(ZonedDateTime.now())
             resultString = mapper.writeValueAsString(resultMessage)
-            LOGGER.info(resultString)
+            //LOGGER.info(resultString)
             exchange.`in`.body = transaction.toString()
         } catch (dive: DataIntegrityViolationException) {
             if (dive.message!!.contains("could not execute statement; SQL [n/a]; constraint [guid_idx]")) {
@@ -51,7 +53,7 @@ class InsertTransactionProcessor : Processor {
         } catch (e: Exception) {
             resultMessage.message = "Failure to processed add message: " + "Exception: " + e + " Exception message:" + e.message
             resultMessage.resultCode = 203
-            resultMessage.guid = transactionFailure!!.guid!!
+            //resultMessage.guid = transactionFailure!!.guid!!
             resultMessage.setDate(ZonedDateTime.now())
             resultString = mapper.writeValueAsString(resultMessage)
             LOGGER.error(resultString)
