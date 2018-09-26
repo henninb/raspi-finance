@@ -8,7 +8,6 @@ import finance.pojos.ResultMessage
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
-
 import java.time.ZonedDateTime
 import java.util.Calendar
 import java.util.UUID
@@ -39,11 +38,14 @@ class TransactionController {
         return transaction
     }
 
+    //http://localhost:8080/transactions/getTransaction/insertTransactionPost
     @PostMapping(path = arrayOf("/insertTransactionPost"), consumes = arrayOf("application/json"), produces = arrayOf("application/json"))
-    fun addMember(@RequestBody member: String) {
-        //code
+    fun addMember(@RequestBody transaction: Transaction) {
+        //LOGGER.info("********: guid - " + transaction.guid)
+        transactionService?.insertTransaction(transaction)
     }
 
+    /*
     //http://localhost:8080/transactions/insertTransaction?accountNameOwner=brian_chase&acccountType=credit&transactionDate=0&description=test&category=test&amount=0.01&cleared=0&notes=empty
     @GetMapping(value = "/insertTransaction")
     fun insertTransaction(@RequestParam accountNameOwner: String, @RequestParam accountType: String, @RequestParam transactionDate: String,
@@ -93,6 +95,7 @@ class TransactionController {
 
         return resultString
     }
+*/
 
     //http://localhost:8080/transactions/deleteTransaction/340c315d-39ad-4a02-a294-84a74c1c7ddc
     @GetMapping(value = "/deleteTransaction/{guid}")
