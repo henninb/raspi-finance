@@ -19,8 +19,8 @@ class JsonTransactionProcessor : Processor {
         val transactions: Array<Transaction>
 
         try {
-            val jsonString = exchange.`in`.getBody(String::class.java)
-            transactions = mapper.readValue(jsonString, Array<Transaction>::class.java)
+            val payload = exchange.`in`.getBody(String::class.java)
+            transactions = mapper.readValue(payload, Array<Transaction>::class.java)
             exchange.`in`.body = transactions
         } catch (upe: UnrecognizedPropertyException) {
             LOGGER.info("UnrecognizedPropertyException")
@@ -37,6 +37,6 @@ class JsonTransactionProcessor : Processor {
     }
 
     companion object {
-        private val mapper = ObjectMapper()
+        val mapper = ObjectMapper()
     }
 }

@@ -38,11 +38,31 @@ class TransactionController {
         return transaction
     }
 
-    //http://localhost:8080/transactions/getTransaction/insertTransactionPost
-    @PostMapping(path = arrayOf("/insertTransactionPost"), consumes = arrayOf("application/json"), produces = arrayOf("application/json"))
+    //http://localhost:8080/transactions/insertTransaction
+    @PostMapping(path = arrayOf("/insertTransaction"), consumes = arrayOf("application/json"), produces = arrayOf("application/json"))
     fun addMember(@RequestBody transaction: Transaction) {
         //LOGGER.info("********: guid - " + transaction.guid)
-        transactionService?.insertTransaction(transaction)
+        val resultMessage = ResultMessage()
+        var resultString:String = ""
+        val transaction = Transaction()
+
+        try {
+            transactionService?.insertTransaction(transaction)
+            resultMessage.message = "Successfully processed add message."
+            resultMessage.resultCode = 0
+            resultMessage.guid = transaction.guid!!
+            resultMessage.setDate(ZonedDateTime.now())
+
+            resultString = mapper.writeValueAsString(resultMessage)
+
+        } catch (jpe: JsonProcessingException) {
+            resultMessage.message = "Failure to processed add message: " + "Exception: " + jpe + " Exception message:" + jpe.message
+            resultMessage.resultCode = 200
+        } catch (e: Exception) {
+            resultMessage.message = "Failure to processed add message: " + "Exception: " + e + " Exception message:" + e.message
+            resultMessage.resultCode = 201
+        }
+    //return resultString
     }
 
     /*

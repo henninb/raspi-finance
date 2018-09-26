@@ -35,6 +35,10 @@ apply plugin: 'maven'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+jar {
+    version '1.0.0'
+}
+
 repositories {
     mavenLocal()
     mavenCentral()
