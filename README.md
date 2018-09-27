@@ -37,11 +37,11 @@ Update
 ActiveMQ
 SSL
 
-
+#gradle bootRun
 export DATASOURCE=jdbc:postgresql://192.168.100.25:5432/finance_db
 export DATASOURCE_USERNAME=henninb
 export DATASOURCE_PASSWORD=monday1
-export JSON_FILES_INPUT_PATH=c:\usr\finance_data\json_in
+export JSON_FILES_INPUT_PATH=json_in
 export SERVER_PORT=8080
 export AMQ_BROKER=localhost
 export AMQ_USER=
@@ -52,6 +52,6 @@ export SSL_KEYSTORE=
 export SSL_KEYSTORE_PASSOWRD=
 export LOGS=logs
 
-gradle bootRun
 
-java -jar build/libs/raspi_finance.jar --spring.config.location=src/main/resources/application.properties
+
+java -jar build/libs/raspi_finance-1.0.0.jar --spring.config.location=src/main/resources/application.properties
