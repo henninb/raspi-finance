@@ -53,9 +53,6 @@ class Transaction {
     var dateAdded: Date? = null
     var sha256: String? = null
 
-    //@JsonIgnore
-    //private val extra: String? = null
-
     override fun toString(): String = mapper.writeValueAsString(this)
 
     companion object {
