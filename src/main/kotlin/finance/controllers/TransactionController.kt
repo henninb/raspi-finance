@@ -9,8 +9,8 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import java.time.ZonedDateTime
-import java.util.Calendar
-import java.util.UUID
+//import java.util.Calendar
+//import java.util.UUID
 
 @CrossOrigin(origins = arrayOf("http://localhost:3000"))
 @RestController
@@ -33,20 +33,24 @@ class TransactionController {
     fun getTransaction(@PathVariable guid: String): Transaction {
         val transaction: Transaction
         LOGGER.info(guid)
-        //Transaction transaction = transactionRepository.findByGuid(guid);
         transaction = transactionService!!.findByGuid(guid)
         return transaction
     }
 
+    //http://localhost:8080/transactions/updateTransaction
+    @PostMapping(path = arrayOf("/updateTransaction"), consumes = arrayOf("application/json"), produces = arrayOf("application/json"))
+    fun updateTransaction(@RequestBody transaction: Transaction) {
+
+    }
+
     //http://localhost:8080/transactions/insertTransaction
     @PostMapping(path = arrayOf("/insertTransaction"), consumes = arrayOf("application/json"), produces = arrayOf("application/json"))
-    fun addMember(@RequestBody transaction: Transaction) {
-        //LOGGER.info("********: guid - " + transaction.guid)
+    fun insertTransaction(@RequestBody transaction: Transaction) {
         val resultMessage = ResultMessage()
-        var resultString:String = ""
-        val transaction = Transaction()
-
+        var resultString: String = ""
+        
         try {
+            LOGGER.info("* * * * * " + transaction.guid + "* * * * * ")
             transactionService?.insertTransaction(transaction)
             resultMessage.message = "Successfully processed add message."
             resultMessage.resultCode = 0
@@ -62,60 +66,7 @@ class TransactionController {
             resultMessage.message = "Failure to processed add message: " + "Exception: " + e + " Exception message:" + e.message
             resultMessage.resultCode = 201
         }
-    //return resultString
     }
-
-    /*
-    //http://localhost:8080/transactions/insertTransaction?accountNameOwner=brian_chase&acccountType=credit&transactionDate=0&description=test&category=test&amount=0.01&cleared=0&notes=empty
-    @GetMapping(value = "/insertTransaction")
-    fun insertTransaction(@RequestParam accountNameOwner: String, @RequestParam accountType: String, @RequestParam transactionDate: String,
-                       @RequestParam description: String, @RequestParam category: String, @RequestParam amount: String,
-                       @RequestParam cleared: String, @RequestParam notes: String): String {
-        val resultMessage = ResultMessage()
-        var resultString:String = ""
-        val transaction = Transaction()
-
-        try {
-            transaction.guid = UUID.randomUUID().toString()
-            //accountNameOwner, required
-            transaction.accountNameOwner = accountNameOwner
-            transaction.accountType = accountType
-            //transactionDate, if empty then now
-            val date = java.sql.Date(Calendar.getInstance().time.time)
-            //transaction.setTransactionDate(transactionDate);
-            transaction.transactionDate = date
-            //description, required
-            transaction.description = description
-            //category, optional
-            transaction.category = category
-            //amount, required
-            transaction.amount = java.lang.Double.parseDouble(amount)
-            //cleared, false unless set to true
-            transaction.cleared = 0
-            transaction.reoccurring = false
-            //notes, optional
-            transaction.notes = notes
-            //TODO: need to fix the save
-            //transactionService!!.save(transaction)
-            transactionService!!.insertTransaction(transaction)
-
-            resultMessage.message = "Successfully processed add message."
-            resultMessage.resultCode = 0
-            resultMessage.guid = transaction.guid!!
-            resultMessage.setDate(ZonedDateTime.now())
-
-            resultString = mapper.writeValueAsString(resultMessage)
-        } catch (jpe: JsonProcessingException) {
-            resultMessage.message = "Failure to processed add message: " + "Exception: " + jpe + " Exception message:" + jpe.message
-            resultMessage.resultCode = 200
-        } catch (e: Exception) {
-            resultMessage.message = "Failure to processed add message: " + "Exception: " + e + " Exception message:" + e.message
-            resultMessage.resultCode = 201
-        }
-
-        return resultString
-    }
-*/
 
     //http://localhost:8080/transactions/deleteTransaction/340c315d-39ad-4a02-a294-84a74c1c7ddc
     @GetMapping(value = "/deleteTransaction/{guid}")

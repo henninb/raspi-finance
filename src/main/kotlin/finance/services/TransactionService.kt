@@ -30,11 +30,20 @@ class TransactionService {
         try {
             transactionRepository!!.deleteByGuid(guid)
         } catch (ex: Exception) {
-            println(ex)
+            LOGGER.info(ex.message)
         }
     }
 
+    //TODO: Debating on how to pass the updated fields to this method
+    fun updateTransaction(guid: String, list: Map<String, String>) {
+        val transaction: Transaction = findByGuid(guid);
+
+        transaction.cleared = list["cleared"]!!.toInt()
+        val result = transactionRepository!!.saveAndFlush(transaction)
+    }
+
     fun insertTransaction(transaction: Transaction) {
+        //TODO: Should saveAndFlush be in a try catch block?
         val result = transactionRepository!!.saveAndFlush(transaction)
         if (transaction.guid == result.guid) {
             LOGGER.info("INFO: transactionRepository.saveAndFlush success.")
@@ -44,16 +53,11 @@ class TransactionService {
     }
 
     fun findByGuid(guid: String): Transaction {
+        //TODO: what if a GUID is not found?
         return transactionRepository!!.findByGuid(guid)
     }
 
     fun findByAccountNameOwnerIgnoreCaseOrderByTransactionDate(accountNameOwner: String): List<Transaction> {
         return transactionRepository!!.findByAccountNameOwnerIgnoreCaseOrderByTransactionDate(accountNameOwner)
     }
-
-    //TODO: fixme
-    //@Transactional
-    //fun save(transaction: Transaction): Transaction {
-    //    return transactionRepository!!.save(transaction)
-    //}
 }
