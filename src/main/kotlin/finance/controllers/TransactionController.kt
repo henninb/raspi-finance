@@ -48,9 +48,8 @@ class TransactionController {
     fun insertTransaction(@RequestBody transaction: Transaction) {
         val resultMessage = ResultMessage()
         var resultString: String = ""
-        
+
         try {
-            LOGGER.info("* * * * * " + transaction.guid + "* * * * * ")
             transactionService?.insertTransaction(transaction)
             resultMessage.message = "Successfully processed add message."
             resultMessage.resultCode = 0
