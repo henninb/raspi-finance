@@ -6,7 +6,6 @@ authors = ["Brian <henninb@msn.com>"]
 [dependencies]
 #rocket = "0.3.16"
 #rocket_codegen = "0.3.16"
-#hyper = "0.10"
 hyper = "0.12.10"
 serde = "1.0.79"
 serde_derive = "1.0.79"
@@ -15,4 +14,8 @@ pretty_env_logger = "0.2.4"
 http = "0.1.13"
 #uuid = "0.7"
 uuid = { version = "0.7", features = ["serde", "v4"] }
-chrono = "0.4.0"
+chrono = "0.4.6"
+#chrono = "0.4"
+regex = "1.0.5"
+#termion = "1.5.1"
+#sys = "0.0.0"
