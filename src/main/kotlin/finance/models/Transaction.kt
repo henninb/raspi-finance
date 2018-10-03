@@ -5,9 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import javax.persistence.*
+import java.sql.Timestamp
 import finance.utils.TransactionDeserializer
 import finance.utils.TransactionSerializer
-import java.sql.Timestamp
+
 
 @Entity(name = "TransactionEntity")
 @Table(name = "t_transaction")
@@ -18,7 +19,7 @@ class Transaction {
     constructor()
 
     constructor(guid: String, accountType: String, accountNameOwner: String, transactionDate: Timestamp, description: String, category: String, amount: Double, cleared: Int, reoccurring: Boolean, notes: String, dateUpdated: Timestamp, dateAdded: Timestamp, sha256: String) {
-        this.transactionId = transactionId
+        //this.transactionId = transactionId
         this.guid = guid
         this.accountType = accountType
         this.accountNameOwner = accountNameOwner
