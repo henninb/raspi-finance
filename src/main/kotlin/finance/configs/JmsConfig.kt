@@ -75,7 +75,7 @@ open class JmsConfig {
         return activeMQConnectionFactory
     }
 
-
+/*
     //activemq-ssl JMS endpoint for camel
     @Bean(name = arrayOf("activemq-ssl"))
     open fun activeMQSslJmsComponent(cachingConnectionFactory: ActiveMQSslConnectionFactory): JmsComponent {
@@ -86,27 +86,28 @@ open class JmsConfig {
         return jmsComponent
     }
 
-    //activemq-ssl
-    @Bean
-    open fun activeMQSslConnectionFactory(): ActiveMQSslConnectionFactory {
-        val activeMQSslConnectionFactory = ActiveMQSslConnectionFactory()
 
-        try {
-            LOGGER.info("activeMQSslConnectionFactory: setup for ssl")
-            activeMQSslConnectionFactory.keyStore = sslKeystore
-            activeMQSslConnectionFactory.keyStorePassword = sslKeystorePassword
-            activeMQSslConnectionFactory.trustStore = sslTruststore
-            activeMQSslConnectionFactory.trustStorePassword = sslTruststorePassword
-            activeMQSslConnectionFactory.userName = amqUsername
-            activeMQSslConnectionFactory.password = amqPassword
-            activeMQSslConnectionFactory.brokerURL = amqBrokerUrl
-        } catch (e: Exception) {
-            LOGGER.error(e.message)
-            //e.printStackTrace()
+        //activemq-ssl
+        @Bean
+        open fun activeMQSslConnectionFactory(): ActiveMQSslConnectionFactory {
+            val activeMQSslConnectionFactory = ActiveMQSslConnectionFactory()
+
+            try {
+                LOGGER.info("activeMQSslConnectionFactory: setup for ssl")
+                activeMQSslConnectionFactory.keyStore = sslKeystore
+                activeMQSslConnectionFactory.keyStorePassword = sslKeystorePassword
+                activeMQSslConnectionFactory.trustStore = sslTruststore
+                activeMQSslConnectionFactory.trustStorePassword = sslTruststorePassword
+                activeMQSslConnectionFactory.userName = amqUsername
+                activeMQSslConnectionFactory.password = amqPassword
+                activeMQSslConnectionFactory.brokerURL = amqBrokerUrl
+            } catch (e: Exception) {
+                LOGGER.error(e.message)
+                //e.printStackTrace()
+            }
+
+            return activeMQSslConnectionFactory
         }
-
-        return activeMQSslConnectionFactory
-    }
 
     //activemq-ssl
     @Bean
@@ -130,4 +131,5 @@ open class JmsConfig {
 
         return activeMQSslConnectionFactory
     }
+    */
 }

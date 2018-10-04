@@ -11,9 +11,9 @@ extern crate http;
 extern crate uuid;
 extern crate chrono;
 extern crate regex;
-//extern crate termion;
-//extern crate sys;
+extern crate pancurses;
 
+use pancurses::{initscr, endwin};
 use regex::Regex;
 use std::process;
 use std::env;
@@ -26,6 +26,7 @@ use http::header::CONTENT_LENGTH;
 use uuid::Uuid;
 use chrono::prelude::*;
 use chrono::{DateTime};
+
 //requires nightly build
 //use std::intrinsics::type_name;
 
@@ -73,6 +74,7 @@ fn fetch_user_input() -> Result<String, io::Error> {
 
 //fn date_string_to_date( date_string: &str ) -> Result<DateTime<Utc>> {
 fn date_string_to_date( date_string: &str ) -> DateTime<Utc> {
+//fn date_string_to_date( date_string: &str ) -> LocalResult<T> {
     let re1 = Regex::new(r"^(?P<month>\d{2})-(?P<day>\d{2})$").unwrap();
     let re2 = Regex::new(r"^(?P<month>\d{2})-(?P<day>\d{1})$").unwrap();
     let re3 = Regex::new(r"^(?P<month>\d{1})-(?P<day>\d{1})$").unwrap();
@@ -234,6 +236,12 @@ fn insertTransaction(url: hyper::Uri) -> impl Future<Item=(), Error=()> {
         Ok(s) => user_input = s,
         Err(error) => eprintln!("error.")
     };
+
+  let window = initscr();
+  window.printw("Hello Rust");
+  window.refresh();
+  window.getch();
+  endwin();
 
     println!("user_input=<{}>", user_input);
 

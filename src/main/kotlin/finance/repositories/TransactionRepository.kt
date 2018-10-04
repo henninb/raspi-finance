@@ -9,10 +9,6 @@ import org.springframework.transaction.annotation.Transactional
 
 interface TransactionRepository : JpaRepository<Transaction, Long> {
 
-    //@NamedNativeQuery(name="showSummaryResults", query="SELECT  account_name_owner, SUM(amount) AS totals FROM t_transaction GROUP BY account_name_owner ORDER BY account_name_owner", resultSetMapping="showSummaryResults")
-    //@get:Query(value = "SELECT  account_name_owner as accountNameOwner, SUM(amount) AS totals FROM t_transaction GROUP BY account_name_owner ORDER BY account_name_owner", nativeQuery = true)
-    //val summary: List<Summary>
-
     //function name must match name on database table
     fun findByDescriptionIgnoreCase(description: String): Transaction
 

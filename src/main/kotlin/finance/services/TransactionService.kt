@@ -18,7 +18,7 @@ class TransactionService {
 
     fun findAll(): List<Transaction> {
         val transactions = ArrayList<Transaction>()
-        this.transactionRepository!!.findAll().forEach(Consumer<Transaction> { transactions.add(it) }) //fun with Java 8
+        this.transactionRepository!!.findAll().forEach(Consumer<Transaction> { transactions.add(it) })
         return transactions
     }
 
