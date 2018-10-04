@@ -1,9 +1,9 @@
 buildscript {
     ext.someVariable = '1.0'
     ext {
-        springBootVersion = '1.5.12.RELEASE'
-        apacheCamelVersion = '2.21.0'
-        kotlinVersion = '1.2.31'
+        springBootVersion = '2.0.5.RELEASE'
+        apacheCamelVersion = '2.22.0'
+        kotlinVersion = '1.2.71'
         qualityPluginVersion='3.0.0'
         codenarcPluginVersion='0.20.0'
     }
@@ -68,7 +68,7 @@ wrapper {
 
 dependencies {
     //Kotlin
-    compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
+    compile("org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}")
     compile("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
     //compile("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.2")
 
@@ -159,8 +159,8 @@ dependencies {
     //compile("com.oracle:ojdbc7:12.1.0.2")
 
     //hibernate
-    compile("org.hibernate:hibernate-core:5.0.6.Final")
-    compile("org.hibernate:hibernate-entitymanager:5.0.6.Final")
+    compile("org.hibernate:hibernate-core:5.3.6.Final")
+    compile("org.hibernate:hibernate-entitymanager:5.3.6.Final")
     compile("org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final")
 
     //flyway
