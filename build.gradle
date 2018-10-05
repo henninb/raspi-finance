@@ -14,19 +14,12 @@ buildscript {
         //gradlePluginPortal()
     }
 
-    //configurations {
-    //    all*.exclude module: 'spring-boot-starter-logging'
-     //   all*.exclude module: "logback-classic"
-    //}
-    //configurations.classpath.exclude group: 'org.slf4j', module: 'slf4j-log4j12'
-    //configurations.classpath.exclude group: 'org.slf4j'
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}"
         //classpath "org.jfrog.buildinfo:build-info-extractor-gradle:latest.release"
         //classpath "ru.vyarus:gradle-quality-plugin:${qualityPluginVersion}"
     }
-
 }
 
 apply plugin: 'groovy'
@@ -75,6 +68,10 @@ wrapper {
     gradleVersion="4.1"
 }
 
+configurations.all {
+    //exclude group: "org.slf4j"
+}
+
 dependencies {
     //Kotlin
     compile("org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}")
@@ -89,11 +86,6 @@ dependencies {
 
     //Spring Boot
     compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
-            {
-                //exclude module: "spring-boot-starter-logging"
-                //exclude module: "logback-classic"
-                //exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
-            }
     //compile("org.springframework.boot:spring-boot-starter-thymeleaf:${springBootVersion}")
     //compile("org.springframework.boot:spring-boot-starter-data-mongodb:${springBootVersion}")
     //compile("org.springframework.boot:spring-boot-starter-jersey:${springBootVersion}")
@@ -124,29 +116,21 @@ dependencies {
     //compile("org.apache.camel:camel-http4:${apacheCamelVersion}")
     //testCompile("org.apache.camel:camel-test:${apacheCamelVersion}")
 
-    //Logstash
-    //logback-core-1.0.13.jar
-    //logback-classic-1.2.3.jar
-    //slf4j-api-1.7.5.jar
-    //compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.11.1'
-    //compile ("org.slf4j:slf4j-api")
+    //Logging
+    //compile ("org.slf4j:slf4j-api:2.11.1")
     compile("net.logstash.logback:logstash-logback-encoder:5.2")
     compile("ch.qos.logback:logback-classic:1.2.3")
-    //{
-    //    exclude group: 'org.slf4j', module: 'slf4j-api'
-    //}
 
     //Lombock
     //compile("org.projectlombok:lombok:1.16.20")
 
     //ActiveMQ
-    //compile("org.apache.activemq:activemq-all:5.15.0")
-    compile("org.apache.activemq:activemq-all:5.11.0")
-  //s{
-    //exclude group: 'ch.qos.logback', module: 'logback-classic-1.2.3'
-  //}
-    //compile("org.apache.activemq:activemq-broker:5.15.2")
-    //compile("org.apache.activemq:activemq-client:5.15.2")
+    //http://activemq.apache.org/initial-configuration.html#InitialConfiguration-RequiredJARs
+    //avoid using all as it causes dependency problems.
+
+    //compile("org.apache.activemq:activemq-broker:5.15.6")
+    compile("org.apache.activemq:activemq-client:5.15.6")
+    compile("org.apache.activemq:activemq-kahadb-store:5.15.6")
 
     //postgres
     //compile("postgresql:postgresql:9.4.1208-jdbc42-atlassian-hosted")
