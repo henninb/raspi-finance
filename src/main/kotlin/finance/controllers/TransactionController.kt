@@ -43,7 +43,7 @@ class TransactionController {
 
     //http://localhost:8080/transactions/insertTransaction
     @PostMapping(path = arrayOf("/insertTransaction"), consumes = arrayOf("application/json"), produces = arrayOf("application/json"))
-    fun insertTransaction(@RequestBody transaction: Transaction) {
+    fun insertTransaction(@RequestBody transaction: Transaction) : String {
         val resultMessage = ResultMessage()
         var resultString: String = ""
 
@@ -55,13 +55,17 @@ class TransactionController {
             resultMessage.setDate(ZonedDateTime.now())
 
             resultString = mapper.writeValueAsString(resultMessage)
-
+            return resultString
         } catch (jpe: JsonProcessingException) {
             resultMessage.message = "Failure to processed add message: " + "Exception: " + jpe + " Exception message:" + jpe.message
             resultMessage.resultCode = 200
+            resultString = mapper.writeValueAsString(resultMessage)
+            return resultString
         } catch (e: Exception) {
             resultMessage.message = "Failure to processed add message: " + "Exception: " + e + " Exception message:" + e.message
             resultMessage.resultCode = 201
+            resultString = mapper.writeValueAsString(resultMessage)
+            return resultString
         }
     }
 

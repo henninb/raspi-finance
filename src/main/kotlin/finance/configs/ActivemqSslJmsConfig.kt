@@ -1,19 +1,17 @@
 package finance.configs
 
-import org.apache.activemq.spring.ActiveMQConnectionFactory
 import org.apache.activemq.ActiveMQSslConnectionFactory
 import org.apache.camel.component.jms.JmsComponent
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Primary
 import org.springframework.transaction.annotation.EnableTransactionManagement
 import javax.jms.ConnectionFactory
 
-@Configuration
+@Qualifier
 @EnableTransactionManagement
-open class JmsConfig {
+open class ActivemqSslJmsConfig {
     @Value("\${spring.activemq.broker-url}")
     private val amqBrokerUrl: String? = null
 
@@ -40,42 +38,6 @@ open class JmsConfig {
 
     private val LOGGER = LoggerFactory.getLogger(this.javaClass)
 
-    //activemq JMS endpoint for camel
-    @Bean(name = arrayOf("activemq"))
-    open fun activeMQJmsComponent(cachingConnectionFactory: ActiveMQConnectionFactory): JmsComponent {
-        val jmsComponent = JmsComponent()
-        jmsComponent.setConnectionFactory(cachingConnectionFactory)
-        jmsComponent.setTransacted(true)
-        jmsComponent.setReceiveTimeout(receiveTimeout)
-        return jmsComponent
-    }
-
-    //activeMQ
-    @Bean
-    @Primary
-    open fun activeMQConnectionFactory(): ActiveMQConnectionFactory {
-        val activeMQConnectionFactory = ActiveMQConnectionFactory()
-
-        activeMQConnectionFactory.brokerURL = amqBrokerUrl
-        activeMQConnectionFactory.userName = amqUsername
-        activeMQConnectionFactory.password = amqPassword
-
-        return activeMQConnectionFactory
-    }
-
-    //activeMQ
-    @Bean
-    open fun activeMQConnectionFactoryBean(connectionFactory: ActiveMQConnectionFactory): ConnectionFactory {
-        val activeMQConnectionFactory = ActiveMQConnectionFactory()
-
-        activeMQConnectionFactory.brokerURL = amqBrokerUrl
-        activeMQConnectionFactory.userName = amqUsername
-        activeMQConnectionFactory.password = amqPassword
-
-        return activeMQConnectionFactory
-    }
-
-/*
     //activemq-ssl JMS endpoint for camel
     @Bean(name = arrayOf("activemq-ssl"))
     open fun activeMQSslJmsComponent(cachingConnectionFactory: ActiveMQSslConnectionFactory): JmsComponent {
@@ -85,11 +47,9 @@ open class JmsConfig {
         jmsComponent.setReceiveTimeout(receiveTimeout)
         return jmsComponent
     }
-
-
         //activemq-ssl
         @Bean
-        open fun activeMQSslConnectionFactory(): ActiveMQSslConnectionFactory {
+        open fun activeMQSslConnectionFactoryNoParmsBean(): ActiveMQSslConnectionFactory {
             val activeMQSslConnectionFactory = ActiveMQSslConnectionFactory()
 
             try {
@@ -131,5 +91,4 @@ open class JmsConfig {
 
         return activeMQSslConnectionFactory
     }
-    */
 }
