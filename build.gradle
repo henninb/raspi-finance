@@ -37,8 +37,15 @@ apply plugin: 'maven'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+//jar {
+//    version '1.0.0'
+//}
+
 jar {
     version '1.0.0'
+    manifest {
+        attributes 'Main-Class': 'finance.Application.Main'
+    }
 }
 
 repositories {
