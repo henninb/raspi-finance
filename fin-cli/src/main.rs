@@ -26,6 +26,7 @@ use http::header::CONTENT_LENGTH;
 use uuid::Uuid;
 use chrono::prelude::*;
 use chrono::{DateTime};
+use std::time::{SystemTime, UNIX_EPOCH};
 
 //requires nightly build
 //use std::intrinsics::type_name;
@@ -237,11 +238,11 @@ fn insertTransaction(url: hyper::Uri) -> impl Future<Item=(), Error=()> {
         Err(error) => eprintln!("error.")
     };
 
-  let window = initscr();
-  window.printw("Hello Rust");
-  window.refresh();
-  window.getch();
-  endwin();
+  //let window = initscr();
+  //window.printw("Hello Rust");
+  //window.refresh();
+  //window.getch();
+  //endwin();
 
     println!("user_input=<{}>", user_input);
 

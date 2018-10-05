@@ -39,7 +39,7 @@ class TransactionService {
         val transaction: Transaction = findByGuid(guid);
 
         transaction.cleared = list["cleared"]!!.toInt()
-        val result = transactionRepository!!.saveAndFlush(transaction)
+        transactionRepository!!.saveAndFlush(transaction)
     }
 
     fun insertTransaction(transaction: Transaction) {

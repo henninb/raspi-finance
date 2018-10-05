@@ -2,13 +2,16 @@ https://www.thomasvitale.com/https-spring-boot-ssl-certificate/
 
 gradle dependencyInsight --dependency slf4j-log4j12
 gradle dependencyInsight --dependency log4j-over-slf4j
+gradle dependencyInsight --dependency logback-classic
+gradle dependencies
 
 openssl s_client -connect 192.168.100.25:8080 -CAfile /path/to/cert/crt.pem
 
-Prod
+home
 DATASOURCE=jdbc:postgresql://192.168.100.25:5432/finance_db
 DATASOURCE_USERNAME=henninb
 DATASOURCE_PASSWORD=monday1
+DATASOURCE_DRIVER=org.postgresql.Driver
 JSON_FILES_INPUT_PATH=c:\usr\finance_data\json_in
 SERVER_PORT=8080
 AMQ_BROKER=localhost
@@ -19,6 +22,24 @@ SSL_TRUSTSTORE_PASSOWRD=
 SSL_KEYSTORE=
 SSL_KEYSTORE_PASSOWRD=
 LOGS=logs
+
+work
+DATASOURCE=jdbc:h2:mem:finance_db;DB_CLOSE_DELAY=-1
+DATASOURCE_USERNAME=henninb
+DATASOURCE_PASSWORD=monday1
+DATASOURCE_DRIVER=org.h2.Driver
+JSON_FILES_INPUT_PATH=c:\usr\finance_data\json_in
+SERVER_PORT=8080
+AMQ_BROKER=localhost
+AMQ_USER=
+AMQ_PWD=
+SSL_TRUSTSTORE=
+SSL_TRUSTSTORE_PASSOWRD=
+SSL_KEYSTORE=
+SSL_KEYSTORE_PASSOWRD=
+LOGS=logs
+
+??? spring.datasource.platform=h2
 
 psql -h 192.168.100.25 -p 5432 -U henninb -d finance_db
 
@@ -41,6 +62,7 @@ SSL
 export DATASOURCE=jdbc:postgresql://192.168.100.25:5432/finance_db
 export DATASOURCE_USERNAME=henninb
 export DATASOURCE_PASSWORD=monday1
+export DATASOURCE_DRIVER=org.postgresql.Driver
 export JSON_FILES_INPUT_PATH=json_in
 export SERVER_PORT=8080
 export AMQ_BROKER=localhost

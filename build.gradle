@@ -13,12 +13,20 @@ buildscript {
         jcenter()
         //gradlePluginPortal()
     }
+
+    //configurations {
+    //    all*.exclude module: 'spring-boot-starter-logging'
+     //   all*.exclude module: "logback-classic"
+    //}
+    //configurations.classpath.exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+    //configurations.classpath.exclude group: 'org.slf4j'
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}"
         //classpath "org.jfrog.buildinfo:build-info-extractor-gradle:latest.release"
         //classpath "ru.vyarus:gradle-quality-plugin:${qualityPluginVersion}"
     }
+
 }
 
 apply plugin: 'groovy'
@@ -31,6 +39,7 @@ apply plugin: 'maven'
 //apply plugin: 'org.flywaydb.flyway'
 //apply plugin: 'com.jfrog.artifactory'
 //apply plugin: 'ru.vyarus.quality'
+//apply plugin: 'java-gradle-plugin'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -80,7 +89,12 @@ dependencies {
 
     //Spring Boot
     compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
-    compile("org.springframework.boot:spring-boot-starter-thymeleaf:${springBootVersion}")
+            {
+                //exclude module: "spring-boot-starter-logging"
+                //exclude module: "logback-classic"
+                //exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+            }
+    //compile("org.springframework.boot:spring-boot-starter-thymeleaf:${springBootVersion}")
     //compile("org.springframework.boot:spring-boot-starter-data-mongodb:${springBootVersion}")
     //compile("org.springframework.boot:spring-boot-starter-jersey:${springBootVersion}")
     compile("org.springframework.boot:spring-boot-starter-tomcat:${springBootVersion}")
@@ -111,14 +125,26 @@ dependencies {
     //testCompile("org.apache.camel:camel-test:${apacheCamelVersion}")
 
     //Logstash
-    compile("net.logstash.logback:logstash-logback-encoder:5.0")
-    compile("ch.qos.logback:logback-classic:1.1.11")
+    //logback-core-1.0.13.jar
+    //logback-classic-1.2.3.jar
+    //slf4j-api-1.7.5.jar
+    //compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.11.1'
+    //compile ("org.slf4j:slf4j-api")
+    compile("net.logstash.logback:logstash-logback-encoder:5.2")
+    compile("ch.qos.logback:logback-classic:1.2.3")
+    //{
+    //    exclude group: 'org.slf4j', module: 'slf4j-api'
+    //}
 
     //Lombock
     //compile("org.projectlombok:lombok:1.16.20")
 
     //ActiveMQ
-    compile("org.apache.activemq:activemq-all:5.10.0")
+    //compile("org.apache.activemq:activemq-all:5.15.0")
+    compile("org.apache.activemq:activemq-all:5.11.0")
+  //s{
+    //exclude group: 'ch.qos.logback', module: 'logback-classic-1.2.3'
+  //}
     //compile("org.apache.activemq:activemq-broker:5.15.2")
     //compile("org.apache.activemq:activemq-client:5.15.2")
 
@@ -143,8 +169,9 @@ dependencies {
     //compile("javax:javaee-api:7.0")
 
     //Spring
+    //needs to be upgraded to 5.1.0.RELEASE
     compile("org.springframework:spring-jms:5.0.1.RELEASE")
-    compile("org.springframework.batch:spring-batch-core:3.0.8.RELEASE")
+    //compile("org.springframework.batch:spring-batch-core:3.0.8.RELEASE")
     //compile("org.springframework.data:spring-data-rest-core:2.0.0.RELEASE")
     //compile("org.springframework:spring-oxm:5.0.5.RELEASE")
 
@@ -167,7 +194,7 @@ dependencies {
     //compile("org.flywaydb:flyway-core:4.2.0")
 
     //h2 database
-    //compile("com.h2database:h2:1.4.196")
+    compile("com.h2database:h2:1.4.196")
     //runtime("com.h2database:h2:1.4.196")
 
     //onetime
@@ -179,7 +206,7 @@ dependencies {
     //compile("org.liquibase:liquibase-core:3.5.3")
     //compile("org.apache.commons:commons-csv:1.1")
     //compile("org.jasypt:jasypt:1.9.2")
-    compile("com.google.guava:guava:23.0")
+    //compile("com.google.guava:guava:23.0")
     //compile("javax.persistence:persistence-api:1.0")
     testCompile("junit:junit:4.12")
     //compile("org.jsoup:jsoup:1.10.3")
