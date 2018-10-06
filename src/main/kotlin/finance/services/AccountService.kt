@@ -24,4 +24,10 @@ class AccountService {
     fun findByAccountNameOwner(accountNameOwner: String): Account {
         return accountRepository!!.findByAccountNameOwner(accountNameOwner)
     }
+
+    fun insertAccount(account: Account) {
+        //TODO: Should saveAndFlush be in a try catch block?
+        val result = accountRepository!!.saveAndFlush(account)
+            LOGGER.info("INFO: transactionRepository.saveAndFlush success.")
+    }
 }
