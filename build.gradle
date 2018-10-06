@@ -127,18 +127,17 @@ dependencies {
     //ActiveMQ
     //http://activemq.apache.org/initial-configuration.html#InitialConfiguration-RequiredJARs
     //avoid using all as it causes dependency problems.
-
     //compile("org.apache.activemq:activemq-broker:5.15.6")
     compile("org.apache.activemq:activemq-client:5.15.6")
     compile("org.apache.activemq:activemq-kahadb-store:5.15.6")
 
     //postgres
-    //compile("postgresql:postgresql:9.4.1208-jdbc42-atlassian-hosted")
-    compile("org.postgresql:postgresql:9.4-1206-jdbc42")
+    //compile("org.postgresql:postgresql:9.4-1206-jdbc42")
+    compile("org.postgresql:postgresql:42.2.5")
 
     //mongodb
-    //compile("org.mongodb:mongodb-driver:3.5.0")
-    //compile("org.mongodb:mongo-java-driver:3.5.0")
+    //compile("org.mongodb:mongodb-driver:3.8.2")
+    //compile("org.mongodb:mongo-java-driver:3.8.2")
 
     //rabbitmq
     //compile("com.rabbitmq:amqp-client:3.6.6")
@@ -184,9 +183,7 @@ dependencies {
     //onetime
 
     //other
-
     //compile group: 'org.apache.tomcat', name: 'tomcat-coyote', version: '9.0.12'
-
     //compile("org.liquibase:liquibase-core:3.5.3")
     //compile("org.apache.commons:commons-csv:1.1")
     //compile("org.jasypt:jasypt:1.9.2")
@@ -223,8 +220,8 @@ task writePom {
     doLast {
         pom {
             project {
-                groupId 'example'
-                artifactId 'project'
+                groupId 'finance'
+                artifactId 'raspi_finance'
                 version '1.0'
             }
         }.writeTo("pom.xml")
