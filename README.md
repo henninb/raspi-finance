@@ -77,3 +77,12 @@ export LOGS=logs
 
 
 java -jar build/libs/raspi_finance-1.0.0.jar --spring.config.location=src/main/resources/application.properties
+java -jar build/libs/raspi_finance-1.0.0.jar --spring.config.location=src/main/resources/application.home.properties
+
+IntelliJ
+Setting the VM Options with -Dspring.profiles.active=work -Dspring.config.location=application.work.properties
+Setting the VM Options with -Dspring.profiles.active=offline
+
+
+mvn package
+gradle build
