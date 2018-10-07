@@ -1,6 +1,13 @@
 --set client_min_messages = warning;
 --\d+ (shows sequence)
+--epoch
+--select extract(epoch from date_added) from t_transaction;
+--select date_part('epoch', date_added) from t_transaction;
+--SELECT EXTRACT(EPOCH FROM TIMESTAMP '2016-10-25T00:14:30.000');
+--extract(epoch from date_trunc('month', current_timestamp)
 --REVOKE CONNECT ON DATABASE finance_db FROM PUBLIC, henninb;
+
+--TO_TIMESTAMP('1538438975')
 
 DROP DATABASE IF EXISTS finance_db;
 CREATE DATABASE finance_db;
@@ -19,16 +26,17 @@ CREATE TABLE IF NOT EXISTS t_account(
   account_id INTEGER DEFAULT nextval('t_account_account_id_seq') NOT NULL,
   --account_id INTEGER NOT NULL,
   account_name_owner CHAR(40) NOT NULL,
+  account_name CHAR(20), -- NULL for now
+  account_owner CHAR(20), -- NULL for now
   account_type CHAR(10) NOT NULL,
   active_status CHAR(1) NOT NULL,
   moniker CHAR(5),
   totals DECIMAL(12,2),
   totals_balanced DECIMAL(12,2),
-  date_closed INTEGER,
+  date_closed DATE,
   date_updated TIMESTAMP,
   date_added TIMESTAMP
 );
-
 
 --ALTER TABLE t_account ADD PRIMARY KEY (account_id);
 --ALTER TABLE t_account ALTER COLUMN account_id set DEFAULT nextval('t_account_account_id_seq');
@@ -37,17 +45,30 @@ CREATE TABLE IF NOT EXISTS t_account(
 --create unique index account_id_idx on t_account(account_id);
 CREATE UNIQUE INDEX account_name_owner_idx on t_account(account_name_owner);
 
-
 CREATE OR REPLACE FUNCTION fn_upd_ts_account() RETURNS TRIGGER AS 
 $$
+DECLARE
 BEGIN
+  RAISE NOTICE 'fn_upd_ts_account';
   NEW.date_updated := CURRENT_TIMESTAMP;
   RETURN NEW;
 END;
 $$ LANGUAGE PLPGSQL;
 
+DROP TRIGGER IF EXISTS tr_upd_ts_account on t_account;
 CREATE TRIGGER tr_upd_ts_account BEFORE UPDATE ON t_account FOR EACH ROW EXECUTE PROCEDURE fn_upd_ts_account();
 
+CREATE OR REPLACE FUNCTION fn_ins_ts_account() RETURNS TRIGGER AS 
+$$
+BEGIN
+  RAISE NOTICE 'fn_ins_ts_account';
+  NEW.date_added := CURRENT_TIMESTAMP;
+  RETURN NEW;
+END;
+$$ LANGUAGE PLPGSQL;
+
+DROP TRIGGER IF EXISTS tr_ins_ts_account on t_account;
+CREATE TRIGGER tr_ins_ts_account BEFORE INSERT ON t_account FOR EACH ROW EXECUTE PROCEDURE fn_ins_ts_account();
 
 --create the SEQUENCE prior to the table.
 --DROP SEQUENCE IF EXISTS t_summary_summary_id_seq CASCADE;
@@ -84,7 +105,6 @@ CREATE TABLE IF NOT EXISTS t_transaction (
   transaction_id INTEGER DEFAULT nextval('t_transaction_transaction_id_seq') NOT NULL,
   guid CHAR(70) NOT NULL,
   sha256 CHAR(70),
-  --transaction_date TIMESTAMP NOT NULL,
   transaction_date DATE NOT NULL,
   description VARCHAR(75) NOT NULL,
   category VARCHAR(50),
@@ -98,30 +118,35 @@ CREATE TABLE IF NOT EXISTS t_transaction (
   --CONSTRAINT t_transaction_unique UNIQUE (guid)
 );
 
-ALTER TABLE t_transaction ADD CONSTRAINT transaction_constraint UNIQUE (transaction_date, description, category, amount, notes);
+ALTER TABLE t_transaction ADD CONSTRAINT transaction_constraint UNIQUE (account_name_owner, transaction_date, description, category, amount, notes);
 
 CREATE UNIQUE INDEX guid_idx ON t_transaction(guid);
 
 CREATE OR REPLACE FUNCTION fn_ins_ts_transaction() RETURNS TRIGGER AS 
 $$
+DECLARE
 BEGIN
+  RAISE NOTICE 'fn_ins_ts_transaction';
   NEW.date_added := CURRENT_TIMESTAMP;
   RETURN NEW;
 END;
 $$ LANGUAGE PLPGSQL;
 
-CREATE TRIGGER tr_ins_ts_transactions BEFORE UPDATE ON t_transaction FOR EACH ROW EXECUTE PROCEDURE fn_ins_ts_transaction();
+DROP TRIGGER IF EXISTS tr_ins_ts_transactions on t_transaction;
+CREATE TRIGGER tr_ins_ts_transactions BEFORE INSERT ON t_transaction FOR EACH ROW EXECUTE PROCEDURE fn_ins_ts_transaction();
 
 CREATE OR REPLACE FUNCTION fn_upd_ts_transaction() RETURNS TRIGGER AS 
 $$
+DECLARE
 BEGIN
+  RAISE NOTICE 'fn_upd_ts_transaction';
   NEW.date_updated := CURRENT_TIMESTAMP;
   RETURN NEW;
 END;
 $$ LANGUAGE PLPGSQL;
 
+DROP TRIGGER IF EXISTS tr_upd_ts_transactions on t_transaction;
 CREATE TRIGGER tr_upd_ts_transactions BEFORE UPDATE ON t_transaction FOR EACH ROW EXECUTE PROCEDURE fn_upd_ts_transaction();
-
 
 --SELECT * FROM information_schema.constraint_table_usage WHERE table_name = 't_transaction';
 --ALTER TABLE t_transaction DROP CONSTRAINT guid_idx;
