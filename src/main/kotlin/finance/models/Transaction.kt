@@ -8,6 +8,7 @@ import javax.persistence.*
 import java.sql.Timestamp
 import finance.utils.TransactionDeserializer
 import finance.utils.TransactionSerializer
+import java.sql.Date
 
 
 @Entity(name = "TransactionEntity")
@@ -18,7 +19,7 @@ class Transaction {
 
     constructor()
 
-    constructor(guid: String, accountType: String, accountNameOwner: String, transactionDate: Timestamp, description: String, category: String, amount: Double, cleared: Int, reoccurring: Boolean, notes: String, dateUpdated: Timestamp, dateAdded: Timestamp, sha256: String) {
+    constructor(guid: String, accountType: String, accountNameOwner: String, transactionDate: Date, description: String, category: String, amount: Double, cleared: Int, reoccurring: Boolean, notes: String, dateUpdated: Timestamp, dateAdded: Timestamp, sha256: String) {
         //this.transactionId = transactionId
         this.guid = guid
         this.accountType = accountType
@@ -42,7 +43,7 @@ class Transaction {
     var accountId: Int? = null
     var accountType: String? = null
     var accountNameOwner: String? = null
-    var transactionDate: Timestamp? = null
+    var transactionDate: Date? = null
     var description: String? = null
     var category: String? = null
     var amount: Double = 0.toDouble()

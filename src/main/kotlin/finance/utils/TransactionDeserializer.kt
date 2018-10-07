@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import finance.models.Transaction
 
 import java.io.IOException
+import java.sql.Date
 import java.sql.Timestamp
 import java.text.DecimalFormat
 
@@ -28,7 +29,7 @@ class TransactionDeserializer @JvmOverloads constructor(vc: Class<*>? = null) : 
         val cleared = node.get("cleared").asInt()
         val reoccurring = node.get("reoccurring").asBoolean()
         //System.out.println("transactionDate: " + node.get("transactionDate").asLong() * 1000)
-        val transactionDate = Timestamp(node.get("transactionDate").asLong() * 1000)
+        val transactionDate = Date(node.get("transactionDate").asLong() * 1000)
 
         val dateUpdated = Timestamp(node.get("dateUpdated").asLong() * 1000)
         //System.out.println("dateUpdated: " + dateUpdated + " - " + node.get("dateUpdated").asLong() * 1000)
