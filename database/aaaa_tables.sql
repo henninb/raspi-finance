@@ -1,5 +1,5 @@
 --set client_min_messages = warning;
-
+--\d+ (shows sequence)
 --REVOKE CONNECT ON DATABASE finance_db FROM PUBLIC, henninb;
 
 DROP DATABASE IF EXISTS finance_db;
@@ -84,7 +84,8 @@ CREATE TABLE IF NOT EXISTS t_transaction (
   transaction_id INTEGER DEFAULT nextval('t_transaction_transaction_id_seq') NOT NULL,
   guid CHAR(70) NOT NULL,
   sha256 CHAR(70),
-  transaction_date TIMESTAMP NOT NULL,
+  --transaction_date TIMESTAMP NOT NULL,
+  transaction_date DATE NOT NULL,
   description VARCHAR(75) NOT NULL,
   category VARCHAR(50),
   amount DECIMAL(12,2) NOT NULL,
@@ -96,6 +97,8 @@ CREATE TABLE IF NOT EXISTS t_transaction (
   --CONSTRAINT t_transaction_pk PRIMARY KEY (guid)
   --CONSTRAINT t_transaction_unique UNIQUE (guid)
 );
+
+ALTER TABLE t_transaction ADD CONSTRAINT transaction_constraint UNIQUE (transaction_date, description, category, amount, notes);
 
 CREATE UNIQUE INDEX guid_idx ON t_transaction(guid);
 
@@ -141,3 +144,5 @@ CREATE TRIGGER tr_upd_ts_transactions BEFORE UPDATE ON t_transaction FOR EACH RO
 --  cleared INTEGER,
 --  notes VARCHAR(100)
 --);
+
+select conrelid::regclass AS table_from, conname, pg_get_constraintdef(c.oid) from pg_constraint c join pg_namespace n ON n.oid = c.connamespace where  contype in ('f', 'p','c','u') order by contype;
