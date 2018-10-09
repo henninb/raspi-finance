@@ -6,10 +6,12 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Primary
 import org.springframework.transaction.annotation.EnableTransactionManagement
 import javax.jms.ConnectionFactory
 
-@Qualifier
+@Configuration
 @EnableTransactionManagement
 open class ActivemqSslJmsConfig {
     @Value("\${spring.activemq.broker-url}")
@@ -49,6 +51,7 @@ open class ActivemqSslJmsConfig {
     }
         //activemq-ssl
         @Bean
+        @Primary
         open fun activeMQSslConnectionFactoryNoParmsBean(): ActiveMQSslConnectionFactory {
             val activeMQSslConnectionFactory = ActiveMQSslConnectionFactory()
 

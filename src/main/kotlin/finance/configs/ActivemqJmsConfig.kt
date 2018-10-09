@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Primary
 import org.springframework.transaction.annotation.EnableTransactionManagement
 import javax.jms.ConnectionFactory
 
-@Configuration
+//@Configuration
 @EnableTransactionManagement
 open class ActivemqJmsConfig {
     @Value("\${spring.activemq.broker-url}")
@@ -51,7 +51,7 @@ open class ActivemqJmsConfig {
 
     //activeMQ
     @Bean
-    @Primary
+    //@Primary
     open fun activeMQConnectionFactoryBean(connectionFactory: ActiveMQConnectionFactory): ConnectionFactory {
         val activeMQConnectionFactory = ActiveMQConnectionFactory()
 

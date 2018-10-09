@@ -15,7 +15,7 @@ class AccountService {
     @Autowired
     internal var accountRepository: AccountRepository? = null
 
-    fun findAll(): List<Account> {
+    fun findAllOrderByAccountNameOwner(): List<Account> {
         val accounts = ArrayList<Account>()
         this.accountRepository!!.findAll().forEach(Consumer<Account> { accounts.add(it) })
         return accounts
@@ -24,6 +24,10 @@ class AccountService {
     fun findByAccountNameOwner(accountNameOwner: String): Account {
         return accountRepository!!.findByAccountNameOwner(accountNameOwner)
     }
+
+    //fun findByAccountNameOwnerOrderBy(accountNameOwner: String): Account {
+    //    return accountRepository!!.findByAccountNameOwner(accountNameOwner)
+    //}
 
     fun insertAccount(account: Account) {
         //TODO: Should saveAndFlush be in a try catch block?

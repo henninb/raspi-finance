@@ -2,6 +2,7 @@ package finance.services
 
 
 import finance.models.Transaction
+import finance.repositories.MongoTransactionRepository
 import finance.repositories.TransactionRepository
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,15 +17,18 @@ class TransactionService {
     @Autowired
     internal var transactionRepository: TransactionRepository? = null
 
+    @Autowired
+    internal var mongoTransactionRepository: MongoTransactionRepository? = null
+
     fun findAll(): List<Transaction> {
         val transactions = ArrayList<Transaction>()
         this.transactionRepository!!.findAll().forEach(Consumer<Transaction> { transactions.add(it) })
         return transactions
     }
 
-    fun fetchAccoutTotals(accountNameOwner: String): Double {
-        return transactionRepository!!.fetchAccoutTotals(accountNameOwner)
-    }
+    //fun fetchAccoutTotals(accountNameOwner: String): Double {
+    //    return transactionRepository!!.fetchAccoutTotals(accountNameOwner)
+    //}
 
     fun deleteByGuid(guid: String) {
         try {
@@ -44,12 +48,13 @@ class TransactionService {
 
     fun insertTransaction(transaction: Transaction) {
         //TODO: Should saveAndFlush be in a try catch block?
-        val result = transactionRepository!!.saveAndFlush(transaction)
-        if (transaction.guid == result.guid) {
-            LOGGER.info("INFO: transactionRepository.saveAndFlush success.")
-        } else {
-            LOGGER.info("WARN: transactionRepository.saveAndFlush failure.")
-        }
+        mongoTransactionRepository!!.save(transaction)
+        transactionRepository!!.saveAndFlush(transaction)
+        //if (transaction.guid == result.guid) {
+        //    LOGGER.info("INFO: transactionRepository.saveAndFlush success.")
+        //} else {
+        //    LOGGER.info("WARN: transactionRepository.saveAndFlush failure.")
+        //}
     }
 
     fun findByGuid(guid: String): Transaction {
