@@ -76,10 +76,10 @@ class MasterRoute : RouteBuilder() {
                 .convertBodyTo(String::class.java)
                 .to("file:" + jsonFilesInputPath + File.separator + ".processed?fileName=\${id}.json&autoCreate=true")
                 .removeHeaders("*", "CamelFileLength", "CamelFileNameProduced")
-                .to("activemq:queue:" + "finance_drop")
+                .to("activemq-ssl:queue:" + "finance_drop")
         .end()
 
-        from("activemq:queue:" + "finance_drop" + "?concurrentConsumers=1&maxConcurrentConsumers=1")
+        from("activemq-ssl:queue:" + "finance_drop" + "?concurrentConsumers=1&maxConcurrentConsumers=1")
                 .autoStartup(true)
                 .routeId("insertTransaction")
                 //.log(LoggingLevel.INFO, "insertTransaction: " + "\${body}")
@@ -88,7 +88,7 @@ class MasterRoute : RouteBuilder() {
                 .log(LoggingLevel.INFO, "after insertTransactionProcessor")
                 .convertBodyTo(String::class.java)
                 .removeHeaders("*")
-                .to("activemq:queue:" + "finance_drop_complete")
+                .to("activemq-ssl:queue:" + "finance_drop_complete")
         .end()
     }
 

@@ -17,7 +17,7 @@ class AccountController {
     internal var accountService: AccountService? = null
     @GetMapping(value = "/accountFindAll")
     fun transactionFindAll(): List<Account> {
-        return accountService!!.findAll()
+        return accountService!!.findAllOrderByAccountNameOwner()
     }
 
     @GetMapping(value = "/getAccount/{accountNameOwner}")
