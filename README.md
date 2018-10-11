@@ -39,6 +39,8 @@ MONGO_DATABASE=finance_db
 MONGO_HOSTNAME=192.168.100.25
 MONGO_PORT=27017
 MONGO_URI=mongodb://192.168.100.25/finance_db
+ACTIVEMQ_SSL_BEANS_ENABLED=true
+ACTIVEMQ_NONSSL_BEANS_ENABLED=false
 
 work
 DATASOURCE=jdbc:h2:mem:finance_db;DB_CLOSE_DELAY=-1
@@ -59,6 +61,8 @@ MONGO_DATABASE=finance_db
 MONGO_HOSTNAME=192.168.100.25
 MONGO_PORT=27017
 MONGO_URI=mongodb://192.168.100.25/finance_db
+ACTIVEMQ_SSL_BEANS_ENABLED=true
+ACTIVEMQ_NONSSL_BEANS_ENABLED=false
 
 
 ??? spring.datasource.platform=h2
@@ -81,21 +85,23 @@ export SERVER_PORT=8080
 export AMQ_BROKER_URL=ssl://archlinux:61617
 export AMQ_USER=
 export AMQ_PWD=
-export SSL_TRUSTSTORE=
-export SSL_TRUSTSTORE_PASSOWRD=
-export SSL_KEYSTORE=
-export SSL_KEYSTORE_PASSOWRD=
+export SSL_TRUSTSTORE=amq-client.ts
+export SSL_TRUSTSTORE_PASSOWRD=monday1
+export SSL_KEYSTORE=amq-client.ks
+export SSL_KEYSTORE_PASSOWRD=monday1
 export LOGS=logs
 export MONGO_DATABASE=finance_db
 export MONGO_HOSTNAME=192.168.100.25
 export MONGO_PORT=27017
 export MONGO_URI=mongodb://192.168.100.25/finance_db
+export ACTIVEMQ_SSL_BEANS_ENABLED=true
+export ACTIVEMQ_NONSSL_BEANS_ENABLED=false
 
 
 gradle bootRun
-java -jar build/libs/raspi_finance-1.0.0.jar --spring.config.location=src/main/resources/application.properties
-java -jar build/libs/raspi_finance-1.0.0.jar --spring.config.location=src/main/resources/application.home.properties
-java -jar target/raspi_finance-1.0.jar --spring.config.location=src/main/resources/application.home.properties
+java -jar build/libs/raspi_finance*.jar --spring.config.location=src/main/resources/application.properties
+java -jar build/libs/raspi_finance*.jar --spring.config.location=src/main/resources/application.home.properties
+java -jar target/raspi_finance*.jar --spring.config.location=src/main/resources/application.home.properties
 
 IntelliJ
 Setting the VM Options with -Dspring.profiles.active=work -Dspring.config.location=application.work.properties

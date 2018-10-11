@@ -4,14 +4,17 @@ import org.apache.activemq.ActiveMQConnectionFactory
 import org.apache.camel.component.jms.JmsComponent
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
+import org.springframework.context.annotation.Profile
 import org.springframework.transaction.annotation.EnableTransactionManagement
 import javax.jms.ConnectionFactory
 
-//@Configuration
+@Configuration
 @EnableTransactionManagement
+//@Profile("insecure")
 open class ActivemqJmsConfig {
     @Value("\${spring.activemq.broker-url}")
     private val amqBrokerUrl: String? = null
@@ -28,6 +31,7 @@ open class ActivemqJmsConfig {
     private val LOGGER = LoggerFactory.getLogger(this.javaClass)
 
     //activemq JMS endpoint for camel
+    @ConditionalOnProperty(value="activemq-non-ssl.beans.enabled")
     @Bean(name = arrayOf("activemq"))
     open fun activeMQJmsComponent(cachingConnectionFactory: ActiveMQConnectionFactory): JmsComponent {
         val jmsComponent = JmsComponent()
@@ -38,6 +42,7 @@ open class ActivemqJmsConfig {
     }
 
     //activeMQ
+    @ConditionalOnProperty(value="activemq-non-ssl.beans.enabled")
     @Bean
     open fun activeMQConnectionFactoryNoParmsBean(): ActiveMQConnectionFactory {
         val activeMQConnectionFactory = ActiveMQConnectionFactory()
@@ -50,8 +55,9 @@ open class ActivemqJmsConfig {
     }
 
     //activeMQ
+    @ConditionalOnProperty(value="activemq-non-ssl.beans.enabled")
     @Bean
-    //@Primary
+    @Primary
     open fun activeMQConnectionFactoryBean(connectionFactory: ActiveMQConnectionFactory): ConnectionFactory {
         val activeMQConnectionFactory = ActiveMQConnectionFactory()
 

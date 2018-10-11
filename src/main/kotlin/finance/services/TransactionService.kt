@@ -17,7 +17,7 @@ class TransactionService {
     @Autowired
     internal var transactionRepository: TransactionRepository? = null
 
-    @Autowired
+    @Autowired(required=false)
     internal var mongoTransactionRepository: MongoTransactionRepository? = null
 
     fun findAll(): List<Transaction> {
@@ -48,7 +48,7 @@ class TransactionService {
 
     fun insertTransaction(transaction: Transaction) {
         //TODO: Should saveAndFlush be in a try catch block?
-        mongoTransactionRepository!!.save(transaction)
+        //mongoTransactionRepository!!.save(transaction)
         transactionRepository!!.saveAndFlush(transaction)
         //if (transaction.guid == result.guid) {
         //    LOGGER.info("INFO: transactionRepository.saveAndFlush success.")
