@@ -47,14 +47,15 @@ class TransactionService {
     }
 
     fun insertTransaction(transaction: Transaction) {
-        //TODO: Should saveAndFlush be in a try catch block?
-        //mongoTransactionRepository!!.save(transaction)
-        transactionRepository!!.saveAndFlush(transaction)
-        //if (transaction.guid == result.guid) {
-        //    LOGGER.info("INFO: transactionRepository.saveAndFlush success.")
-        //} else {
-        //    LOGGER.info("WARN: transactionRepository.saveAndFlush failure.")
-        //}
+        val guid: String?  = transaction.guid;
+        if (guid != null && guid.length > 0) {
+            val transactionFound = transactionRepository?.findByGuid(guid)
+            if( transactionFound == null ) {
+                transactionRepository!!.saveAndFlush(transaction)
+            } else {
+                LOGGER.info("INFO: transactionRepository found duplicate.")
+            }
+        }
     }
 
     fun findByGuid(guid: String): Transaction {
