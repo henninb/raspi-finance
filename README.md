@@ -99,6 +99,7 @@ gradle dependencies
 
 openssl s_client -connect 192.168.100.25:8080 -CAfile /path/to/cert/crt.pem
 
+./gradlew wrapper --gradle-version 4.10
 
 psql -h 192.168.100.25 -p 5432 -U henninb -d finance_db
 
