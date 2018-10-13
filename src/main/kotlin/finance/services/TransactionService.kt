@@ -11,7 +11,7 @@ import java.util.ArrayList
 import java.util.function.Consumer
 
 @Service
-class TransactionService {
+open class TransactionService {
     private val LOGGER = LoggerFactory.getLogger(this.javaClass)
 
     @Autowired

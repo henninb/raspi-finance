@@ -9,7 +9,7 @@ import java.util.ArrayList
 import java.util.function.Consumer
 
 @Service
-class AccountService {
+open class AccountService {
     private val LOGGER = LoggerFactory.getLogger(this.javaClass)
 
     @Autowired
