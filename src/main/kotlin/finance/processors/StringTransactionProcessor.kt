@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component
 
 
 @Component
-class StringTransactionProcessor : Processor {
+open class StringTransactionProcessor : Processor {
     private val LOGGER = LoggerFactory.getLogger(this.javaClass)
 
     @Throws(Exception::class)

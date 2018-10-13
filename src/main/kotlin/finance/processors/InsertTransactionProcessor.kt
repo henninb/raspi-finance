@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component
 import java.time.ZonedDateTime
 
 @Component
-class InsertTransactionProcessor : Processor {
+open class InsertTransactionProcessor : Processor {
     private val LOGGER = LoggerFactory.getLogger(this.javaClass)
 
     @Autowired
