@@ -8,10 +8,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 public class TransactionServiceTest {
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
     @Mock
     TransactionRepository transactionRepository;
@@ -20,12 +23,11 @@ public class TransactionServiceTest {
     TransactionService transactionService;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
     }
 
-    //mokito
     @Test
-    public void findAll() throws Exception {
+    public void dummy() {
         assert (true);
     }
 }
