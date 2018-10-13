@@ -26,7 +26,6 @@ public class TransactionServiceTest {
     //mokito
     @Test
     public void findAll() throws Exception {
-
+        assert (true);
     }
-
 }
