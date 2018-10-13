@@ -2,7 +2,6 @@ package finance.services;
 
 import finance.models.Account;
 import finance.repositories.AccountRepository;
-import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,8 +24,7 @@ public class AccountServiceTest {
 
     //mokito
     @Test
-    public void findAll() throws Exception {
-
+    public void findAll()  {
+        assert (true);
     }
-
 }
