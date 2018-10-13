@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component
 import java.io.IOException
 
 @Component
-class JsonTransactionProcessor : Processor {
+open class JsonTransactionProcessor : Processor {
     private val LOGGER = LoggerFactory.getLogger(this.javaClass)
 
     @Throws(Exception::class)
