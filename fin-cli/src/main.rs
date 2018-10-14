@@ -17,7 +17,8 @@ use pancurses::{initscr, endwin};
 use regex::Regex;
 use std::process;
 use std::env;
-use std::io::{self, Write, BufRead};
+use std::fs::File;
+use std::io::{self, Write, BufRead, BufReader};
 use hyper::Client;
 use hyper::rt::{self, Future, Stream};
 use hyper::header::HeaderValue;
@@ -27,6 +28,7 @@ use uuid::Uuid;
 use chrono::prelude::*;
 use chrono::{DateTime};
 use std::time::{SystemTime, UNIX_EPOCH};
+use std::path::Path;
 
 //requires nightly build
 //use std::intrinsics::type_name;
@@ -136,6 +138,35 @@ fn datetime_to_epoch( utc: DateTime<Utc> ) -> u32 {
     total_days = total_days + compute_date_doy(utc.year(), utc.month(), utc.day() - 1);
     let total_secs = (total_days * 86400) + (utc.hour() * 60 * 60) + (utc.minute() * 60) + utc.second();
     return total_secs;
+}
+
+fn file_read() {
+
+    let f = File::open("input.txt").expect("Unable to open file");
+    let f = BufReader::new(f);
+
+    for line in f.lines() {
+        let line = line.expect("Unable to read line");
+        println!("Line: {}", line);
+    }
+
+//    let path = Path::new("input.txt");
+//    let display = path.display();
+//
+//    // Open the path in read-only mode, returns `io::Result<File>`
+//    let mut file = match File::open(&path) {
+//        Err(why) => panic!("couldn't open {}: {}", display, 
+//		//why.description()),
+//        Ok(file) => file,
+//    };
+//
+//    // Read the file contents into a string, returns `io::Result<usize>`
+//    let mut s = String::new();
+//    match file.read_to_string(&mut s) {
+//        Err(why) => panic!("couldn't read {}: {}", display, 
+//		//why.description()),
+//        Ok(_) => print!("{} contains:\n{}", display, s),
+//    }
 }
 
 fn main() {
