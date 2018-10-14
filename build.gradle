@@ -121,7 +121,7 @@ dependencies {
     compile("org.apache.camel:camel-jms:${apacheCamelVersion}")
     //compile("org.apache.camel:camel-http:${apacheCamelVersion}")
     //compile("org.apache.camel:camel-http4:${apacheCamelVersion}")
-    //testCompile("org.apache.camel:camel-test:${apacheCamelVersion}")
+    testCompile("org.apache.camel:camel-test:${apacheCamelVersion}")
 
     //Logging
     //compile ("org.slf4j:slf4j-api:2.11.1")
