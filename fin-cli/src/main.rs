@@ -29,6 +29,7 @@ use chrono::prelude::*;
 use chrono::{DateTime};
 use std::time::{SystemTime, UNIX_EPOCH};
 use std::path::Path;
+//use std::str::Split;
 
 //requires nightly build
 //use std::intrinsics::type_name;
@@ -140,33 +141,51 @@ fn datetime_to_epoch( utc: DateTime<Utc> ) -> u32 {
     return total_secs;
 }
 
-fn file_read() {
+fn populate_transaction( transaction_vec:  Vec<&str> ) {
+    let mut transaction = Transaction {
+        guid: Uuid::new_v4().to_string(),
+        sha256: "".to_string(),
+        accountType: "credit".to_string(),
+        accountNameOwner: transaction_vec[1].to_string(),
+        description: "".to_string(),
+        category: "".to_string(),
+        notes: "".to_string(),
+        cleared: "0".to_string(),
+        reoccurring: "False".to_string(),
+        amount: "0.0".to_string(),
+        transactionDate: datetime_to_epoch(Utc::now()).to_string(),
+        dateUpdated: "0".to_string(),
+        dateAdded: "0".to_string()
+    };
+    //println!("new {}", list[0]);
+}
 
-    let f = File::open("input.txt").expect("Unable to open file");
-    let f = BufReader::new(f);
+fn file_read( ifname: String ) {
+    let ifp = File::open("input.txt").expect("Unable to open file");
+    let ifp = BufReader::new(ifp);
 
-    for line in f.lines() {
+    for line in ifp.lines() {
         let line = line.expect("Unable to read line");
+        //let mut elements = line.split("\t");
+        
+        //let mut elements: Vec<_> = line.split("\t");
+        //match elements.nth(0) {
+        //    Some(val) => if val == "n" {println!("found a new record")},
+        //    None => println!("nth(0) is not found."),
+        //};
+
+        let mut elements: Vec<_> = line.split("\t").collect();
+        //println!("elements1.len(): {}", elements1.len());
+        
+        if elements[0] == "n" {
+            println!("new {}", elements[0]);
+            populate_transaction(elements);
+        } else {
+            println!("update {}", elements[0]);
+        }
+
         println!("Line: {}", line);
     }
-
-//    let path = Path::new("input.txt");
-//    let display = path.display();
-//
-//    // Open the path in read-only mode, returns `io::Result<File>`
-//    let mut file = match File::open(&path) {
-//        Err(why) => panic!("couldn't open {}: {}", display, 
-//		//why.description()),
-//        Ok(file) => file,
-//    };
-//
-//    // Read the file contents into a string, returns `io::Result<usize>`
-//    let mut s = String::new();
-//    match file.read_to_string(&mut s) {
-//        Err(why) => panic!("couldn't read {}: {}", display, 
-//		//why.description()),
-//        Ok(_) => print!("{} contains:\n{}", display, s),
-//    }
 }
 
 fn main() {
@@ -197,7 +216,13 @@ fn main() {
             eprintln!("This example only works with http URLs.");
             process::exit(103);
         }
-        rt::run(insertTransaction(post_url));
+        //let words: Vec<&str> = "one two three".split(" ").enumerate().collect();
+        //let words: Vec<String> = "one two three".split(" ").skip(3);
+        //let v: Vec<&str> = "Mary,had a little lamb.".split(|c| c == ',' || c == ' ').collect();
+        println!("file_read()");
+        file_read("input.txt".to_string());
+        let words: Vec<_> = "one two three".split(" ").collect();
+        rt::run(insertTransaction(post_url, words));
     } else if cmd.to_string() == "select" {
 
         let guid = match env::args().nth(2) {
@@ -244,17 +269,17 @@ fn selectTransaction(url: hyper::Uri) -> impl Future<Item=(), Error=()> {
 }
 
 #[allow(non_snake_case)]
-fn insertTransaction(url: hyper::Uri) -> impl Future<Item=(), Error=()> {
+fn insertTransaction(url: hyper::Uri, list:  Vec<&str>) -> impl Future<Item=(), Error=()> {
     let client = Client::new();
 
     let mut transaction = Transaction {
         guid: Uuid::new_v4().to_string(),
         sha256: "".to_string(),
         accountType: "credit".to_string(),
-        accountNameOwner: "chase_brian".to_string(),
-        description: "test".to_string(),
-        category: "test".to_string(),
-        notes: "from fin-cli".to_string(),
+        accountNameOwner: "".to_string(),
+        description: "".to_string(),
+        category: "".to_string(),
+        notes: "".to_string(),
         cleared: "0".to_string(),
         reoccurring: "False".to_string(),
         amount: "0.0".to_string(),
@@ -275,6 +300,7 @@ fn insertTransaction(url: hyper::Uri) -> impl Future<Item=(), Error=()> {
   //window.getch();
   //endwin();
 
+    println!("Example: n	amex_brian	10/1	brian test	one	0.1	0");
     println!("user_input=<{}>", user_input);
 
     let mut data_list = user_input.split("\t");
