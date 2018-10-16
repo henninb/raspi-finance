@@ -1,3 +1,3 @@
-n	amex_brian	10/1	brian test	one	0.1	0
-n	amex_brian	10/2	matthew test	two	0.1	0
-u	amex_brian	10/2	matthew test	two	0.1	0
+n	amex_brian	10/1	brian test	one	0.1	0	notes
+n	amex_brian	10/2	matthew test	two	0.2	0	notes
+u	amex_brian	10/2	matthew test	three	0.3	0	notes

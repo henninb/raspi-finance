@@ -13,7 +13,7 @@ extern crate chrono;
 extern crate regex;
 extern crate pancurses;
 
-use pancurses::{initscr, endwin};
+//use pancurses::{initscr, endwin};
 use regex::Regex;
 use std::process;
 use std::env;
@@ -27,9 +27,8 @@ use http::header::CONTENT_LENGTH;
 use uuid::Uuid;
 use chrono::prelude::*;
 use chrono::{DateTime};
-use std::time::{SystemTime, UNIX_EPOCH};
-use std::path::Path;
-//use std::str::Split;
+//use std::time::{SystemTime, UNIX_EPOCH};
+//use std::path::Path;
 
 //requires nightly build
 //use std::intrinsics::type_name;
@@ -57,28 +56,26 @@ struct Transaction {
 //    println!("{:?}", unsafe { type_name::<T>() });
 //}
 
-fn fetch_user_input() -> Result<String, io::Error> {
-  let mut user_input = String::new();
-  let stdin = io::stdin();
-  let mut handle = stdin.lock();
-  
-    print!("Enter the data: ");
-    io::stdout().flush().unwrap();
-    handle.read_line(&mut user_input)?;
-    let len = user_input.len();
-    //TODO: windows CRLF at the end of the string
-    if user_input.contains("\r\n") {
-        user_input.truncate(len - 2);
-    }
-    if user_input.contains("\n") {
-        user_input.truncate(len - 1);
-    }
-    Ok(user_input)
-}
+//fn fetch_user_input() -> Result<String, io::Error> {
+//  let mut user_input = String::new();
+//  let stdin = io::stdin();
+//  let mut handle = stdin.lock();
+//  
+//    print!("Enter the data: ");
+//    io::stdout().flush().unwrap();
+//    handle.read_line(&mut user_input)?;
+//    let len = user_input.len();
+//    //TODO: windows CRLF at the end of the string
+//    if user_input.contains("\r\n") {
+//        user_input.truncate(len - 2);
+//    }
+//    if user_input.contains("\n") {
+//        user_input.truncate(len - 1);
+//    }
+//    Ok(user_input)
+//}
 
-//fn date_string_to_date( date_string: &str ) -> Result<DateTime<Utc>> {
 fn date_string_to_date( date_string: &str ) -> DateTime<Utc> {
-//fn date_string_to_date( date_string: &str ) -> LocalResult<T> {
     let re1 = Regex::new(r"^(?P<month>\d{2})-(?P<day>\d{2})$").unwrap();
     let re2 = Regex::new(r"^(?P<month>\d{2})-(?P<day>\d{1})$").unwrap();
     let re3 = Regex::new(r"^(?P<month>\d{1})-(?P<day>\d{1})$").unwrap();
@@ -113,7 +110,6 @@ fn date_string_to_date( date_string: &str ) -> DateTime<Utc> {
         yy = Utc::now().year().to_string();
     }
 
-    println!("* date_string=<{}||{}||{}> *", mm, dd, yy);
     let utc_datetime = Utc.ymd(yy.parse::<i32>().unwrap(), mm.parse::<u32>().unwrap(), dd.parse::<u32>().unwrap()).and_hms(0, 0, 0);
 
     return utc_datetime;
@@ -141,51 +137,64 @@ fn datetime_to_epoch( utc: DateTime<Utc> ) -> u32 {
     return total_secs;
 }
 
-fn populate_transaction( transaction_vec:  Vec<&str> ) {
-    let mut transaction = Transaction {
+fn populate_transaction( transaction_vec:  Vec<&str> ) -> Transaction {
+    let date_utc = date_string_to_date(transaction_vec[2]);
+
+    let transaction = Transaction {
         guid: Uuid::new_v4().to_string(),
         sha256: "".to_string(),
         accountType: "credit".to_string(),
         accountNameOwner: transaction_vec[1].to_string(),
-        description: "".to_string(),
-        category: "".to_string(),
-        notes: "".to_string(),
-        cleared: "0".to_string(),
+        description: transaction_vec[3].to_string(),
+        category: transaction_vec[4].to_string(),
+        notes: transaction_vec[7].to_string(),
+        cleared: transaction_vec[6].to_string(),
         reoccurring: "False".to_string(),
-        amount: "0.0".to_string(),
-        transactionDate: datetime_to_epoch(Utc::now()).to_string(),
+        amount: transaction_vec[5].to_string(),
+        transactionDate: datetime_to_epoch(date_utc).to_string(),
         dateUpdated: "0".to_string(),
         dateAdded: "0".to_string()
     };
-    //println!("new {}", list[0]);
+    transaction
 }
 
 fn file_read( ifname: String ) {
-    let ifp = File::open("input.txt").expect("Unable to open file");
+    let ifp = File::open(ifname).expect("Unable to open file");
     let ifp = BufReader::new(ifp);
 
     for line in ifp.lines() {
         let line = line.expect("Unable to read line");
-        //let mut elements = line.split("\t");
-        
-        //let mut elements: Vec<_> = line.split("\t");
-        //match elements.nth(0) {
-        //    Some(val) => if val == "n" {println!("found a new record")},
-        //    None => println!("nth(0) is not found."),
-        //};
+        let server_name = "localhost".to_owned();
+        let server_port = "8080".to_owned();
 
-        let mut elements: Vec<_> = line.split("\t").collect();
-        //println!("elements1.len(): {}", elements1.len());
+        let elements: Vec<_> = line.split("\t").collect();
         
-        if elements[0] == "n" {
-            println!("new {}", elements[0]);
-            populate_transaction(elements);
+        if elements.len() == 8 {
+            if elements[0] == "n" {
+                let transaction = populate_transaction(elements);
+                insert_post(server_name, server_port, transaction);
+            } else if elements[0] == "u" {
+                let transaction = populate_transaction(elements);
+                insert_post(server_name, server_port, transaction);
+            } else {
+                println!("bad record");
+                println!("Line: {}", line);
+            }
         } else {
-            println!("update {}", elements[0]);
+            println!("element count is not equal to 8");
         }
-
-        println!("Line: {}", line);
     }
+}
+
+fn insert_post(server_name: String, server_port: String, transaction: Transaction ) {
+    let post_url = format!("http://{}:{}/transactions/insertTransaction", server_name, server_port);
+    let post_url = post_url.parse::<hyper::Uri>().unwrap();
+    if post_url.scheme_part().map(|s| s.as_ref()) != Some("http") {
+        eprintln!("This example only works with http URLs.");
+        process::exit(103);
+    }
+
+    rt::run(insertTransaction(post_url, transaction));
 }
 
 fn main() {
@@ -205,24 +214,12 @@ fn main() {
         }
     };
 
-    //let server_name = "192.168.100.25".to_owned();
     let server_name = "localhost".to_owned();
     let server_port = "8080".to_owned();
 
+    file_read("input.txt".to_string());
+
     if cmd.to_string() == "insert" {
-        let post_url = format!("http://{}:{}/transactions/insertTransaction", server_name, server_port);
-        let post_url = post_url.parse::<hyper::Uri>().unwrap();
-        if post_url.scheme_part().map(|s| s.as_ref()) != Some("http") {
-            eprintln!("This example only works with http URLs.");
-            process::exit(103);
-        }
-        //let words: Vec<&str> = "one two three".split(" ").enumerate().collect();
-        //let words: Vec<String> = "one two three".split(" ").skip(3);
-        //let v: Vec<&str> = "Mary,had a little lamb.".split(|c| c == ',' || c == ' ').collect();
-        println!("file_read()");
-        file_read("input.txt".to_string());
-        let words: Vec<_> = "one two three".split(" ").collect();
-        rt::run(insertTransaction(post_url, words));
     } else if cmd.to_string() == "select" {
 
         let guid = match env::args().nth(2) {
@@ -269,68 +266,20 @@ fn selectTransaction(url: hyper::Uri) -> impl Future<Item=(), Error=()> {
 }
 
 #[allow(non_snake_case)]
-fn insertTransaction(url: hyper::Uri, list:  Vec<&str>) -> impl Future<Item=(), Error=()> {
+fn insertTransaction(url: hyper::Uri, transaction:  Transaction) -> impl Future<Item=(), Error=()> {
     let client = Client::new();
 
-    let mut transaction = Transaction {
-        guid: Uuid::new_v4().to_string(),
-        sha256: "".to_string(),
-        accountType: "credit".to_string(),
-        accountNameOwner: "".to_string(),
-        description: "".to_string(),
-        category: "".to_string(),
-        notes: "".to_string(),
-        cleared: "0".to_string(),
-        reoccurring: "False".to_string(),
-        amount: "0.0".to_string(),
-        transactionDate: datetime_to_epoch(Utc::now()).to_string(),
-        dateUpdated: "0".to_string(),
-        dateAdded: "0".to_string()
-    };
-
-    let mut user_input = "".to_string();
-    match fetch_user_input() {
-        Ok(s) => user_input = s,
-        Err(error) => eprintln!("error.")
-    };
-
-  //let window = initscr();
-  //window.printw("Hello Rust");
-  //window.refresh();
-  //window.getch();
-  //endwin();
-
-    println!("Example: n	amex_brian	10/1	brian test	one	0.1	0");
-    println!("user_input=<{}>", user_input);
-
-    let mut data_list = user_input.split("\t");
-
-    //transaction.transactionDate = match data_list.next() {
-    //    Some(val) => val.to_string(),
-    //    None    => println!("transaction.transactionDate is not found."),
+    //let mut user_input = "".to_string();
+    //match fetch_user_input() {
+    //    Ok(s) => user_input = s,
+    //    Err(error) => eprintln!("error.")
     //};
 
-    match data_list.next() {
-        Some(val) => transaction.transactionDate = val.to_string(),
-        None => println!("transaction.transactionDate is not found."),
-    };
-    let date_utc = date_string_to_date(&transaction.transactionDate);
-    transaction.transactionDate = datetime_to_epoch(date_utc).to_string();
-
-    match data_list.next() {
-        Some(val) => transaction.description = val.to_string(),
-        None    => println!("transaction.description is not found."),
-    };
-
-    match data_list.next() {
-        Some(val) => transaction.category = val.to_string(),
-        None    => println!("transaction.category is not found."),
-    };
-
-    match data_list.next() {
-        Some(val) => transaction.amount = val.to_string(),
-        None    => println!("transaction.amount is not found."),
-    };
+    //let window = initscr();
+    //window.printw("Hello Rust");
+    //window.refresh();
+    //window.getch();
+    //endwin();
 
     let json = serde_json::to_string(&transaction).unwrap();
     println!("serialize={}", json);
