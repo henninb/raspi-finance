@@ -12,6 +12,7 @@ extern crate uuid;
 extern crate chrono;
 extern crate regex;
 extern crate pancurses;
+extern crate finance;
 
 //use pancurses::{initscr, endwin};
 use regex::Regex;
@@ -75,7 +76,33 @@ struct Transaction {
 //    Ok(user_input)
 //}
 
-fn date_string_to_date( date_string: &str ) -> DateTime<Utc> {
+
+/*
+fn compute_date_doy( year: i32, month: u32, day: u32 ) -> u32 {
+    let n1 = 275 * month / 9;
+    let n2 = (month + 9) / 12;
+    let n3 = 1 + ((year - 4 * (year / 4) + 2) / 3);
+    let n = n1 - (n2 * n3 as u32) + day - 30;
+
+    return n;
+}
+
+fn datetime_to_epoch( utc: DateTime<Utc> ) -> u32 {
+    let mut idx = 1970;
+    let mut total_days = 0;
+
+    while  idx < utc.year()  {
+      total_days = total_days + compute_date_doy(idx, 12, 31);
+      idx = idx + 1;
+    }
+    total_days = total_days + compute_date_doy(utc.year(), utc.month(), utc.day() - 1);
+    let total_secs = (total_days * 86400) + (utc.hour() * 60 * 60) + (utc.minute() * 60) + utc.second();
+    return total_secs;
+}
+*/
+
+/*
+pub fn date_string_to_date( date_string: &str ) -> DateTime<Utc> {
     let re1 = Regex::new(r"^(?P<month>\d{2})-(?P<day>\d{2})$").unwrap();
     let re2 = Regex::new(r"^(?P<month>\d{2})-(?P<day>\d{1})$").unwrap();
     let re3 = Regex::new(r"^(?P<month>\d{1})-(?P<day>\d{1})$").unwrap();
@@ -114,31 +141,10 @@ fn date_string_to_date( date_string: &str ) -> DateTime<Utc> {
 
     return utc_datetime;
 }
-
-fn compute_date_doy( year: i32, month: u32, day: u32 ) -> u32 {
-    let n1 = 275 * month / 9;
-    let n2 = (month + 9) / 12;
-    let n3 = 1 + ((year - 4 * (year / 4) + 2) / 3);
-    let n = n1 - (n2 * n3 as u32) + day - 30;
-
-    return n;
-}
-
-fn datetime_to_epoch( utc: DateTime<Utc> ) -> u32 {
-    let mut idx = 1970;
-    let mut total_days = 0;
-
-    while  idx < utc.year()  {
-      total_days = total_days + compute_date_doy(idx, 12, 31);
-      idx = idx + 1;
-    }
-    total_days = total_days + compute_date_doy(utc.year(), utc.month(), utc.day() - 1);
-    let total_secs = (total_days * 86400) + (utc.hour() * 60 * 60) + (utc.minute() * 60) + utc.second();
-    return total_secs;
-}
+*/
 
 fn populate_transaction( transaction_vec:  Vec<&str> ) -> Transaction {
-    let date_utc = date_string_to_date(transaction_vec[2]);
+    let date_utc = finance::date_string_to_date(transaction_vec[2]);
 
     let transaction = Transaction {
         guid: Uuid::new_v4().to_string(),
@@ -151,14 +157,14 @@ fn populate_transaction( transaction_vec:  Vec<&str> ) -> Transaction {
         cleared: transaction_vec[6].to_string(),
         reoccurring: "False".to_string(),
         amount: transaction_vec[5].to_string(),
-        transactionDate: datetime_to_epoch(date_utc).to_string(),
+        transactionDate: finance::datetime_to_epoch(date_utc).to_string(),
         dateUpdated: "0".to_string(),
         dateAdded: "0".to_string()
     };
     transaction
 }
 
-fn file_read( ifname: String ) {
+fn file_read( ifname: String ) -> String {
     let ifp = File::open(ifname).expect("Unable to open file");
     let ifp = BufReader::new(ifp);
 
@@ -175,15 +181,30 @@ fn file_read( ifname: String ) {
                 insert_post(server_name, server_port, transaction);
             } else if elements[0] == "u" {
                 let transaction = populate_transaction(elements);
-                insert_post(server_name, server_port, transaction);
+                update_post(server_name, server_port, transaction);
+            } else if elements[0] == "d" {
             } else {
                 println!("bad record");
                 println!("Line: {}", line);
             }
         } else {
             println!("element count is not equal to 8");
+            println!("Line: {}", line);
         }
     }
+    //close file
+    "".to_string()
+}
+
+fn update_post(server_name: String, server_port: String, transaction: Transaction ) {
+    let post_url = format!("http://{}:{}/transactions/updateTransaction", server_name, server_port);
+    let post_url = post_url.parse::<hyper::Uri>().unwrap();
+    if post_url.scheme_part().map(|s| s.as_ref()) != Some("http") {
+        eprintln!("This example only works with http URLs.");
+        process::exit(104);
+    }
+
+    rt::run(insertTransaction(post_url, transaction));
 }
 
 fn insert_post(server_name: String, server_port: String, transaction: Transaction ) {
@@ -229,7 +250,6 @@ fn main() {
                 process::exit(101);
             }
         };
-        //let guid = "340c315d-39ad-4a02-a294-84a74c1c7ddc";
         let get_url = format!("http://{}:{}/transactions/getTransaction/{}", server_name, server_port, guid);
         let get_url = get_url.parse::<hyper::Uri>().unwrap();
         rt::run(selectTransaction(get_url));
