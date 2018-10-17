@@ -1,5 +1,5 @@
 [package]
-name = "fin-cli"
+name = "finance"
 version = "0.1.0"
 authors = ["Brian <henninb@msn.com>"]
 
