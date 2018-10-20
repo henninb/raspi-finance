@@ -1,5 +1,5 @@
-n	amex_brian	10/1	brian test	one	0.1	0	notes
-n	amex_brian	10/2	matthew test	two	0.2	0	notes
+n	amex_brian	10/1	brian test	one	0.1	1	notes
+n	amex_brian	10/2	matthew test	two	0.2	1	notes
 u	amex_brian	10/2	matthew test	three	0.3	0	notes
-u	amex_brian	10/15	my test		-20.35	0	
+u	amex_brian	10/15	my test		-20.35	0	my notes
 n	amex_brian	10/16	my test		

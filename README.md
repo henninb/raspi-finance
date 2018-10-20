@@ -109,3 +109,50 @@ psql -h 192.168.100.25 -p 5432 -U henninb -d finance_db
 @PutMapping - for PUT request
 @PatchMapping - for PATCH request
 @DeleteMapping for DELETE request
+
+
+    @PutMapping("/blog/{id}")
+    public Blog update(@PathVariable String id, @RequestBody Map<String, String> body){
+        int blogId = Integer.parseInt(id);
+        // getting blog
+        Blog blog = blogRespository.findOne(blogId);
+        blog.setTitle(body.get("title"));
+        blog.setContent(body.get("content"));
+        return blogRespository.save(blog);
+    }
+
+    @DeleteMapping("blog/{id}")
+    public boolean delete(@PathVariable String id){
+        int blogId = Integer.parseInt(id);
+        blogRespository.delete(blogId);
+        return true;
+    }
+
+https://medium.com/@salisuwy/building-a-spring-boot-rest-api-part-iii-integrating-mysql-database-and-jpa-81391404046a
+
+
+The simplest way to implement pagination is to use the Java Query Language – create a query and configure it via setMaxResults and setFirstResult:
+
+
+Query query = entityManager.createQuery("From Foo");
+int pageNumber = 1;
+int pageSize = 10;
+query.setFirstResult((pageNumber-1) * pageSize); 
+query.setMaxResults(pageSize);
+List <Foo> fooList = query.getResultList();
+
+
+
+@Repository
+public interface SomethingRepository extends PaginationAndSortingRepository<Something, Long> {
+    @Query("Select s from  Something s "
+            + "join s.somethingelse as se "
+            + "where se.id = :somethingelseid ")
+    Page<Something> findBySomethingElseId(@Param("somethingelseid") long somethingelseid,
+                                                                        Pageable pageable);
+
+@Transactional(readOnly=true)
+    public PageDto getSomething(long somethingElseId, int page, int size){
+
+git@github.com:vijjayy81/spring-boot-jpa-rest-demo-filter-paging-sorting.git
+git@github.com:sharmagaurav03/spring-data-jpa-with-pagination_POC.git

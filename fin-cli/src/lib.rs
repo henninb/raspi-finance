@@ -4,6 +4,7 @@ extern crate regex;
 use chrono::prelude::*;
 use chrono::{DateTime};
 use regex::Regex;
+use std::io::Read;
 
 #[test]
 fn compute_date_doy_test() {
@@ -126,4 +127,19 @@ pub fn date_string_to_date( date_string: &str ) -> DateTime<Utc> {
     let utc_datetime = Utc.ymd(year, month, day).and_hms(0, 0, 0);
 
     return utc_datetime;
+}
+
+pub fn read_single_char() {
+//let input: Option<i32> = std::io::stdin()
+//    .bytes() 
+//    .next()
+//    .and_then(|result| result.ok())
+//    .map(|byte| byte as i32);
+//
+//println!("{:?} done.", input);
+  
+  let mut input = String::new();
+  let string = std::io::stdin().read_line(&mut input).ok().expect("Failed to read line");
+  let bytes = input.bytes().nth(0).expect("no byte read");
+  println!("{:?} done.", input);
 }
