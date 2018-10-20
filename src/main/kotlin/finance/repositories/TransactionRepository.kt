@@ -6,7 +6,10 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.ui.Model
 
+
+//interface TransactionRepository<T : Transaction> : JpaRepository<T, Long>
 interface TransactionRepository : JpaRepository<Transaction, Long> {
 
     //function name must match name on database table
@@ -25,6 +28,7 @@ interface TransactionRepository : JpaRepository<Transaction, Long> {
     // Using SpEL expression
     @Query("SELECT SUM(amount) AS accountTotal FROM #{#entityName} WHERE isCleared=1 AND accountNameOwner=?1")
     fun fetchAccoutClearedTotals(accountNameOwner: String): Double
+
 
     @Modifying
     @Transactional

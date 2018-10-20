@@ -20,29 +20,35 @@ class TransactionController {
     internal var transactionService: TransactionService? = null
 
     //insert into t_transaction(account_type, account_name_owner, transaction_date, description, category, amount, is_cleared, notes, date_updated, date_added) VALUES('credit', 'usbankcash_brian', '8/1/2017', 'Mario Kart', 'toys', '49.99', false, '', '8/1/2017', '8/1/2017')
-    //http://localhost:8080/transactions/transactionFindAll
-    @GetMapping(value = "/transactionFindAll")
+    //http://localhost:8080/transactions/findall
+    //@RequestMapping( value = "admin/foo",params = { "page", "size" }, method = GET )
+    @GetMapping(value = "/findall")
     fun transactionFindAll(): List<Transaction> {
         return transactionService!!.findAll()
     }
 
     //http://localhost:8080/transactions/getTransaction/340c315d-39ad-4a02-a294-84a74c1c7ddc
-    @GetMapping(value = "/getTransaction/{guid}")
+    @GetMapping(value = "/select/{guid}")
     fun getTransaction(@PathVariable guid: String): Transaction {
         val transaction: Transaction
-        LOGGER.info(guid)
+        LOGGER.info("getTransaction=" + guid)
         transaction = transactionService!!.findByGuid(guid)
-        return transaction
+        if (transaction.accountNameOwner != "" ) {
+            return transaction
+        } else {
+            return Transaction()
+        }
     }
 
-    //http://localhost:8080/transactions/updateTransaction
-    @PostMapping(path = arrayOf("/updateTransaction"), consumes = arrayOf("application/json"), produces = arrayOf("application/json"))
-    fun updateTransaction(@RequestBody transaction: Transaction) {
+    //http://localhost:8080/transactions/update/<some_guid>
+    @PutMapping(path = arrayOf("/update/{guid}"), consumes = arrayOf("application/json"), produces = arrayOf("application/json"))
+    fun updateTransaction(@RequestBody transaction: Transaction, @PathVariable guid: String ) {
+        val transaction = transactionService!!.findByGuid(guid)
 
     }
 
-    //http://localhost:8080/transactions/insertTransaction
-    @PostMapping(path = arrayOf("/insertTransaction"), consumes = arrayOf("application/json"), produces = arrayOf("application/json"))
+    //http://localhost:8080/transactions/insert
+    @PostMapping(path = arrayOf("/insert"), consumes = arrayOf("application/json"), produces = arrayOf("application/json"))
     fun insertTransaction(@RequestBody transaction: Transaction) : String {
         val resultMessage = ResultMessage()
         var resultString: String = ""
@@ -70,7 +76,7 @@ class TransactionController {
     }
 
     //http://localhost:8080/transactions/deleteTransaction/340c315d-39ad-4a02-a294-84a74c1c7ddc
-    @GetMapping(value = "/deleteTransaction/{guid}")
+    @GetMapping(value = "/delete/{guid}")
     fun deleteTransaction(@PathVariable guid: String): String {
         val restResult = ResultMessage()
         var resultString : String = ""

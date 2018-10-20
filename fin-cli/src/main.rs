@@ -238,6 +238,10 @@ fn main() {
     let server_name = "localhost".to_owned();
     let server_port = "8080".to_owned();
 
+    println!("*** single char start ***");
+    finance::read_single_char();
+    println!("*** single char done ***");
+
     file_read("input.txt".to_string());
 
     if cmd.to_string() == "insert" {
@@ -301,6 +305,7 @@ fn insertTransaction(url: hyper::Uri, transaction:  Transaction) -> impl Future<
     //window.getch();
     //endwin();
 
+    //handle errors with json serialization
     let json = serde_json::to_string(&transaction).unwrap();
     println!("serialize={}", json);
     let mut new_request = Request::new(Body::from(json.clone()));

@@ -22,9 +22,20 @@ open class TransactionService {
 
     fun findAll(): List<Transaction> {
         val transactions = ArrayList<Transaction>()
+
         this.transactionRepository!!.findAll().forEach(Consumer<Transaction> { transactions.add(it) })
+        if (transactions.isEmpty() == true ) {
+            //TODO: there is a problem
+        }
         return transactions
     }
+
+
+    //@Transactional(readOnly=true)
+    //fun selectByPage(page : Int , pageSize: Int): List<Transaction>
+    //{
+    //    return List<Transaction>(1)
+    //}
 
     //fun fetchAccoutTotals(accountNameOwner: String): Double {
     //    return transactionRepository!!.fetchAccoutTotals(accountNameOwner)
