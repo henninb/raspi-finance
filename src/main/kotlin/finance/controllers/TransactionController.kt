@@ -5,10 +5,19 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import finance.models.Transaction
 import finance.services.TransactionService
 import finance.pojos.ResultMessage
+import finance.services.TransactionServiceInterfaceImpl
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.web.bind.annotation.*
 import java.time.ZonedDateTime
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.GetMapping
+
 
 @CrossOrigin(origins = arrayOf("http://localhost:3000"))
 @RestController
@@ -20,16 +29,25 @@ class TransactionController {
     internal var transactionService: TransactionService? = null
 
     //insert into t_transaction(account_type, account_name_owner, transaction_date, description, category, amount, is_cleared, notes, date_updated, date_added) VALUES('credit', 'usbankcash_brian', '8/1/2017', 'Mario Kart', 'toys', '49.99', false, '', '8/1/2017', '8/1/2017')
-    //http://localhost:8080/transactions/findall
-    //@RequestMapping( value = "admin/foo",params = { "page", "size" }, method = GET )
+    //localhost:8080/transactions/findall?pageNumber=1&pageSize=20
+    //localhost:8080/transactions/findall?limit=1&offset=1
     @GetMapping(value = "/findall")
-    fun transactionFindAll(): List<Transaction> {
-        return transactionService!!.findAll()
+    //@RequestMapping(value = "/users/get", method = arrayOf(RequestMethod.GET), produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+    //@RequestMapping(method = RequestMethod.GET, path = "pageable",  produces = MediaType.APPLICATION_JSON_VALUE)
+    fun findAllTransactions(@RequestParam pageNumber: Int, @RequestParam pageSize: Int, pageable: Pageable): Page<Transaction> {
+
+        var  pageable1: Pageable = PageRequest.of(pageNumber, pageSize, Sort.Direction.ASC)
+        //var  pageable1: Pageable = PageRequest.of(20,1,Sort.Direction.ASC,"country");
+
+        return transactionService!!.findAllTransactions(pageable1)
     }
+
+    //fun transactionFindAll(@RequestParam pageNumber: Int, @RequestParam pageSize: Int, response: HttpServletResponse): Page<Transaction> {
+    //fun transactionFindAll(@RequestParam pageNumber: Int, @RequestParam pageSize: Int) :Page<Transaction> {
 
     //http://localhost:8080/transactions/getTransaction/340c315d-39ad-4a02-a294-84a74c1c7ddc
     @GetMapping(value = "/select/{guid}")
-    fun getTransaction(@PathVariable guid: String): Transaction {
+    fun findtTransaction(@PathVariable guid: String): Transaction {
         val transaction: Transaction
         LOGGER.info("getTransaction=" + guid)
         transaction = transactionService!!.findByGuid(guid)
