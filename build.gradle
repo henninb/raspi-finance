@@ -129,7 +129,7 @@ dependencies {
     compile("ch.qos.logback:logback-classic:1.2.3")
 
     //Lombock
-    //compile("org.projectlombok:lombok:1.16.20")
+    compile("org.projectlombok:lombok:1.16.20")
 
     //ActiveMQ
     //http://activemq.apache.org/initial-configuration.html#InitialConfiguration-RequiredJARs
