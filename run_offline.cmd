@@ -1,5 +1,6 @@
 @echo off
 
+set SPRING_PROFILES_ACTIVE=offline
 set DATASOURCE=jdbc:h2:mem:finance_db;DB_CLOSE_DELAY\=-1
 set DATASOURCE_USERNAME=henninb
 set DATASOURCE_PASSWORD=monday1

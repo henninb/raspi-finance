@@ -5,48 +5,48 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import finance.models.Transaction
 import finance.services.TransactionService
 import finance.pojos.ResultMessage
-import finance.services.TransactionServiceInterfaceImpl
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
+import org.springframework.stereotype.Controller
+import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 import java.time.ZonedDateTime
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.GetMapping
 
-
-@CrossOrigin(origins = arrayOf("http://localhost:3000"))
+//@CrossOrigin(origins = arrayOf("http://localhost:3000"))
+//Thymeleaf and RestController do not work
 @RestController
-@RequestMapping("/transactions")
+//@RequestMapping("/transactions")
+//@RequestMapping("/")
+//@Controller
 class TransactionController {
     private val LOGGER = LoggerFactory.getLogger(this.javaClass)
 
     @Autowired
     internal var transactionService: TransactionService? = null
 
-    //insert into t_transaction(account_type, account_name_owner, transaction_date, description, category, amount, is_cleared, notes, date_updated, date_added) VALUES('credit', 'usbankcash_brian', '8/1/2017', 'Mario Kart', 'toys', '49.99', false, '', '8/1/2017', '8/1/2017')
-    //localhost:8080/transactions/findall?pageNumber=1&pageSize=20
-    //localhost:8080/transactions/findall?limit=1&offset=1
-    @GetMapping(value = "/findall")
+    //insert into t_transaction(account_type, account_name_owner, transaction_date, description, category, amount, cleared, notes, date_updated, date_added, reoccurring) VALUES('credit', 'chase_brian', '2017-10-01', 'Mario Kart', 'toys', '49.99', false, '', '2017-10-01', '2017-10-01', false)
+    //localhost:8080/findall?pageNumber=1&pageSize=20
+    @GetMapping(path = arrayOf("/findall"))
     //@RequestMapping(value = "/users/get", method = arrayOf(RequestMethod.GET), produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
     //@RequestMapping(method = RequestMethod.GET, path = "pageable",  produces = MediaType.APPLICATION_JSON_VALUE)
     fun findAllTransactions(@RequestParam pageNumber: Int, @RequestParam pageSize: Int, pageable: Pageable): Page<Transaction> {
 
-        var  pageable1: Pageable = PageRequest.of(pageNumber, pageSize, Sort.Direction.ASC)
-        //var  pageable1: Pageable = PageRequest.of(20,1,Sort.Direction.ASC,"country");
+        //var  pageable1: Pageable = PageRequest.of(pageNumber, pageSize, Sort.Direction.ASC, "amount")
+        var  pageable1: Pageable = PageRequest.of(pageNumber, pageSize)
 
         return transactionService!!.findAllTransactions(pageable1)
     }
 
-    //fun transactionFindAll(@RequestParam pageNumber: Int, @RequestParam pageSize: Int, response: HttpServletResponse): Page<Transaction> {
-    //fun transactionFindAll(@RequestParam pageNumber: Int, @RequestParam pageSize: Int) :Page<Transaction> {
-
-    //http://localhost:8080/transactions/getTransaction/340c315d-39ad-4a02-a294-84a74c1c7ddc
-    @GetMapping(value = "/select/{guid}")
+    //http://localhost:8080/select/340c315d-39ad-4a02-a294-84a74c1c7ddc
+    //@GetMapping(value = "/select/{guid}")
+    @GetMapping(path = arrayOf("/select/{guid}"))
     fun findtTransaction(@PathVariable guid: String): Transaction {
         val transaction: Transaction
         LOGGER.info("getTransaction=" + guid)
@@ -58,14 +58,14 @@ class TransactionController {
         }
     }
 
-    //http://localhost:8080/transactions/update/<some_guid>
-    @PutMapping(path = arrayOf("/update/{guid}"), consumes = arrayOf("application/json"), produces = arrayOf("application/json"))
-    fun updateTransaction(@RequestBody transaction: Transaction, @PathVariable guid: String ) {
-        val transaction = transactionService!!.findByGuid(guid)
-
+    //http://localhost:8080/update/340c315d-39ad-4a02-a294-84a74c1c7ddc
+    @PutMapping(path = arrayOf("/update"), consumes = arrayOf("application/json"), produces = arrayOf("application/json"))
+    fun updateTransaction(@RequestBody transaction: Transaction ) {
+        //TODO: need to figure out how to perform this operation
+        val transaction = transactionService!!.findByGuid("guid")
     }
 
-    //http://localhost:8080/transactions/insert
+    //http://localhost:8080/insert
     @PostMapping(path = arrayOf("/insert"), consumes = arrayOf("application/json"), produces = arrayOf("application/json"))
     fun insertTransaction(@RequestBody transaction: Transaction) : String {
         val resultMessage = ResultMessage()
@@ -93,7 +93,7 @@ class TransactionController {
         }
     }
 
-    //http://localhost:8080/transactions/deleteTransaction/340c315d-39ad-4a02-a294-84a74c1c7ddc
+    //http://localhost:8080/delete/340c315d-39ad-4a02-a294-84a74c1c7ddc
     @GetMapping(value = "/delete/{guid}")
     fun deleteTransaction(@PathVariable guid: String): String {
         val restResult = ResultMessage()

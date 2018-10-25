@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!--
+<link rel="stylesheet" th:href="@{/css/style.css}" />
+-->
+<head>
+<meta charset="UTF-8">
+<title>Transactions</title>
+</head>
+<body>
+<!--/findall?pageNumber=1&pageSize=20-->
+    <div align="center">
+        <form action="/getTransactions">
+            <input type="text" name="pageNumber" placeholder="pageNumber" required="required" style="height: 20px; width: 100px;" />
+            <input type="text" name="pageSize" placeholder="pageSize" required="required" style="height: 20px; width: 100px;" />
+            <input type="submit" value="Search" />
+        </form>
+    </div>
+
+    <div id="wrapper">
+        <table id="keywords" cellspacing="0" cellpadding="0">
+            <thead>
+                <tr>
+                    <th>transactionId</th>
+                    <th>transactionDate</th>
+                    <th>description</th>
+                    <th>category</th>
+                    <th>amount</th>
+                    <th>cleared</th>
+                    <th>notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="lalign" th:each="transaction : ${transactions}">
+                    <td th:text="${transaction.transactionId}"></td>
+                    <td th:text="${transaction.transactionDate}"></td>
+                    <td th:text="${transaction.description}"></td>
+                    <td th:text="${transaction.category}"></td>
+                    <td th:text="${transaction.amount}"></td>
+                    <td th:text="${transaction.cleared}"></td>
+                    <td th:text="${transaction.notes}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
