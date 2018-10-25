@@ -14,7 +14,7 @@ import javax.jms.ConnectionFactory
 
 @Configuration
 @EnableTransactionManagement
-@Profile("combo")
+@Profile("donotuse")
 open class ActivemqConfig {
     @Value("\${spring.activemq.broker-url}")
     private val amqBrokerUrl: String? = null

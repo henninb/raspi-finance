@@ -1,7 +1,7 @@
 buildscript {
     ext.someVariable = '1.0'
     ext {
-        springBootVersion = '2.0.5.RELEASE'
+        springBootVersion = '2.0.6.RELEASE'
         apacheCamelVersion = '2.22.0'
         kotlinVersion = '1.2.71'
         qualityPluginVersion='3.0.0'
@@ -93,7 +93,7 @@ dependencies {
 
     //Spring Boot
     compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
-    //compile("org.springframework.boot:spring-boot-starter-thymeleaf:${springBootVersion}")
+    compile("org.springframework.boot:spring-boot-starter-thymeleaf:${springBootVersion}")
     compile("org.springframework.boot:spring-boot-starter-data-mongodb:${springBootVersion}")
     //compile("org.springframework.boot:spring-boot-starter-jersey:${springBootVersion}")
     compile("org.springframework.boot:spring-boot-starter-tomcat:${springBootVersion}")
@@ -186,6 +186,10 @@ dependencies {
     //h2 database
     compile("com.h2database:h2:1.4.196")
     //runtime("com.h2database:h2:1.4.196")
+
+    compile 'org.thymeleaf:thymeleaf:3.0.10.RELEASE'
+    compile 'org.thymeleaf:thymeleaf-spring4:3.0.10.RELEASE'
+
 
     //onetime
 

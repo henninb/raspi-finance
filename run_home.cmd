@@ -1,5 +1,6 @@
 @echo off
 
+set SPRING_PROFILES_ACTIVE=home
 set DATASOURCE=jdbc:postgresql://192.168.100.25:5432/finance_db
 echo %DATASOURCE%
 set DATASOURCE_USERNAME=henninb

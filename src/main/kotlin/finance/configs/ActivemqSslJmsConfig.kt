@@ -44,7 +44,8 @@ open class ActivemqSslJmsConfig {
     private val LOGGER = LoggerFactory.getLogger(this.javaClass)
 
     //activemq-ssl JMS endpoint for camel
-    @ConditionalOnProperty(value="activemq-ssl.beans.enabled")
+    //@ConditionalOnProperty(name="your.property", hasValue="dev")
+    @ConditionalOnProperty(value = arrayOf("activemq-ssl.beans.enabled"))
     @Bean(name = arrayOf("activemq"))
     open fun activeMQSslJmsComponent(cachingConnectionFactory: ActiveMQSslConnectionFactory): JmsComponent {
         val jmsComponent = JmsComponent()
@@ -54,7 +55,7 @@ open class ActivemqSslJmsConfig {
         return jmsComponent
     }
     //activemq-ssl
-    @ConditionalOnProperty(value="activemq-ssl.beans.enabled")
+    @ConditionalOnProperty(value = arrayOf("activemq-ssl.beans.enabled"))
     @Bean
     @Primary
     open fun activeMQSslConnectionFactoryNoParmsBean(): ActiveMQSslConnectionFactory {
@@ -72,7 +73,7 @@ open class ActivemqSslJmsConfig {
     }
 
     //activemq-ssl
-    @ConditionalOnProperty(value="activemq-ssl.beans.enabled")
+    @ConditionalOnProperty(value = arrayOf("activemq-ssl.beans.enabled"))
     @Bean
     open fun activeMQSslConnectionFactoryBean(connectionFactory: ActiveMQSslConnectionFactory): ConnectionFactory {
         val activeMQSslConnectionFactory = ActiveMQSslConnectionFactory()
