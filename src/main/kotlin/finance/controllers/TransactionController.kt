@@ -20,11 +20,8 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.GetMapping
 
 //@CrossOrigin(origins = arrayOf("http://localhost:3000"))
-//Thymeleaf and RestController do not work
+//Thymeleaf - RestController is for JSON; Controller is for HTML
 @RestController
-//@RequestMapping("/transactions")
-//@RequestMapping("/")
-//@Controller
 class TransactionController {
     private val LOGGER = LoggerFactory.getLogger(this.javaClass)
 
@@ -38,7 +35,7 @@ class TransactionController {
     //@RequestMapping(method = RequestMethod.GET, path = "pageable",  produces = MediaType.APPLICATION_JSON_VALUE)
     fun findAllTransactions(@RequestParam pageNumber: Int, @RequestParam pageSize: Int, pageable: Pageable): Page<Transaction> {
 
-        //var  pageable1: Pageable = PageRequest.of(pageNumber, pageSize, Sort.Direction.ASC, "amount")
+        //var  pageable1: Pageable = PageRequest.of(pageNumber, pageSize, Sort.Direction.DESC, "amount")
         var  pageable1: Pageable = PageRequest.of(pageNumber, pageSize)
 
         return transactionService!!.findAllTransactions(pageable1)
@@ -94,7 +91,8 @@ class TransactionController {
     }
 
     //http://localhost:8080/delete/340c315d-39ad-4a02-a294-84a74c1c7ddc
-    @GetMapping(value = "/delete/{guid}")
+    //@GetMapping(value = "/delete/{guid}")
+    @GetMapping(path = arrayOf("/delete/{guid}"))
     fun deleteTransaction(@PathVariable guid: String): String {
         val restResult = ResultMessage()
         var resultString : String = ""

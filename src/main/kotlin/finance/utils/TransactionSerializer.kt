@@ -7,6 +7,9 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer
 import finance.models.Transaction
 import org.slf4j.LoggerFactory
 import java.io.IOException
+import java.sql.Date
+import java.sql.Timestamp
+
 //import java.lang.Double
 
 class TransactionSerializer @JvmOverloads constructor(t: Class<Transaction>? = null) : StdSerializer<Transaction>(t) {
@@ -71,12 +74,28 @@ class TransactionSerializer @JvmOverloads constructor(t: Class<Transaction>? = n
             LOGGER.warn("transaction.cleared is null")
         }
         jgen.writeBooleanField("reoccurring", transaction.reoccurring)
-
         //jgen.writeStringField("amount", java.lang.Double.toString(transaction.amount))
         jgen.writeStringField("amount",  "%.2f".format(transaction.amount))
-        jgen.writeNumberField("transactionDate", transaction.transactionDate!!.time / 1000)
-        jgen.writeNumberField("dateUpdated", transaction.dateUpdated!!.time / 1000)
-        jgen.writeNumberField("dateAdded", transaction.dateAdded!!.time / 1000)
+
+        if( transaction.transactionDate != null ) {
+            jgen.writeNumberField("transactionDate", transaction.transactionDate!!.time / 1000)
+        } else {
+            transaction.transactionDate = Date(0)
+            LOGGER.warn("transaction.transactionDate is null")
+        }
+        if( transaction.dateUpdated != null ) {
+            jgen.writeNumberField("dateUpdated", transaction.dateUpdated!!.time / 1000)
+        } else {
+            transaction.dateUpdated = Timestamp(0)
+            LOGGER.warn("transaction.dateUpdated is null")
+        }
+
+        if( transaction.dateAdded != null ) {
+            jgen.writeNumberField("dateAdded", transaction.dateAdded!!.time / 1000)
+        } else {
+            transaction.dateAdded = Timestamp(0)
+            LOGGER.warn("transaction.dateAdded is null")
+        }
         jgen.writeEndObject()
     }
 }

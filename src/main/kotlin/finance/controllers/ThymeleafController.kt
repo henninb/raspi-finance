@@ -8,6 +8,8 @@ import org.hibernate.cache.spi.support.AbstractReadWriteAccess.Item
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.ui.Model
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestParam
 
 
@@ -30,21 +32,11 @@ class ThymeleafController {
         return "index"
     }
 
-    //localhost:8080/getTransactions
-    @RequestMapping(value = "/getTransactions")
-    //fun getTransactions(@RequestParam("first") first: Int, @RequestParam("last") last: Int, model: Model): String {
-    fun getTransactions(model: Model): String {
-        //val transactions = transactionService.getItems(Integer.valueOf(first), Integer.valueOf(last))
-        val transactions = transactionService!!.findByAccountNameOwnerIgnoreCaseOrderByTransactionDate("chase_brian")
+    //http://localhost:8080/getTransactions/amex_brian
+    @GetMapping(path = arrayOf("/getTransactions/{accountNameOwner}"))
+    fun getTransactions(@PathVariable accountNameOwner: String, model: Model): String {
+        val transactions = transactionService!!.findByAccountNameOwnerIgnoreCaseOrderByTransactionDate(accountNameOwner)
         model.addAttribute("transactions", transactions)
         return "transaction"
     }
-
-    @RequestMapping("/transaction")
-    //@RequestMapping("/transaction")
-    fun transaction(): String {
-        //var model: Model
-        return "transaction"
-    }
-
 }

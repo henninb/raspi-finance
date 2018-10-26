@@ -34,7 +34,7 @@ html {
 }
 
 body {
-    background: #eee url('http://i.imgur.com/eeQeRmk.png');
+    /*background: #eee url('http://i.imgur.com/eeQeRmk.png'); */
     /* http://subtlepatterns.com/weave/ */
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 62.5%;
@@ -114,10 +114,10 @@ h1 {
     margin-bottom: 10px;
     text-align: center;
 }
-/** page structure **/
+/* page structure */
 #wrapper {
     display: block;
-    width: 532px;
+/*    width: 532px; */
     background: #fff;
     margin: 0 auto;
     padding: 10px 17px;
@@ -148,16 +148,16 @@ h1 {
 }
 
 #keywords thead tr th.headerSortUp, #keywords thead tr th.headerSortDown
-    {
+{
     background: #c9dff0;
 }
 
 #keywords thead tr th.headerSortUp span {
-    background-image: url('http://i.imgur.com/SP99ZPJ.png');
+    /*background-image: url('http://i.imgur.com/SP99ZPJ.png'); */
 }
 
 #keywords thead tr th.headerSortDown span {
-    background-image: url('http://i.imgur.com/RkA9MBo.png');
+    /*background-image: url('http://i.imgur.com/RkA9MBo.png'); */
 }
 
 #keywords tbody tr {
