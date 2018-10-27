@@ -1,5 +1,6 @@
 package finance.controllers
 
+import finance.services.AccountService
 import finance.services.TransactionService
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.RequestMapping
@@ -25,6 +26,9 @@ class ThymeleafController {
     @Autowired
     internal var transactionService: TransactionService? = null
 
+    @Autowired
+    internal var accountService: AccountService? = null
+
     //localhost:8080/
     @RequestMapping("/")
     fun index(): String {
@@ -35,8 +39,11 @@ class ThymeleafController {
     //http://localhost:8080/getTransactions/amex_brian
     @GetMapping(path = arrayOf("/getTransactions/{accountNameOwner}"))
     fun getTransactions(@PathVariable accountNameOwner: String, model: Model): String {
+        //val accounts = accountService!!.findAllOrderByAccountNameOwner()
+        val accounts = accountService!!.findAllAcitveAccounts()
         val transactions = transactionService!!.findByAccountNameOwnerIgnoreCaseOrderByTransactionDate(accountNameOwner)
         model.addAttribute("transactions", transactions)
+        model.addAttribute("accounts", accounts)
         return "transaction"
     }
 }
