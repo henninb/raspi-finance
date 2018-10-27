@@ -6,10 +6,27 @@
 <link rel="stylesheet" th:href="@{/css/style.css}" />
 <head>
 <meta charset="UTF-8">
-<title>Transactions</title>
+<title>Account Transactions</title>
 </head>
+<script>
+    function CurrencyFormatted(amount) {
+	var i = parseFloat(amount);
+	if(isNaN(i)) { i = 0.00; }
+	var minus = '';
+	if(i < 0) { minus = '-'; }
+	i = Math.abs(i);
+	i = parseInt((i + .005) * 100);
+	i = i / 100;
+	s = new String(i);
+	if(s.indexOf('.') < 0) { s += '.00'; }
+	if(s.indexOf('.') == (s.length - 2)) { s += '0'; }
+	s = minus + s;
+	return s;
+}
+</script>
 <body>
 <!--/findall?pageNumber=1&pageSize=20-->
+<!--
     <div align="center">
         <form action="/getTransactions">
             <input type="text" name="pageNumber" placeholder="pageNumber" required="required" style="height: 20px; width: 100px;" />
@@ -17,10 +34,20 @@
             <input type="submit" value="Search" />
         </form>
     </div>
+-->
+
+<div class="controls">
+    <select class="form-control" name="example" id="example_id">
+        <option value="0">ALL</option>
+        <option th:each="account : ${accounts}" th:value="${account.accountId}" th:text="${account.accountNameOwner}">
+        </option>
+    </select>
+</div>
+
 
     <div id="wrapper">
-        <table id="keywords" cellspacing="0" cellpadding="0">
-            <thead>
+        <table class="alternate">
+            <thead class="myheader">
                 <tr>
                     <th>id</th>
                     <th>date</th>

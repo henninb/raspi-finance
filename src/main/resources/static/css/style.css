@@ -172,3 +172,28 @@ h1 {
 #keywords tbody tr td.lalign {
     text-align: left;
 }
+
+.alternate tr:nth-child(2n) {
+  background-color: silver;
+}
+
+.alternate tr:nth-child(2n):hover, .alternate tr:hover {
+  background-color: grey;
+}
+
+.alternate tr {
+  background-color: white;
+}
+
+.myheader th {
+    font-weight: bold;
+}
+
+/*
+.enMoney::before {
+    content:"$";
+}
+.negMoney {
+    color:red;
+}
+*/

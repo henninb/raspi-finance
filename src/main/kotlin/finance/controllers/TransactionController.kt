@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import finance.models.Transaction
 import finance.services.TransactionService
 import finance.pojos.ResultMessage
+import finance.services.AccountService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
@@ -19,14 +20,18 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.GetMapping
 
-//@CrossOrigin(origins = arrayOf("http://localhost:3000"))
+@CrossOrigin(origins = arrayOf("http://localhost:3000"))
 //Thymeleaf - RestController is for JSON; Controller is for HTML
 @RestController
+//@RequestMapping("/transaction")
 class TransactionController {
     private val LOGGER = LoggerFactory.getLogger(this.javaClass)
 
     @Autowired
     internal var transactionService: TransactionService? = null
+
+    //@Autowired
+    //internal var accountService: AccountService? = null
 
     //insert into t_transaction(account_type, account_name_owner, transaction_date, description, category, amount, cleared, notes, date_updated, date_added, reoccurring) VALUES('credit', 'chase_brian', '2017-10-01', 'Mario Kart', 'toys', '49.99', false, '', '2017-10-01', '2017-10-01', false)
     //localhost:8080/findall?pageNumber=1&pageSize=20
@@ -34,7 +39,6 @@ class TransactionController {
     //@RequestMapping(value = "/users/get", method = arrayOf(RequestMethod.GET), produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
     //@RequestMapping(method = RequestMethod.GET, path = "pageable",  produces = MediaType.APPLICATION_JSON_VALUE)
     fun findAllTransactions(@RequestParam pageNumber: Int, @RequestParam pageSize: Int, pageable: Pageable): Page<Transaction> {
-
         //var  pageable1: Pageable = PageRequest.of(pageNumber, pageSize, Sort.Direction.DESC, "amount")
         var  pageable1: Pageable = PageRequest.of(pageNumber, pageSize)
 

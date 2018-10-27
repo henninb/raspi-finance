@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import finance.utils.AccountDeserializer
 import finance.utils.AccountSerializer
+import org.slf4j.LoggerFactory
 import javax.persistence.*
 import java.sql.Timestamp
 
@@ -15,10 +16,12 @@ import java.sql.Timestamp
 @JsonSerialize(using = AccountSerializer::class)
 class Account {
 
+    //@JsonIgnore
+    //val LOGGER = LoggerFactory.getLogger(this.javaClass)
+
     constructor()
 
     constructor(accountNameOwner: String, accountType: String, activeStatus: String, moniker: String, totals: Double, totalsBalanced: Double, dateClosed: Timestamp, dateUpdated: Timestamp, dateAdded: Timestamp) {
-        //this.accountId = accountId
         this.accountNameOwner = accountNameOwner
         this.accountType = accountType
         this.activeStatus = activeStatus
@@ -32,18 +35,23 @@ class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var accountId: Int = 0
+    var accountId: Long = 0L
     var accountNameOwner: String? = null
     var accountType: String? = null
     var activeStatus: String? = null
     var moniker: String? = null
-    var totals: Double = 0.toDouble()
-    var totalsBalanced: Double = 0.toDouble()
-    var dateClosed: Timestamp? = null
-    var dateUpdated: Timestamp? = null
-    var dateAdded: Timestamp? = null
+    var totals: Double = 0.0
+    var totalsBalanced: Double = 0.0
+    var dateClosed: Timestamp = Timestamp(0)
+    var dateUpdated: Timestamp = Timestamp(0)
+    var dateAdded: Timestamp = Timestamp(0)
 
-    override fun toString(): String = mapper.writeValueAsString(this)
+    override fun toString(): String {
+        System.out.println("this.accountid: " + this.accountId)
+        return mapper.writeValueAsString(this)
+    }
+
+    //override fun toString(): String = mapper.writeValueAsString(this)
 
     companion object {
         @JsonIgnore

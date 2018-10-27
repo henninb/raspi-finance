@@ -13,16 +13,25 @@ open class AccountService {
     private val LOGGER = LoggerFactory.getLogger(this.javaClass)
 
     @Autowired
-    internal var accountRepository: AccountRepository? = null
+    lateinit private var accountRepository: AccountRepository<Account>
 
     fun findAllOrderByAccountNameOwner(): List<Account> {
-        val accounts = ArrayList<Account>()
-        this.accountRepository!!.findAll().forEach(Consumer<Account> { accounts.add(it) })
+        val accounts = accountRepository.findAll()
+        return accounts
+    }
+
+    fun findAllAcitveAccounts(): List<Account> {
+        val accounts = accountRepository.findByActiveStatusOrderByAccountNameOwner("Y")
+        if( accounts.isEmpty()) {
+            LOGGER.warn("findAllAcitveAccounts() problem.")
+        } else {
+            LOGGER.info("findAllAcitveAccounts()")
+        }
         return accounts
     }
 
     fun findByAccountNameOwner(accountNameOwner: String): Account {
-        return accountRepository!!.findByAccountNameOwner(accountNameOwner)
+        return accountRepository.findByAccountNameOwner(accountNameOwner)
     }
 
     //fun findByAccountNameOwnerOrderBy(accountNameOwner: String): Account {
@@ -31,7 +40,7 @@ open class AccountService {
 
     fun insertAccount(account: Account) {
         //TODO: Should saveAndFlush be in a try catch block?
-        val result = accountRepository!!.saveAndFlush(account)
+        val result = accountRepository.saveAndFlush(account)
             LOGGER.info("INFO: transactionRepository.saveAndFlush success.")
     }
 }

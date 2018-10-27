@@ -14,13 +14,6 @@ import javax.validation.constraints.NotNull
 
 @Entity(name = "TransactionEntity")
 @Table(name = "t_transaction")
-
-
-//@Table(
-//        name = "product_serial_group_mask",
-//        uniqueConstraints = {@UniqueConstraint(columnNames = {"mask","group"})}
-//)
-
 //@Table(
 //        name = "t_transaction",
 //        uniqueConstraints = {
@@ -29,7 +22,6 @@ import javax.validation.constraints.NotNull
 //        }
 //)
 //ALTER TABLE t_transaction ADD CONSTRAINT transaction_constraint UNIQUE (account_name_owner, transaction_date, description, category, amount, notes);
-
 @JsonDeserialize(using = TransactionDeserializer::class)
 @JsonSerialize(using = TransactionSerializer::class)
 class Transaction {
@@ -37,7 +29,6 @@ class Transaction {
     constructor()
 
     constructor(guid: String, accountType: String, accountNameOwner: String, transactionDate: Date, description: String, category: String, amount: Double, cleared: Int, reoccurring: Boolean, notes: String, dateUpdated: Timestamp, dateAdded: Timestamp, sha256: String) {
-        //this.transactionId = transactionId
         this.guid = guid
         this.accountType = accountType
         this.accountNameOwner = accountNameOwner
@@ -55,27 +46,31 @@ class Transaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var transactionId: Int = 0
+    var transactionId: Long = 0L
     var guid: String? = null
-    var accountId: Int? = null
+    var accountId: Long = 0
     var accountType: String? = null
     //@Column(nullable = false)
     @NotNull
     var accountNameOwner: String? = null
-    var transactionDate: Date? = null
+    var transactionDate: Date = Date(0)
     @NotNull
     var description: String? = null
     var category: String? = null
     @NotNull
-    var amount: Double = 0.toDouble()
+    var amount: Double = 0.0
     @NotNull
     @Column(name = "cleared")
     var cleared: Int = 0
     var reoccurring: Boolean = true;
     var notes: String? = null
-    var dateUpdated: Timestamp? = null
-    var dateAdded: Timestamp? = null
+    var dateUpdated: Timestamp = Timestamp(0)
+    var dateAdded: Timestamp = Timestamp(0)
     var sha256: String? = null
+
+//    override fun toString(): String {
+//        return mapper.writeValueAsString(this)
+//    }
 
     override fun toString(): String = mapper.writeValueAsString(this)
 
