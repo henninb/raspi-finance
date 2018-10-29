@@ -61,10 +61,12 @@
             <tbody>
                 <tr class="lalign" th:each="transaction : ${transactions}">
                     <td th:text="${transaction.transactionId}"></td>
+                    <!--${#dates.format(sprint.releaseDate, 'dd-MMM-yyyy')}-->
                     <td th:text="${transaction.transactionDate}"></td>
                     <td th:text="${transaction.description}"></td>
                     <td th:text="${transaction.category}"></td>
-                    <td th:text="${transaction.amount}"></td>
+                    <!--${#numbers.formatDecimal(transaction.amount, 0, 'COMMA', 2, 'POINT')} -->
+                    <td th:text="${#numbers.formatDecimal(transaction.amount, 0, 'COMMA', 2, 'POINT')}"></td>
                     <td th:text="${transaction.cleared}"></td>
                     <td th:text="${transaction.notes}"></td>
                 </tr>

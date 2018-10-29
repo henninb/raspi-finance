@@ -47,6 +47,7 @@ class AccountSerializer @JvmOverloads constructor(t: Class<Account>? = null) : S
         //jgen.writeStringField("totals", java.lang.Double.toString(account.totals))
         jgen.writeStringField("totals", account.totals.toString())
         jgen.writeStringField("totalsBalanced", account.totalsBalanced.toString())
+        //TODO: error handle for the dates below.
         jgen.writeNumberField("dateClosed", account.dateClosed.time / 1000)
         jgen.writeNumberField("dateUpdated", account.dateUpdated.time / 1000)
         jgen.writeNumberField("dateAdded", account.dateAdded.time / 1000)

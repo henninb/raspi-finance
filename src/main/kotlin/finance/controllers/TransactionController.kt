@@ -45,8 +45,17 @@ class TransactionController {
         return transactionService!!.findAllTransactions(pageable1)
     }
 
+    //return new ResponseEntity<Object>(entities, HttpStatus.OK);
+    //localhost:8080/get_by_account_name_owner/amazon.gift_brian
+    @GetMapping(path = arrayOf("/get_by_account_name_owner/{accountNameOwner}"))
+    fun findByAccountNameOwner(@PathVariable accountNameOwner: String): List<Transaction> {
+        LOGGER.info("findByAccountNameOwner()")
+        //ResponseEntity.status(200).body(itemService.addItem(item));
+        //transactionService!!.findByAccountNameOwnerIgnoreCaseOrderByTransactionDate(accountNameOwner)
+        return transactionService!!.findByAccountNameOwnerIgnoreCaseOrderByTransactionDate(accountNameOwner)
+    }
+
     //http://localhost:8080/select/340c315d-39ad-4a02-a294-84a74c1c7ddc
-    //@GetMapping(value = "/select/{guid}")
     @GetMapping(path = arrayOf("/select/{guid}"))
     fun findtTransaction(@PathVariable guid: String): Transaction {
         val transaction: Transaction
@@ -94,7 +103,7 @@ class TransactionController {
         }
     }
 
-    //http://localhost:8080/delete/340c315d-39ad-4a02-a294-84a74c1c7ddc
+    //http://localhost:8080/delete/38739c5b-e2c6-41cc-82c2-d41f39a33f9a
     //@GetMapping(value = "/delete/{guid}")
     @GetMapping(path = arrayOf("/delete/{guid}"))
     fun deleteTransaction(@PathVariable guid: String): String {
