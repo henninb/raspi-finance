@@ -18,24 +18,24 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 --create the SEQUENCE prior to the table.
 --DROP SEQUENCE IF EXISTS t_account_account_id_seq CASCADE;
+--to_timestamp(0)
 CREATE SEQUENCE t_account_account_id_seq START WITH 1001; 
 
 DROP TABLE IF EXISTS t_account;
 CREATE TABLE IF NOT EXISTS t_account(
   --account_id INTEGER DEFAULT nextval('t_account_account_id_seq') PRIMARY KEY NOT NULL,
   account_id INTEGER DEFAULT nextval('t_account_account_id_seq') NOT NULL,
-  --account_id INTEGER NOT NULL,
   account_name_owner CHAR(40) NOT NULL,
   account_name CHAR(20), -- NULL for now
   account_owner CHAR(20), -- NULL for now
   account_type CHAR(10) NOT NULL,
   active_status CHAR(1) NOT NULL,
   moniker CHAR(5),
-  totals DECIMAL(12,2),
-  totals_balanced DECIMAL(12,2),
-  date_closed DATE,
-  date_updated TIMESTAMP,
-  date_added TIMESTAMP
+  totals DECIMAL(12,2) DEFAULT 0.0,
+  totals_balanced DECIMAL(12,2) DEFAULT 0.0,
+  date_closed TIMESTAMP DEFAULT TO_TIMESTAMP(0),
+  date_updated TIMESTAMP DEFAULT TO_TIMESTAMP(0),
+  date_added TIMESTAMP DEFAULT TO_TIMESTAMP(0)
 );
 
 --ALTER TABLE t_account ADD PRIMARY KEY (account_id);
@@ -108,12 +108,12 @@ CREATE TABLE IF NOT EXISTS t_transaction (
   transaction_date DATE NOT NULL,
   description VARCHAR(75) NOT NULL,
   category VARCHAR(50),
-  amount DECIMAL(12,2) NOT NULL,
+  amount DECIMAL(12,2) NOT NULL DEFAULT 0.0,
   cleared INTEGER,
   reoccurring BOOLEAN DEFAULT FALSE,
   notes VARCHAR(100),
-  date_updated TIMESTAMP,
-  date_added TIMESTAMP
+  date_updated TIMESTAMP DEFAULT TO_TIMESTAMP(0),
+  date_added TIMESTAMP DEFAULT TO_TIMESTAMP(0)
   --CONSTRAINT t_transaction_pk PRIMARY KEY (guid)
   --CONSTRAINT t_transaction_unique UNIQUE (guid)
 );
