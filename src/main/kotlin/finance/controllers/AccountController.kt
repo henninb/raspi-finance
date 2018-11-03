@@ -16,6 +16,7 @@ class AccountController {
     @Autowired
     internal var accountService: AccountService? = null
 
+    //TODO: ResponseEntity code fix
     @GetMapping(path = arrayOf("/select_accounts"))
     fun selectAllActiveAccounts(): List<Account> {
         val accounts : List<Account> = accountService!!.findAllAcitveAccounts()
@@ -27,11 +28,13 @@ class AccountController {
         return accountService!!.findAllAcitveAccounts()
     }
 
+    //TODO: ResponseEntity code fix
     @GetMapping(path = arrayOf("/select_all"))
     fun select_all_accounts(): List<Account> {
         return accountService!!.findAllOrderByAccountNameOwner()
     }
 
+    //TODO: ResponseEntity code fix
     @GetMapping(path = arrayOf("/select_account/{accountNameOwner}"))
     fun select_account(@PathVariable accountNameOwner: String): Account {
         val account: Account

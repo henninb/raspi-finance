@@ -5,20 +5,20 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import finance.models.Transaction
 import finance.services.TransactionService
 import finance.pojos.ResultMessage
-import finance.services.AccountService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
-import org.springframework.data.domain.Sort
-import org.springframework.stereotype.Controller
-import org.springframework.ui.Model
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.time.ZonedDateTime
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.GetMapping
+import java.util.stream.Collectors
+import java.util.stream.StreamSupport
 
 @CrossOrigin(origins = arrayOf("http://localhost:3000"))
 //Thymeleaf - RestController is for JSON; Controller is for HTML
@@ -30,31 +30,28 @@ class TransactionController {
     @Autowired
     internal var transactionService: TransactionService? = null
 
-    //@Autowired
-    //internal var accountService: AccountService? = null
-
-    //insert into t_transaction(account_type, account_name_owner, transaction_date, description, category, amount, cleared, notes, date_updated, date_added, reoccurring) VALUES('credit', 'chase_brian', '2017-10-01', 'Mario Kart', 'toys', '49.99', false, '', '2017-10-01', '2017-10-01', false)
     //localhost:8080/findall?pageNumber=1&pageSize=20
     @GetMapping(path = arrayOf("/findall"))
     //@RequestMapping(value = "/users/get", method = arrayOf(RequestMethod.GET), produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
     //@RequestMapping(method = RequestMethod.GET, path = "pageable",  produces = MediaType.APPLICATION_JSON_VALUE)
-    fun findAllTransactions(@RequestParam pageNumber: Int, @RequestParam pageSize: Int, pageable: Pageable): Page<Transaction> {
+    fun findAllTransactions(@RequestParam pageNumber: Int, @RequestParam pageSize: Int, pageable: Pageable): ResponseEntity<Page<Transaction>> {
         //var  pageable1: Pageable = PageRequest.of(pageNumber, pageSize, Sort.Direction.DESC, "amount")
         var  pageable1: Pageable = PageRequest.of(pageNumber, pageSize)
+        val transactions: Page<Transaction> = transactionService!!.findAllTransactions(pageable1)
 
-        return transactionService!!.findAllTransactions(pageable1)
+        return ResponseEntity(transactions, HttpStatus.OK)
     }
 
-    //return new ResponseEntity<Object>(entities, HttpStatus.OK);
+    //return ResponseEntity(entities, HttpStatus.OK);
     //localhost:8080/get_by_account_name_owner/amazon.gift_brian
     @GetMapping(path = arrayOf("/get_by_account_name_owner/{accountNameOwner}"))
-    fun findByAccountNameOwner(@PathVariable accountNameOwner: String): List<Transaction> {
-        LOGGER.info("findByAccountNameOwner()")
-        //ResponseEntity.status(200).body(itemService.addItem(item));
-        //transactionService!!.findByAccountNameOwnerIgnoreCaseOrderByTransactionDate(accountNameOwner)
-        return transactionService!!.findByAccountNameOwnerIgnoreCaseOrderByTransactionDate(accountNameOwner)
+    fun findByAccountNameOwner(@PathVariable accountNameOwner: String): ResponseEntity<List<Transaction>> {
+        return ResponseEntity.ok(StreamSupport
+                .stream(transactionService!!.findByAccountNameOwnerIgnoreCaseOrderByTransactionDate(accountNameOwner).spliterator(), false)
+                .collect(Collectors.toList()))
     }
 
+    //TODO: ResponseEntity code fix
     //http://localhost:8080/select/340c315d-39ad-4a02-a294-84a74c1c7ddc
     @GetMapping(path = arrayOf("/select/{guid}"))
     fun findtTransaction(@PathVariable guid: String): Transaction {
@@ -69,6 +66,7 @@ class TransactionController {
     }
 
     //http://localhost:8080/update/340c315d-39ad-4a02-a294-84a74c1c7ddc
+    //TODO: ResponseEntity code fix
     @PutMapping(path = arrayOf("/update"), consumes = arrayOf("application/json"), produces = arrayOf("application/json"))
     fun updateTransaction(@RequestBody transaction: Transaction ) {
         //TODO: need to figure out how to perform this operation
@@ -76,6 +74,7 @@ class TransactionController {
     }
 
     //http://localhost:8080/insert
+    //TODO: ResponseEntity code fix
     @PostMapping(path = arrayOf("/insert"), consumes = arrayOf("application/json"), produces = arrayOf("application/json"))
     fun insertTransaction(@RequestBody transaction: Transaction) : String {
         val resultMessage = ResultMessage()
@@ -105,6 +104,7 @@ class TransactionController {
 
     //http://localhost:8080/delete/38739c5b-e2c6-41cc-82c2-d41f39a33f9a
     //@GetMapping(value = "/delete/{guid}")
+    //TODO: ResponseEntity code fix
     @GetMapping(path = arrayOf("/delete/{guid}"))
     fun deleteTransaction(@PathVariable guid: String): String {
         val restResult = ResultMessage()

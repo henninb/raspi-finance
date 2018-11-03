@@ -3,39 +3,33 @@
 <!--
 <link rel="stylesheet" th:href="@{/css/style.css}" />
 -->
-<link rel="stylesheet" th:href="@{/css/style.css}" />
+<link rel="stylesheet" th:href="@{/css/example.css}" />
 <head>
 <meta charset="UTF-8">
 <title>Account Transactions</title>
 </head>
-<script>
-    function CurrencyFormatted(amount) {
-	var i = parseFloat(amount);
-	if(isNaN(i)) { i = 0.00; }
-	var minus = '';
-	if(i < 0) { minus = '-'; }
-	i = Math.abs(i);
-	i = parseInt((i + .005) * 100);
-	i = i / 100;
-	s = new String(i);
-	if(s.indexOf('.') < 0) { s += '.00'; }
-	if(s.indexOf('.') == (s.length - 2)) { s += '0'; }
-	s = minus + s;
-	return s;
-}
-</script>
 <body>
-<!--/findall?pageNumber=1&pageSize=20-->
-<!--
-    <div align="center">
-        <form action="/getTransactions">
-            <input type="text" name="pageNumber" placeholder="pageNumber" required="required" style="height: 20px; width: 100px;" />
-            <input type="text" name="pageSize" placeholder="pageSize" required="required" style="height: 20px; width: 100px;" />
-            <input type="submit" value="Search" />
-        </form>
-    </div>
--->
 
+<div>
+    <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#news">Payments</a></li>
+        <li class="dropdown">
+            <a href="javascript:void(0)" class="dropbtn">Accounts</a>
+            <div class="dropdown-content">
+                <a th:each="account : ${accounts}" th:href="${account.accountNameOwner}" th:text="${account.accountNameOwner}"></a>
+            </div>
+        </li>
+        <li><a href="create">Create Transaction</a></li>
+        <li><a href="#find">Find Transactions</a></li>
+    </ul>
+</div>
+
+<div class="title">
+    <h2>Finance App</h2>
+</div>
+
+<!--
 <div class="controls">
     <select class="form-control" name="example" id="example_id">
         <option value="0">ALL</option>
@@ -43,11 +37,11 @@
         </option>
     </select>
 </div>
+-->
 
-
-    <div id="wrapper">
-        <table class="alternate">
-            <thead class="myheader">
+    <div>
+        <table>
+            <thead>
                 <tr>
                     <th>id</th>
                     <th>date</th>
@@ -58,7 +52,7 @@
                     <th>notes</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="alternate">
                 <tr class="lalign" th:each="transaction : ${transactions}">
                     <td th:text="${transaction.transactionId}"></td>
                     <!--${#dates.format(sprint.releaseDate, 'dd-MMM-yyyy')}-->
