@@ -31,7 +31,7 @@ open class InsertTransactionProcessor : Processor {
 
             transactionFailure = transaction
             transactionService!!.insertTransaction(transaction)
-            LOGGER.info("transaction insert: guild: " + transaction.guid + " description: " + transaction.description)
+            LOGGER.info("transaction inserted, guid=" + transaction.guid + " description=" + transaction.description)
 
             resultMessage.message = "Successfully processed add message."
             resultMessage.resultCode = 0

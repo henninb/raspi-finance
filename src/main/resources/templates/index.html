@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+<link rel="stylesheet" th:href="@{/css/style.css}" />
 <head>
-    <meta charset="UTF-8"/>
     <title>Welcome</title>
 </head>
 <body>
 <b>Welcome</b>
-<a href="/transaction">transaction</a>
+<div>
+  <a href="/transactionCreate">transactionCreate</a><br>
+  <a href="/transactionView">transactionView</a><br>
+</div>
 </body>
 </html>

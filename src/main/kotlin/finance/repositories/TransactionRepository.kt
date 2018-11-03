@@ -23,11 +23,14 @@ interface TransactionRepository<T : Transaction> : JpaRepository<T, Long> {
     fun findAllOrderByTransactionId(pageable : Pageable) : Page<Transaction>
     //fun getAllTransactionsCleared(pageable : Pageable) : Page<Transaction>
 
+    //TODO: add LIMIT 1
     fun findByTransactionId(transactionId: Long?): Transaction
     //fun findByTransactionId(transactionId: Long?): Pagable<Transaction>
 
+    fun findByAccountNameOwnerAndClearedOrderByTransactionDate(accountNameOwner: String, cleared: Int) : List<Transaction>
     fun findByAccountNameOwnerIgnoreCaseOrderByTransactionDate(accountNameOwner: String): List<Transaction>
 
+    //TODO: add LIMIT 1
     fun findByGuid(guid: String): Transaction
 
     // Using SpEL expression
@@ -37,7 +40,6 @@ interface TransactionRepository<T : Transaction> : JpaRepository<T, Long> {
     // Using SpEL expression
     @Query("SELECT SUM(amount) AS accountTotal FROM #{#entityName} WHERE cleared=1 AND accountNameOwner=?1")
     fun fetchAccoutClearedTotals(accountNameOwner: String): Double
-
 
     @Modifying
     @Transactional
