@@ -21,6 +21,7 @@ set MONGO_PORT=27017
 set MONGO_URI=mongodb://192.168.100.25/finance_db
 set ACTIVEMQ_SSL_BEANS_ENABLED=true
 set ACTIVEMQ_NONSSL_BEANS_ENABLED=false
+set DATABASE_PLATFORM=h2
 
 java -jar build\libs\raspi_finance.jar --spring.config.location=src\main\resources\application.properties
 

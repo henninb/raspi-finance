@@ -1,51 +1,142 @@
-  .bold-green-font {
-    font-weight: bold;
-    color: green;
+h2 {
+    color: blue
+    background-color: gray;
+}
+
+
+div.title {
+    padding: 0;
+    margin: 0;
+     border: 1px solid gray;
+    background-color: gray;
+    text-align: center;
+}
+
+ul {
+    top: 0;
+    width: 100%;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+}
+
+li {
+    float: left;
+}
+
+li a, .dropbtn {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li a:hover, .dropdown:hover .dropbtn {
+    background-color: green;
+}
+
+li.dropdown {
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* page structure */
+#wrapper {
+    display: block;
+/*    width: 532px; */
+    background: #fff;
+    margin: 0 auto;
+    padding: 10px 17px;
+    -webkit-box-shadow: 2px 2px 3px -1px rgba(0, 0, 0, 0.35);
+}
+
+.alternate tr:nth-child(2n) {
+  background-color: silver;
+}
+
+.alternate tr:nth-child(2n):hover, .alternate tr:hover {
+  background-color: grey;
+}
+
+.alternate tr {
+  background-color: white;
+}
+
+form {
+  display: grid;
+  padding: 1em;
+  background: #f9f9f9;
+  border: 1px solid #c1c1c1;
+  margin: 2rem auto 0 auto;
+  max-width: 600px;
+  padding: 1em;
+}
+form input {
+  background: #fff;
+  border: 1px solid #9c9c9c;
+}
+form button {
+  background: lightgrey;
+  padding: 0.7em;
+  width: 100%;
+  border: 0;
+}
+form button:hover {
+  background: gold;
+}
+
+label {
+  padding: 0.5em 0.5em 0.5em 0;
+}
+
+input {
+  padding: 0.6em;
+  margin-bottom: 0.5rem;
+}
+input:focus {
+  outline: 3px solid gold;
+}
+
+@media (min-width: 375px) {
+  form {
+    grid-template-columns: 200px 1fr;
+    grid-gap: 12px;
   }
 
-  .bold-font {
-    font-weight: bold;
-  }
-
-  .right-text {
+  label {
     text-align: right;
+    grid-column: 1 / 2;
   }
 
-  .large-font {
-    font-size: 15px;
+  input,
+  button {
+    grid-column: 2 / 3;
   }
-
-  .italic-darkblue-font {
-    font-style: italic;
-    color: darkblue;
-  }
-
-  .italic-purple-font {
-    font-style: italic;
-    color: purple;
-  }
-
-  .underline-blue-font {
-    text-decoration: underline;
-    color: blue;
-  }
-
-  .gold-border {
-    border: 3px solid gold;
-  }
-
-  .deeppink-border {
-    border: 3px solid deeppink;
-  }
-
-  .orange-background {
-    background-color: orange;
-  }
-
-  .orchid-background {
-    background-color: orchid;
-  }
-
-  .beige-background {
-    background-color: beige;
-  }
+}
