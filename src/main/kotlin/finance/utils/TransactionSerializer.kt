@@ -7,14 +7,11 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer
 import finance.models.Transaction
 import org.slf4j.LoggerFactory
 import java.io.IOException
-import java.sql.Date
-import java.sql.Timestamp
-
-//import java.lang.Double
+import java.nio.charset.StandardCharsets
 
 class TransactionSerializer @JvmOverloads constructor(t: Class<Transaction>? = null) : StdSerializer<Transaction>(t) {
-
     private val LOGGER = LoggerFactory.getLogger(this.javaClass)
+    private val ASCII = StandardCharsets.US_ASCII.newEncoder()
 
     @Throws(IOException::class, JsonProcessingException::class)
     override fun serialize(transaction: Transaction, jgen: JsonGenerator, provider: SerializerProvider) {
@@ -47,7 +44,12 @@ class TransactionSerializer @JvmOverloads constructor(t: Class<Transaction>? = n
         }
 
         if( transaction.description != null ) {
-            jgen.writeStringField("description", transaction.description)
+            if( ASCII.canEncode(transaction.description) ) {
+                jgen.writeStringField("description", transaction.description)
+            } else {
+                LOGGER.warn("description has invaid chars: " + transaction.description)
+                jgen.writeStringField("description", transaction.description)
+            }
         } else {
             jgen.writeStringField("description", "")
             LOGGER.warn("transaction.description is null.")
@@ -61,7 +63,12 @@ class TransactionSerializer @JvmOverloads constructor(t: Class<Transaction>? = n
         }
 
         if( transaction.notes != null ) {
-            jgen.writeStringField("notes", transaction.notes)
+            if( ASCII.canEncode(transaction.notes) ) {
+                jgen.writeStringField("notes", transaction.notes)
+            } else {
+                LOGGER.warn("notes has invaid chars: " + transaction.notes)
+                jgen.writeStringField("notes", transaction.notes)
+            }
         } else {
             jgen.writeStringField("notes", "")
             LOGGER.warn("transaction.notes is null.")

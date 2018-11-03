@@ -13,11 +13,9 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 
 //@CrossOrigin(origins = arrayOf("http://localhost:3000"))
-//Thymeleaf and RestController do not work
-//@RestController
+//Thymeleaf and RestController will output JSON and not HTML
 @Controller
 class ThymeleafController {
-
     private val LOGGER = LoggerFactory.getLogger(this.javaClass)
 
     @Autowired
@@ -33,22 +31,27 @@ class ThymeleafController {
         return "index"
     }
 
-    //localhost:8080/
-    @RequestMapping("/create")
-    fun create(): String {
-        //var model: Model
-        return "create"
+    //localhost:8080/transactionCreate
+    @GetMapping(path = arrayOf("/transactionCreate"))
+    fun transactionCreate(): String {
+        return "transactionCreate"
     }
 
-    //http://localhost:8080/getTransactions/amex_brian
+    @GetMapping(path = arrayOf("/transactionView"))
+    fun transactionView(model: Model): String {
+        val accounts = accountService!!.findAllAcitveAccounts()
+        model.addAttribute("accounts", accounts)
+        return "transactionView"
+    }
+
+    //http://localhost:8080/transactionView/amex_brian
     //TODO: ResponseEntity code fix
-    @GetMapping(path = arrayOf("/getTransactions/{accountNameOwner}"))
-    fun getTransactions(@PathVariable accountNameOwner: String, model: Model): String {
-        //val accounts = accountService!!.findAllOrderByAccountNameOwner()
+    @GetMapping(path = arrayOf("/transactionView/{accountNameOwner}"))
+    fun transactionView(@PathVariable accountNameOwner: String, model: Model): String {
         val accounts = accountService!!.findAllAcitveAccounts()
         val transactions = transactionService!!.findByAccountNameOwnerIgnoreCaseOrderByTransactionDate(accountNameOwner)
         model.addAttribute("transactions", transactions)
         model.addAttribute("accounts", accounts)
-        return "transaction"
+        return "transactionView"
     }
 }
