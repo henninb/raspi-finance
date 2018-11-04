@@ -59,7 +59,10 @@ class DropdownMenu extends Component {
   
         .then(data => this.setState({ accounts }));
   */
-  
+  setAccountUrl(accountNameOwner) {
+      var url = 'http://localhost:8080/get_by_account_name_owner/' + accountNameOwner;
+      return url;
+  }
   componentDidMount() {
     fetch('http://localhost:8080/select_accounts')
       .then(response => response.json())
@@ -79,7 +82,7 @@ class DropdownMenu extends Component {
       {
 
         this.state.accounts.map(accounts => { 
-        return <a href='http://localhost:8080/get_by_account_name_owner/{accounts.accountNameOwner}'>{accounts.accountNameOwner}</a>})
+        return <a href={this.setAccountUrl(accounts.accountNameOwner)}>{accounts.accountNameOwner}</a>})
       }
     </div>
   </li>
