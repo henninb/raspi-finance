@@ -11,7 +11,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 
-export class TransactionTable2 extends React.Component {
+export class TransactionTable extends React.Component {
     constructor (props) {
         super(props)
         this.state = {
@@ -49,7 +49,7 @@ export class TransactionTable2 extends React.Component {
         console.log(this.state)
         const classes = this.props
         return(
-        <div className={classes.TransactionTable2}>
+        <div className={classes.TransactionTable}>
          <Paper className={classes.root}>
           <Table className={classes.table}>
             <TableHead>
@@ -67,7 +67,7 @@ export class TransactionTable2 extends React.Component {
               {this.state.rows.map(row => {
                   return (
                   <TableRow key={row.transactionId}>
-			  <TableCell><a href={this.createDeleteUrl(row.guid)}>delete</a></TableCell>
+                  <TableCell><a href={this.createDeleteUrl(row.guid)}>delete</a></TableCell>
                   <TableCell date>{this.fromEpochDate(row.transactionDate)}</TableCell>
                   <TableCell>{row.description}</TableCell>
                   <TableCell>{row.category}</TableCell>
@@ -84,12 +84,12 @@ export class TransactionTable2 extends React.Component {
     )}
 }
 
-TransactionTable2.propTypes = {
+TransactionTable.propTypes = {
   classes: object,
   menuAction: func,
 }
 
-TransactionTable2.defaultProps = {
+TransactionTable.defaultProps = {
   classes: {},
 }
 
@@ -101,7 +101,8 @@ const styles = theme => ({
   },
   table: {
     minWidth: 700,
+    fontSize: 'x-small',
   },
 });
 
-export default withStyles(styles)(TransactionTable2)
+export default withStyles(styles)(TransactionTable)

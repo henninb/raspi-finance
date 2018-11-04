@@ -1,28 +1,23 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Route, Link } from 'react-router-dom'
+import TransactionList from './components/TransactionList';
 
-import DropdownMenu from './components/DropdownMenu';
-import TransactionTable from './components/TransactionTable';
 
 const welcome = "Welcome to React-Finance";
 
+/*
+        <Route path="/" component={TransactionList} />
+        <Route path={`/new1/:accountNameOwner`} component={TransactionList} />
+*/
+
 class App extends Component {
-  constructor() {
-    super()
-  }
 
   render() {
     return (
-      <div className="App">
-        <DropdownMenu />
-          <header className="App-header">
-          <p>
-            {welcome}
-          </p>
-          <TransactionTable />
-        </header>
-      </div>
+      <BrowserRouter>
+       <Route path="/" component={TransactionList} />
+
+      </BrowserRouter>
     );
   }
 }
