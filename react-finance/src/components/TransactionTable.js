@@ -35,7 +35,7 @@ export class TransactionTable extends React.Component {
     }
 
     componentDidMount () {
-        axios.get("http://localhost:8080/get_by_account_name_owner/chase_brian").then(result => {
+        axios.get("http://localhost:8080/get_by_account_name_owner/" + this.props.accountNameOwner).then(result => {
             this.setState({
                 rows:result.data,
             })
@@ -46,7 +46,7 @@ export class TransactionTable extends React.Component {
     }
 
       render () {
-        console.log(this.state)
+        //console.log(this.state)
         const classes = this.props
         return(
         <div className={classes.TransactionTable}>
