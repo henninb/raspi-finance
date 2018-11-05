@@ -1,20 +1,18 @@
 import React, { Component } from 'react';
 import DropdownMenu from './DropdownMenu';
 import TransactionTable from './TransactionTable';
+import AppHeader from './AppHeader';
 import { withStyles } from '@material-ui/core/styles'
-
-const welcome = "Welcome to App Finance";
 
 class TransactionList extends Component {
 
   render() {
+    const { accountNameOwner } = this.props.match.params
     return (
       <div>
         <DropdownMenu />
-          <div>
-            {welcome}
-          </div>
-          <TransactionTable />
+        <AppHeader title="Finance App" />
+        <TransactionTable accountNameOwner={accountNameOwner} />
       </div>
     );
   }

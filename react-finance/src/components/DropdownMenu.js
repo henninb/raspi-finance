@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-//import axios from "axios";
+import { withStyles } from '@material-ui/core/styles'
+import axios from "axios";
 import './DropdownMenu.css';
-
-
 
 class DropdownMenu extends Component {  
   constructor(props) {
@@ -12,61 +11,20 @@ class DropdownMenu extends Component {
     };
   }
 
-  /*
-  componentDidMount() {
-    axios
-      .get("https://jsonplaceholder.typicode.com/users")
-      .then(response => {
-
-        // create an array of contacts only with relevant data
-        const newContacts = response.data.map(c => {
-          return {
-            id: c.id,
-            name: c.name
-          };
-        });
-
-        // create a new "State" object without mutating 
-        // the original State object. 
-        const newState = Object.assign({}, this.state, {
-          contacts: newContacts
-        });
-
-        // store the new state object in the component's state
-        this.setState(newState);
-      })
-      .catch(error => console.log(error));
-  }
-  */
-  
-  /*
-  componentDidMount() {
-    fetch('http://localhost:8080/select_accounts')
-    .then(results => {
-      return results.json();
-    }).then(data => {
-      let accounts = data.results.map((accountNameOwner) => {
-      return (
-      <a href="#">Link blah</a>
-      )
-    })
-    this.setState({accounts, accounts});
-    console.log("state", this.state.accounts)
-    })
-  }
-  
-  
-  
-        .then(data => this.setState({ accounts }));
-  */
   setAccountUrl(accountNameOwner) {
-      var url = 'http://localhost:8080/get_by_account_name_owner/' + accountNameOwner;
+      var url = '/list/' + accountNameOwner;
       return url;
   }
+  
   componentDidMount() {
-    fetch('http://localhost:8080/select_accounts')
-      .then(response => response.json())
-      .then(data => this.setState({ accounts: data }));
+    axios.get("http://localhost:8080/select_accounts").then(result => {
+        this.setState({
+            accounts:result.data,
+        })
+
+    }).catch(error => {
+      console.log(error)
+    })
   }
 
   render() {
@@ -74,13 +32,13 @@ class DropdownMenu extends Component {
 
 <div>
 <ul>
-  <li><a href="#home">Home</a></li>
-  <li><a href="#news">News</a></li>
+  <li><a href="/list">Home</a></li>
+  <li><a href="#add_accounts">Add Account</a></li>
+  <li><a href="#payments">Payments</a></li>
   <li className="dropdown">
-    <a href="javascript:void(0)" className="dropbtn">Dropdown</a>
+    <a href="javascript:void(0)" className="dropbtn">Accounts</a>
     <div className="dropdown-content">
       {
-
         this.state.accounts.map(accounts => { 
         return <a href={this.setAccountUrl(accounts.accountNameOwner)}>{accounts.accountNameOwner}</a>})
       }
@@ -95,5 +53,10 @@ class DropdownMenu extends Component {
   }
 }
 
-export default DropdownMenu;
+const styles = theme => ({
+  listItemText:{
+    fontSize:'0.7em',
+  }
+});
 
+export default withStyles(styles)(DropdownMenu);
