@@ -3,6 +3,8 @@ insert into t_account(account_name_owner, account_type, active_status, moniker, 
 insert into t_account(account_name_owner, account_type, active_status, moniker, totals, totals_balanced) VALUES('amex_brian', 'credit', 'Y', '0000', 0.0, 0.0);
 insert into t_account(account_name_owner, account_type, active_status, moniker, totals, totals_balanced) VALUES('discover_brian', 'credit', 'Y', '0000', 0.0, 0.0);
 
+update t_account set date_added = CURRENT_TIMESTAMP, date_updated = CURRENT_TIMESTAMP, date_closed = CURRENT_TIMESTAMP;
+
 insert into t_transaction(guid, account_type, account_name_owner, transaction_date, description, category, amount, cleared, notes, date_updated, date_added, reoccurring, account_id) VALUES(random_uuid(), 'credit', 'chase_brian', '2017-10-01', 'Mario Kart', 'toys', '49.99', 0, 'my notes', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false, select account_id from t_account WHERE account_name_owner='chase_brian');
 insert into t_transaction(guid, account_type, account_name_owner, transaction_date, description, category, amount, cleared, notes, date_updated, date_added, reoccurring, account_id) VALUES(random_uuid(), 'credit', 'chase_brian', '2018-10-11', 'Chipotle', 'restaurant', '6.99', 0, 'my notes', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false, select account_id from t_account WHERE account_name_owner='chase_brian');
 insert into t_transaction(guid, account_type, account_name_owner, transaction_date, description, category, amount, cleared, notes, date_updated, date_added, reoccurring, account_id) VALUES(random_uuid(), 'credit', 'chase_brian', CURRENT_TIMESTAMP, 'Jimmy Johns', 'restaurant', '7.99', 0, 'my notes', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false, select account_id from t_account WHERE account_name_owner='chase_brian');

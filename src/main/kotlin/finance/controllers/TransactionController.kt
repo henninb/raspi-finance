@@ -43,7 +43,7 @@ class TransactionController {
     }
 
     //return ResponseEntity(entities, HttpStatus.OK);
-    //localhost:8080/get_by_account_name_owner/amazon.gift_brian
+    //http://localhost:8080/get_by_account_name_owner/amazon.gift_brian
     @GetMapping(path = arrayOf("/get_by_account_name_owner/{accountNameOwner}"))
     fun findByAccountNameOwner(@PathVariable accountNameOwner: String): ResponseEntity<List<Transaction>> {
         return ResponseEntity.ok(StreamSupport

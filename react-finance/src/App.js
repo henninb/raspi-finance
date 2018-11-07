@@ -1,16 +1,9 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Route, Link } from 'react-router-dom'
+import { Route } from 'react-router-dom'
 import TransactionList from './components/TransactionList';
 import TransactionTable from './components/TransactionTable';
 import TrasactionPage from './components/TrasactionPage';
-
-/*
-        <Route path="/" component={TransactionList} />
-        <Route path={`/new1/:accountNameOwner`} component={TransactionList} />
-      <Route path='/list' component={TransactionList} />       
-	   <Route path="/list/:accountNameOwner" component={TransactionList} />
-	         <Route path='/table/:accountNameOwner' component={TransactionTable} />
-		*/
+import SimpleSelect from './components/SimpleSelect';
 
 class App extends Component {
 
@@ -20,6 +13,7 @@ class App extends Component {
       <Route path="/list/:accountNameOwner?" component={TransactionList} />
       <Route path='/table/:accountNameOwner' component={TransactionTable} />
       <Route path='/page' component={TrasactionPage} />
+      <Route path='/select' component={SimpleSelect} />
       </div>
     );
   }
