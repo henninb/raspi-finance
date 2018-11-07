@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import DropdownMenu from './DropdownMenu';
 import TransactionTable from './TransactionTable';
+import SimpleSelect from './SimpleSelect';
 import AppHeader from './AppHeader';
 import { withStyles } from '@material-ui/core/styles'
 
@@ -12,6 +13,7 @@ class TransactionList extends Component {
       <div>
         <DropdownMenu />
         <AppHeader title="Finance App" />
+        <SimpleSelect accountNameOwner={accountNameOwner} />
         <TransactionTable accountNameOwner={accountNameOwner} />
       </div>
     );
