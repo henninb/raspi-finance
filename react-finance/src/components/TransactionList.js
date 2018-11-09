@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
-import DropdownMenu from './DropdownMenu';
-import TransactionTable from './TransactionTable';
-import SimpleSelect from './SimpleSelect';
-import AppHeader from './AppHeader';
+import React, { Component } from 'react'
+import DropdownMenu from './DropdownMenu'
+import TransactionTable from './TransactionTable'
+import SimpleSelect from './SimpleSelect'
+import AppHeader from './AppHeader'
+import ReactLoading from 'react-loading'
 import { withStyles } from '@material-ui/core/styles'
 
 class TransactionList extends Component {
@@ -15,6 +16,7 @@ class TransactionList extends Component {
         <AppHeader title="Finance App" />
         <SimpleSelect accountNameOwner={accountNameOwner} />
         <TransactionTable accountNameOwner={accountNameOwner} />
+<ReactLoading type="ring" color="red" height="20%" width="20%" />
       </div>
     );
   }
