@@ -17,7 +17,6 @@ class AccountSerializer @JvmOverloads constructor(t: Class<Account>? = null) : S
 
         jgen.writeStartObject()
 
-        LOGGER.info("AccountSerializer")
         if( account.accountNameOwner != null ) {
             jgen.writeStringField("accountNameOwner", account.accountNameOwner)
         } else {

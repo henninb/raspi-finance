@@ -20,7 +20,8 @@ import org.springframework.web.bind.annotation.GetMapping
 import java.util.stream.Collectors
 import java.util.stream.StreamSupport
 
-@CrossOrigin(origins = arrayOf("http://localhost:3000"))
+//@CrossOrigin(origins = arrayOf("http://localhost:3000"))
+@CrossOrigin
 //Thymeleaf - RestController is for JSON; Controller is for HTML
 @RestController
 //@RequestMapping("/transaction")
@@ -76,6 +77,7 @@ class TransactionController {
     //http://localhost:8080/insert
     //TODO: ResponseEntity code fix
     @PostMapping(path = arrayOf("/insert"), consumes = arrayOf("application/json"), produces = arrayOf("application/json"))
+    //@PostMapping("/insert")
     fun insertTransaction(@RequestBody transaction: Transaction) : String {
         val resultMessage = ResultMessage()
         var resultString: String = ""
