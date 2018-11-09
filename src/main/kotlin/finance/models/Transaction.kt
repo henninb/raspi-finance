@@ -47,10 +47,11 @@ class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var transactionId: Long = 0L
-    var guid: String? = null
+    @Column(unique=true)
+    @NotNull
+    var guid: String = ""
     var accountId: Long = 0
     var accountType: String? = null
-    //@Column(nullable = false)
     @NotNull
     var accountNameOwner: String? = null
     var transactionDate: Date = Date(0)
