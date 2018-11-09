@@ -11,7 +11,7 @@ import blue from '@material-ui/core/colors/blue';
 const styles = {
   avatar: {
     backgroundColor: blue[100],
-    color: blue[600],
+    color: blue[500],
   },
 };
 
@@ -20,38 +20,31 @@ class DialogDeleteConfirm extends React.Component {
     this.props.onClose(this.props.selectedValue);
   };
 
-  deleteRow(rowid) {
-      var row = document.getElementById(rowid);
-      row.parentNode.removeChild(row);
-  }
-
-
- deleteRow1(rowid) {
-    var row = document.getElementById(rowid);
-    var table = row.parentNode;
-    while ( table && table.tagName !== 'blah' )
-        table = table.parentNode;
-    if ( !table )
-        return;
-    table.deleteRow(row.rowIndex);
-}
-  
-  
   handleListItemClick = value => {
     if( value === 'true' ) {
-        //alert(this.props.guid);
-		
-		    //var i = r.parentNode.parentNode.rowIndex;
-        //document.getElementById("myTable").deleteRow(i);
-		
-		//this.deleteRow1(this.props.guid)
-        //document.getElementById('blah').deleteRow('#' + this.props.guid);
-        //alert('deleted');
-        fetch('http://localhost:8080/delete/' + this.props.guid);
-        //this.forceUpdate();
-        this.setState({ refresh: Math.random() });
-        //this.state.refresh = Math.random();
-        //this.props.key = Math.random();
+      //var table = document.getElementById("blah");
+
+      var row = document.getElementById(this.props.guid);
+      row.remove();
+      
+      fetch('http://localhost:8080/delete/' + this.props.guid)
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(myJson) {
+        console.log(JSON.stringify(myJson));
+      });
+
+      //Object.values(table).forEach(element1 => {
+      //  //joined = joined.concat({ value:  element.accountNameOwner, label:  element.accountNameOwner });
+      //  //var json_data = JSON.stringify(element);
+      //  //alert(element1.innerHTML);
+      //});
+      
+      //Array.from(table.rows).forEach(element1 => {
+      //  //alert(element1);
+      //});
+
     }
     this.props.onClose(value);
   };

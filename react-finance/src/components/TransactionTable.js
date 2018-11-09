@@ -67,7 +67,7 @@ export class TransactionTable extends React.Component {
          <Paper className={classes.root}>
           <Table className={classes.table} id='blah'>
             <TableHead>
-              <TableRow>
+              <TableRow header={true}>
                 <TableCell>Action</TableCell>
                 <TableCell date>date</TableCell>
                 <TableCell>description</TableCell>
@@ -80,17 +80,17 @@ export class TransactionTable extends React.Component {
             <TableBody>
               {this.state.rows.map(row => {
                   return (
-                  <TableRow key={row.guid}>
+              <TableRow key={row.guid} id={row.guid} hover={true}>
                   <TableCell>
-      <div>
-        <Button onClick={this.handleClickOpen}>Delete</Button>
-        <DialogDeleteConfirm
-          guid={row.guid}
-          selectedValue={this.state.selectedValue}
-          open={this.state.open}
-          onClose={this.handleClose}
-        />
-      </div>
+                    <div>
+                      <Button onClick={this.handleClickOpen}>Delete</Button>
+                      <DialogDeleteConfirm
+                        guid={row.guid}
+                        selectedValue={this.state.selectedValue}
+                        open={this.state.open}
+                        onClose={this.handleClose}
+                      />
+                    </div>
 
                   </TableCell>
                   <TableCell date>{this.fromEpochDate(row.transactionDate)}</TableCell>
