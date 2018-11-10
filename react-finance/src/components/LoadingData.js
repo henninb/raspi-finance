@@ -16,7 +16,7 @@ class LoadingData extends Component {
   render() {
     return (
       <div>
-      <ReactLoading type="bubbles" color="green" height="20%" width="20%" />
+      <ReactLoading type="bubbles" color="green" height="40%" width="40%" />
       {/*<ReactLoading type="cylon" color="green" height="20%" width="20%" />
        <ReactLoading display='inline' type='spin' color='green' height={'20%'} width={'20%'} /> 
       <ReactLoading display='inline' type='spokes' color='purple' height={'20%'} width={'20%'} />  */}

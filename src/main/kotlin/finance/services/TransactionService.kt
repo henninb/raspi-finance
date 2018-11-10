@@ -2,7 +2,6 @@ package finance.services
 
 
 import finance.models.Transaction
-import finance.repositories.MongoTransactionRepository
 import finance.repositories.TransactionRepository
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,8 +19,8 @@ open class TransactionService {
     @Autowired
     lateinit private var transactionRepository: TransactionRepository<Transaction>
 
-    @Autowired(required=false)
-    internal var mongoTransactionRepository: MongoTransactionRepository? = null
+    //@Autowired(required=false)
+    //internal var mongoTransactionRepository: MongoTransactionRepository? = null
 
     fun findAllTransactions(pageable: Pageable) : Page<Transaction> {
         //val pageable :Pageable = PageRequest(pageNumber, pageSize, Sort.unsorted())
@@ -41,7 +40,7 @@ open class TransactionService {
     }
 
     fun findByAccountNameOwnerAndCleared( accountNameOwner: String, cleared: Int) : List<Transaction> {
-        return this.transactionRepository.findByAccountNameOwnerAndClearedOrderByTransactionDate(accountNameOwner, cleared)
+        return this.transactionRepository.findByAccountNameOwnerAndClearedOrderByTransactionDateDesc(accountNameOwner, cleared)
     }
 
     //fun fetchAccoutTotals(accountNameOwner: String): Double {
@@ -102,7 +101,7 @@ open class TransactionService {
     }
 
     fun findByAccountNameOwnerIgnoreCaseOrderByTransactionDate(accountNameOwner: String): List<Transaction> {
-        val transactions: List<Transaction> = transactionRepository.findByAccountNameOwnerIgnoreCaseOrderByTransactionDate(accountNameOwner)
+        val transactions: List<Transaction> = transactionRepository.findByAccountNameOwnerIgnoreCaseOrderByTransactionDateDesc(accountNameOwner)
         if( transactions.isEmpty() ) {
             LOGGER.error("an empty list of AccountNameOwner.")
             //TODO: failure
