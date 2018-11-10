@@ -33,7 +33,7 @@ class DropdownMenu extends Component {
       <div>
       <ul>
         <li><a href="/list">Home</a></li>
-        <li><a href="/add">Add Account</a></li>
+        <li><a href="/add">Add Transaction</a></li>
         <li><a href="#payments">Payments</a></li>
 {/*
         <li className="dropdown">

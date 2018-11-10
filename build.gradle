@@ -1,11 +1,17 @@
 buildscript {
     ext.someVariable = '1.0'
     ext {
-        springBootVersion = '2.0.6.RELEASE'
-        apacheCamelVersion = '2.22.0'
-        kotlinVersion = '1.2.71'
+        springBootVersion = '2.1.0.RELEASE'
+        apacheCamelVersion = '2.22.1'
+        kotlinVersion = '1.3.0'
         qualityPluginVersion='3.0.0'
         codenarcPluginVersion='0.20.0'
+        activemqVersion='5.15.7'
+        jolokiaVersion='1.6.0'
+        postgresqlVersion='42.2.5'
+        kafkaVersion='2.0.0'
+        hibernateVersion='5.3.6.Final'
+        h2Version='1.4.197'
     }
     repositories {
         mavenLocal()
@@ -16,7 +22,7 @@ buildscript {
 
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}"
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
         //classpath "org.jfrog.buildinfo:build-info-extractor-gradle:latest.release"
         //classpath "ru.vyarus:gradle-quality-plugin:${qualityPluginVersion}"
     }
@@ -34,8 +40,13 @@ apply plugin: 'maven'
 //apply plugin: 'ru.vyarus.quality'
 //apply plugin: 'java-gradle-plugin'
 
+//TODO: Java 11
+//sourceCompatibility = 1.11
+//targetCompatibility = 1.11
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+//sourceCompatibility = JavaVersion.VERSION_1_8
+//targetCompatibility = JavaVersion.VERSION_1_8
 
 //jar {
 //    version '1.0.0'
@@ -57,7 +68,9 @@ repositories {
 }
 
 springBoot {
-    //mainClass = "example.Application"
+    //mainClass = "finance.Application"
+    //for java_11
+    //excludeDevtools = true
 }
 
 sourceSets {
@@ -67,12 +80,17 @@ sourceSets {
     main.java.srcDirs += 'src/main/kotlin'
 }
 
+//compileOptions {
+//    sourceCompatibility JavaVersion.VERSION_1_8
+//    targetCompatibility JavaVersion.VERSION_1_8
+//}
+
 compileKotlin {
     //kotlinOptions.suppressWarnings = true
 }
 
 wrapper {
-    gradleVersion="4.10"
+    gradleVersion="4.10.2"
 }
 
 configurations.all {
@@ -135,12 +153,11 @@ dependencies {
     //http://activemq.apache.org/initial-configuration.html#InitialConfiguration-RequiredJARs
     //avoid using all as it causes dependency problems.
     //compile("org.apache.activemq:activemq-broker:5.15.6")
-    compile("org.apache.activemq:activemq-client:5.15.6")
-    compile("org.apache.activemq:activemq-kahadb-store:5.15.6")
+    compile("org.apache.activemq:activemq-client:${activemqVersion}")
+    compile("org.apache.activemq:activemq-kahadb-store:${activemqVersion}")
 
     //postgres
-    //compile("org.postgresql:postgresql:9.4-1206-jdbc42")
-    compile("org.postgresql:postgresql:42.2.5")
+    compile("org.postgresql:postgresql:${postgresqlVersion}")
 
     //mongodb
     //compile("org.mongodb:mongodb-driver:3.8.2")
@@ -160,31 +177,32 @@ dependencies {
 
     //Spring
     //needs to be upgraded to 5.1.0.RELEASE
-    compile("org.springframework:spring-jms:5.0.1.RELEASE")
+    compile("org.springframework:spring-jms:5.1.2.RELEASE")
+    //compile("org.springframework:spring-jms:5.0.1.RELEASE")
     //compile("org.springframework.batch:spring-batch-core:3.0.8.RELEASE")
     //compile("org.springframework.data:spring-data-rest-core:2.0.0.RELEASE")
     //compile("org.springframework:spring-oxm:5.0.5.RELEASE")
 
     //Kafka
-    //compile("org.apache.kafka:kafka-clients:0.11.0.0")
+    compile("org.apache.kafka:kafka-clients:${kafkaVersion}")
     //compile("org.springframework.kafka:spring-kafka:1.0.2.RELEASE")
 
     //Jolokia
-    compile("org.jolokia:jolokia-core:1.5.0")
+    compile("org.jolokia:jolokia-core:${jolokiaVersion}")
 
     //oracle
     //compile("com.oracle:ojdbc7:12.1.0.2")
 
     //hibernate
-    compile("org.hibernate:hibernate-core:5.3.6.Final")
-    compile("org.hibernate:hibernate-entitymanager:5.3.6.Final")
+    compile("org.hibernate:hibernate-core:${hibernateVersion}")
+    compile("org.hibernate:hibernate-entitymanager:${hibernateVersion}")
     compile("org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final")
 
     //flyway
     //compile("org.flywaydb:flyway-core:4.2.0")
 
     //h2 database
-    compile("com.h2database:h2:1.4.196")
+    compile("com.h2database:h2:${h2Version}")
     //runtime("com.h2database:h2:1.4.196")
 
     compile 'org.thymeleaf:thymeleaf:3.0.10.RELEASE'

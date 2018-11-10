@@ -27,8 +27,10 @@ interface TransactionRepository<T : Transaction> : JpaRepository<T, Long> {
     fun findByTransactionId(transactionId: Long?): Transaction
     //fun findByTransactionId(transactionId: Long?): Pagable<Transaction>
 
-    fun findByAccountNameOwnerAndClearedOrderByTransactionDate(accountNameOwner: String, cleared: Int) : List<Transaction>
-    fun findByAccountNameOwnerIgnoreCaseOrderByTransactionDate(accountNameOwner: String): List<Transaction>
+    fun findByAccountNameOwnerAndClearedOrderByTransactionDateDesc(accountNameOwner: String, cleared: Int) : List<Transaction>
+    fun findByAccountNameOwnerAndClearedOrderByTransactionDateAsc(accountNameOwner: String, cleared: Int) : List<Transaction>
+    fun findByAccountNameOwnerIgnoreCaseOrderByTransactionDateDesc(accountNameOwner: String): List<Transaction>
+    fun findByAccountNameOwnerIgnoreCaseOrderByTransactionDateAsc(accountNameOwner: String): List<Transaction>
 
     //TODO: add LIMIT 1
     fun findByGuid(guid: String): Transaction

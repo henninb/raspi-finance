@@ -1,16 +1,16 @@
-import React from 'react';
-import { object, func } from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import axios from 'axios';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import Button from '@material-ui/core/Button';
-
-import DialogDeleteConfirm from './DialogDeleteConfirm';
+import React from 'react'
+import { object, func } from 'prop-types'
+import { withStyles } from '@material-ui/core/styles'
+import axios from 'axios'
+import Table from '@material-ui/core/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableCell from '@material-ui/core/TableCell'
+import TableHead from '@material-ui/core/TableHead'
+import TableRow from '@material-ui/core/TableRow'
+import Paper from '@material-ui/core/Paper'
+import Button from '@material-ui/core/Button'
+import DialogDeleteConfirm from './DialogDeleteConfirm'
+import delete_logo from '../images/delete-24px.svg'
 
 export class TransactionTable extends React.Component {
     constructor (props) {
@@ -18,7 +18,8 @@ export class TransactionTable extends React.Component {
         this.state = {
           rows:[],
           open: false,
-          refresh: Math.random(),
+          toggleView: false
+          //refresh: Math.random(),
         }
     }
 
@@ -50,10 +51,10 @@ export class TransactionTable extends React.Component {
     componentDidMount () {
         //alert(this.props.accountNameOwner)
         axios.get("http://localhost:8080/get_by_account_name_owner/" + this.props.accountNameOwner).then(result => {
-            this.setState({
-                rows:result.data,
-            })
-
+            this.setState({ toggleView:true, });
+            this.setState({ rows:result.data, });
+            this.setState({ toggleView:false, });
+            alert('completed');
         }).catch(error => {
           console.log(error)
         })
@@ -83,7 +84,7 @@ export class TransactionTable extends React.Component {
               <TableRow key={row.guid} id={row.guid} hover={true}>
                   <TableCell>
                     <div>
-                      <Button onClick={this.handleClickOpen}>Delete</Button>
+                    <Button onClick={this.handleClickOpen}><img src={delete_logo} className="" alt="delete_logo" /></Button>
                       <DialogDeleteConfirm
                         guid={row.guid}
                         selectedValue={this.state.selectedValue}

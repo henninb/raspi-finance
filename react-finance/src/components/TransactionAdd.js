@@ -1,13 +1,14 @@
 import React, { Component } from 'react'
-import TextField from '@material-ui/core/TextField';
+import TextField from '@material-ui/core/TextField'
 import axios from 'axios'
-//import NumberFormat from 'react-number-format';
-import CurrencyInput from 'react-currency-input';
+import CurrencyInput from 'react-currency-input'
+import DropdownMenu from './DropdownMenu'
+import SimpleSelect from './SimpleSelect'
+import AppHeader from './AppHeader'
 import './TransactionPage.css'
-//import { Redirect } from 'react-router-dom'
-//import 'cors' from 'cors'
 
 const uuid = require('uuidv4');
+const dateFormat = require('dateformat');
 
 class TransactionForm extends Component {
   constructor(props) {
@@ -93,6 +94,8 @@ class TransactionForm extends Component {
     //.catch((err) => {
     //  console.log("AXIOS ERROR: ", err);
     //})
+	
+	//alert(dateFormat(new Date(), 'yyyy-mm-dd'));
 
     ////sends a POST, no header changes
     //let headers = {
@@ -172,6 +175,9 @@ class TransactionForm extends Component {
   render() {
     return (
 <div>
+        <DropdownMenu />
+        <AppHeader title="Finance App" />
+        <SimpleSelect />
 
 {/* */}
     {/*<form onSubmit={this.submitit} name="myform" id="myform" method="post"> */}
@@ -181,7 +187,7 @@ class TransactionForm extends Component {
       <TextField id="guid" type="text" value={uuid()} key="guid" disabled="true" />
 
       <label>Transaction Date</label>
-      <TextField id="transactionDate" type="date" key="transactionDate" />
+      <TextField id="transactionDate" type="date" key="transactionDate" defaultValue="{dateFormat(new Date(), 'yyyy-mm-dd')}" />
 
       <label>Account Name Owner</label> 
       <select id="accountNameOwner" key="accountNameOwner">
@@ -199,10 +205,10 @@ class TransactionForm extends Component {
       </select>
 
       <label>Description</label>
-      <TextField id="description" type="text" placeholder="transaction description..." autoComplete="on" />
+      <TextField id="description" type="text" placeholder="transaction description..." autoComplete="on" defaultValue="" />
 
       <label>Category</label>
-      <TextField id="category" key="category" type="text" placeholder="category description..." />
+      <TextField id="category" key="category" type="text" placeholder="transaction category..." defaultValue="" />
 
       <label>Amount</label>
       {/* <TextField id="amount" key="amount" type="number" step="0.01" placeholder="dollar amount..." /> */}
@@ -218,11 +224,11 @@ class TransactionForm extends Component {
       </select>
 
       <label>Notes</label>
-      <TextField id="notes" type="text" key="notes" />
+      <TextField id="notes" type="text" key="notes" placeholder="transaction notes..." defaultValue="" />
 
       <button id="submit">Submit</button>
-	  {/* <NumberFormat value={24569.81} displayType={'text'} thousandSeparator={true} prefix={'$'} /> */}
-		  {/* <input type="button" id="myButton"  name="" value="update" /> */}
+      {/* <NumberFormat value={24569.81} displayType={'text'} thousandSeparator={true} prefix={'$'} /> */}
+      {/* <input type="button" id="myButton"  name="" value="update" /> */}
   </form>
 
 
