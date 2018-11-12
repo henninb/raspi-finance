@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { object, func } from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import axios from 'axios'
+import LoadingData from './LoadingData'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
@@ -11,26 +12,29 @@ import Paper from '@material-ui/core/Paper'
 import Button from '@material-ui/core/Button'
 import DialogDeleteConfirm from './DialogDeleteConfirm'
 import delete_logo from '../images/delete-24px.svg'
+import edit_logo from '../images/edit-24px.svg'
+//import { FilterDrawer, filterSelectors, filterActions } from 'material-ui-filter'
 
-export class TransactionTable extends React.Component {
+export class TransactionTable extends Component {
     constructor (props) {
         super(props)
         this.state = {
           rows:[],
-          open: false,
-          toggleView: false
-          //refresh: Math.random(),
+          clickOpen: false,
+          toggleView: 'spin',
+          guidToDelete: null,
         }
     }
 
-    handleClickOpen = () => {
+    handleClickOpen = (guid) => {
       this.setState({
-        open: true,
+        clickOpen: true,
+        guidToDelete: guid,
       });
     };
 
-    handleClose = value => {
-      this.setState({ selectedValue: value, open: false });
+    handleClose = (value) => {
+      this.setState({ selectedValue: value, clickOpen: false });
     };
 
     fromEpochDate(utcSeconds) {
@@ -43,28 +47,30 @@ export class TransactionTable extends React.Component {
         return transactionDate.toLocaleDateString("en-US");
     };
 
-    createDeleteUrl(guid) {
+    createDeleteUrl( guid ) {
         var url = 'http://localhost:8080/delete/' + guid;
         return url;
     };
 
     componentDidMount () {
-        //alert(this.props.accountNameOwner)
         axios.get("http://localhost:8080/get_by_account_name_owner/" + this.props.accountNameOwner).then(result => {
-            this.setState({ toggleView:true, });
+            this.setState({ toggleView:'spin', });
             this.setState({ rows:result.data, });
-            this.setState({ toggleView:false, });
-            alert('completed');
+            this.setState({ toggleView:'none', });
+            //alert('completed');
         }).catch(error => {
           console.log(error)
         })
     }
 
-      render () {
+      render() {
         //console.log(this.state)
         const classes = this.props
         return(
         <div className={classes.TransactionTable}>
+        <LoadingData type={this.state.toggleView} 
+          open={this.state.toggleView}
+          onClose={this.state.toggleView} />
          <Paper className={classes.root}>
           <Table className={classes.table} id='blah'>
             <TableHead>
@@ -84,15 +90,12 @@ export class TransactionTable extends React.Component {
               <TableRow key={row.guid} id={row.guid} hover={true}>
                   <TableCell>
                     <div>
-                    <Button onClick={this.handleClickOpen}><img src={delete_logo} className="" alt="delete_logo" /></Button>
-                      <DialogDeleteConfirm
-                        guid={row.guid}
-                        selectedValue={this.state.selectedValue}
-                        open={this.state.open}
-                        onClose={this.handleClose}
-                      />
-                    </div>
 
+					{/* <a href={() => this.handleClickOpen(row.guid)}> <img border="0" alt="delete" src={delete_logo} /> </a> */}
+
+			   <Button className={classes.button} onClick={() => this.handleClickOpen(row.guid)}><img src={delete_logo} className="" alt="delete_logo" /></Button> 
+			   <Button className={classes.button} ><img src={edit_logo} className="" alt="edit_logo" /></Button> 
+                    </div>
                   </TableCell>
                   <TableCell date>{this.fromEpochDate(row.transactionDate)}</TableCell>
                   <TableCell>{row.description}</TableCell>
@@ -106,7 +109,15 @@ export class TransactionTable extends React.Component {
             </TableBody>
           </Table>
         </Paper>
-    </div>
+
+        <DialogDeleteConfirm
+          guid={this.state.guidToDelete}
+          selectedValue={this.state.selectedValue}
+          open={this.state.clickOpen}
+          onClose={this.handleClose}
+        />
+  </div>
+
     )}
 }
 
@@ -128,6 +139,13 @@ const styles = theme => ({
   table: {
     minWidth: 700,
     fontSize: 'x-small',
+  },
+  button: {
+  //z-index: -1,
+  outline: 'none',
+  //width:1000,
+  //height:1,
+  //backgroundColor: '#4CAF50',
   },
 });
 

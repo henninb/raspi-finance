@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react'
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
@@ -11,40 +11,38 @@ import blue from '@material-ui/core/colors/blue';
 const styles = {
   avatar: {
     backgroundColor: blue[100],
-    color: blue[500],
+    color: blue[400],
   },
 };
 
-class DialogDeleteConfirm extends React.Component {
+class DialogDeleteConfirm extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      guid: null,
+    };
+  }
+
   handleClose = () => {
     this.props.onClose(this.props.selectedValue);
   };
 
-  handleListItemClick = value => {
-    if( value === 'true' ) {
-      //var table = document.getElementById("blah");
-
-      var row = document.getElementById(this.props.guid);
-      row.remove();
-      
-      fetch('http://localhost:8080/delete/' + this.props.guid)
-      .then(function(response) {
-        return response.json();
-      })
-      .then(function(myJson) {
-        console.log(JSON.stringify(myJson));
-      });
-
-      //Object.values(table).forEach(element1 => {
-      //  //joined = joined.concat({ value:  element.accountNameOwner, label:  element.accountNameOwner });
-      //  //var json_data = JSON.stringify(element);
-      //  //alert(element1.innerHTML);
-      //});
-      
-      //Array.from(table.rows).forEach(element1 => {
-      //  //alert(element1);
-      //});
-
+  handleListItemClick = (value, guid) => {
+    if( value === true ) {
+      var row = document.getElementById(guid);
+      if( row !== null ) {
+        row.remove();
+        
+        fetch('http://localhost:8080/delete/' + guid)
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(myJson) {
+          console.log(JSON.stringify(myJson));
+        });
+      } else {
+        alert(guid + 'is returning null from the table.');
+      }
     }
     this.props.onClose(value);
   };
@@ -54,15 +52,14 @@ class DialogDeleteConfirm extends React.Component {
 
     return (
       <Dialog onClose={this.handleClose} aria-labelledby="simple-dialog-title" {...other}>
-        <DialogTitle id="title">Delete Record - {this.props.guid}</DialogTitle>
+        <DialogTitle id="title">Ok to delete?</DialogTitle>
         <div>
           <List>
-
-            <ListItem button onClick={() => this.handleListItemClick('true')}>
+            <ListItem button onClick={() => this.handleListItemClick(true, this.props.guid)}>
               <ListItemText primary="Yes" />
             </ListItem>
 
-            <ListItem button onClick={() => this.handleListItemClick('false')}>
+            <ListItem button onClick={() => this.handleListItemClick(false, this.props.guid)}>
               <ListItemText primary="No" />
             </ListItem>
           </List>
