@@ -2,20 +2,27 @@ import React, { Component } from 'react'
 import TextField from '@material-ui/core/TextField'
 import axios from 'axios'
 import CurrencyInput from 'react-currency-input'
+import PropTypes from 'prop-types'
+import classNames from 'classnames'
 import DropdownMenu from './DropdownMenu'
 import SimpleSelect from './SimpleSelect'
 import AppHeader from './AppHeader'
+import { withStyles } from '@material-ui/core/styles'
+import { ValidatorForm, TextValidator} from 'react-material-ui-form-validator'
 import './TransactionPage.css'
 
 const uuid = require('uuidv4');
 const dateFormat = require('dateformat');
 
-class TransactionForm extends Component {
+class TransactionAdd extends Component {
   constructor(props) {
     super(props);
     this.state = {
       accounts: [],
+      options: [],
+      accountNameOwners: [],
     };
+    this.getData();
   }
 
   submitHandler(payload) {
@@ -30,20 +37,34 @@ class TransactionForm extends Component {
      });
   }
 
+  getData = () => {
+    axios.get("http://localhost:8080/select_accounts")
+      .then((response) => {
+        this.setState({accountNameOwners: response.data}, () => {
+
+        var joined = [];
+        this.state.accountNameOwners.forEach(element => {
+          joined = joined.concat({ value: element.accountNameOwner, label:  element.accountNameOwner });
+        });
+        this.setState({ options: joined });
+        });
+     })
+     .catch(function (error) {
+         console.log(error);
+     });
+  }
+
   submitit() {
     var obj = {};
     var form1 = document.getElementById("myform");
-    var elements1 = form1.querySelectorAll( "input, select, textarea" );
+    var elements1 = form1.querySelectorAll( "input, select" );
 
     elements1.forEach(item => {
       obj[item.id] = item.value;
     });
 
     let date_val = new Date(obj['transactionDate']);
-    //alert(obj['transactionDate']);
-    //alert(date_val);
-    //alert(this.datetimeToEpoch(2018, 11, 9, 0, 0, 0));
-    
+
     //var d = new Date(0); // The 0 there is the key, which sets the date to the epoch
     //alert(d.setUTCSeconds(utcSeconds));
     //obj['transactionDate'] = ((date_val.getTime() - date_val.getMilliseconds())/1000);
@@ -53,7 +74,7 @@ class TransactionForm extends Component {
     obj['amount'] = obj['amount'].replace("$", "");
 
     var payload = JSON.stringify(obj);
-    
+
     console.log(payload);
     alert(payload);
 
@@ -86,7 +107,7 @@ class TransactionForm extends Component {
     //      //"Access-Control-Allow-Origin": "*",
     //  }
     //};
-    
+
     //return axios.post(endpoint, payload, headers)
     //.then((res) => {
     //  console.log("RESPONSE RECEIVED: ", res);
@@ -94,8 +115,8 @@ class TransactionForm extends Component {
     //.catch((err) => {
     //  console.log("AXIOS ERROR: ", err);
     //})
-	
-	//alert(dateFormat(new Date(), 'yyyy-mm-dd'));
+
+    //alert(dateFormat(new Date(), 'yyyy-mm-dd'));
 
     ////sends a POST, no header changes
     //let headers = {
@@ -116,7 +137,6 @@ class TransactionForm extends Component {
     request.send(payload);
     //this.transitionTo(endpoint);
     //window.location.href = 'http://localhost:3000/add';
-    //alert('go here');
     //return <Redirect to='/add' />
     ////send the OPTIONS message
     //return axios({
@@ -144,24 +164,22 @@ class TransactionForm extends Component {
     //}
     //);
   }
-  
-  
- createSelectItems(elements1) {
-   let items = [];
-   
+
+  createSelectItems(elements1) {
+    let items = [];
+
     elements1.forEach(item => {
-      items.push(<option key={item} value={item}>{item}</option>);  
+      items.push(<option key={item} value={item}>{item}</option>);
     });
-   
+
     return items;
- }
-  
-  
+  }
+
   onChange(e) {
       this.setState({
       });
   }
-  
+
   componentDidMount() {
     axios.get("http://localhost:8080/select_accounts").then(result => {
       this.setState({
@@ -173,48 +191,62 @@ class TransactionForm extends Component {
   }
 
   render() {
+    const { classes } = this.props;
+
     return (
 <div>
-        <DropdownMenu />
-        <AppHeader title="Finance App" />
-        <SimpleSelect />
+  <DropdownMenu />
+  <AppHeader title="Finance App" />
+  <SimpleSelect />
 
-{/* */}
     {/*<form onSubmit={this.submitit} name="myform" id="myform" method="post"> */}
-    < form onSubmit={this.submitit} name="myform" id="myform" >
+    <form onSubmit={this.submitit} name="myform" id="myform">
 
       <label>guid</label>
-      <TextField id="guid" type="text" value={uuid()} key="guid" disabled="true" />
+      <TextField required id="guid" type="text" value={uuid()} key="guid" disabled={true} />
 
       <label>Transaction Date</label>
-      <TextField id="transactionDate" type="date" key="transactionDate" defaultValue="{dateFormat(new Date(), 'yyyy-mm-dd')}" />
+      <TextField id="transactionDate" type="date" key="transactionDate" defaultValue={dateFormat(new Date(), 'yyyy-mm-dd')} />
 
-      <label>Account Name Owner</label> 
-      <select id="accountNameOwner" key="accountNameOwner">
-            {
-              this.state.accounts.map(accounts => { 
-                return  <option key={accounts.accountNameOwner} value={accounts.accountNameOwner}>{accounts.accountNameOwner}</option> 
-              }
-            )}
-      </select>
+      <label>Account Name Owner</label>
 
-      <label>Account Type</label> 
+      <input required type="search" id="accountNameOwner" key="accountNameOwner" list="accounts" placeholder=" pick an account name owner..." />
+      
+      <datalist id="accounts">
+        {  this.state.accounts.map(accounts => {
+            return <option key={accounts.accountNameOwner} value={accounts.accountNameOwner} />
+          }) 
+        }
+      </datalist>
+
+{/*
+<Select id="accountNameOwner" key="accountNameOwner" options={this.state.options} onChange={this.handleChange} placeholder="account name owner...">
+
+  this.state.accounts.map(accounts => {
+    return  <option key={accounts.accountNameOwner} value={accounts.accountNameOwner}>{accounts.accountNameOwner}</option>
+  }
+) 
+</Select>
+*/}
+
+      <label>Account Type</label>
       <select id="accountType" key="accountType" >
         <option value="credit">credit</option>
         <option value="debit">debit</option>
       </select>
 
       <label>Description</label>
-      <TextField id="description" type="text" placeholder="transaction description..." autoComplete="on" defaultValue="" />
+      <TextField required id="description" label="Description Required" type="text" placeholder="transaction description..." autoComplete="on" defaultValue="" />
 
       <label>Category</label>
+      {/* <TextField id="category" key="category" type="text" placeholder="transaction category..." defaultValue="" /> */}
       <TextField id="category" key="category" type="text" placeholder="transaction category..." defaultValue="" />
 
       <label>Amount</label>
       {/* <TextField id="amount" key="amount" type="number" step="0.01" placeholder="dollar amount..." /> */}
       <CurrencyInput id="amount" key="amount" prefix="$" precision="2" placeholder="dollar amount..." />
 
-      <label>Cleared</label> 
+      <label>Cleared</label>
       <select id="cleared" key="cleared">
         <option value="0">0</option>
         <option value="1">1</option>
@@ -225,16 +257,20 @@ class TransactionForm extends Component {
 
       <label>Notes</label>
       <TextField id="notes" type="text" key="notes" placeholder="transaction notes..." defaultValue="" />
-
       <button id="submit">Submit</button>
-      {/* <NumberFormat value={24569.81} displayType={'text'} thousandSeparator={true} prefix={'$'} /> */}
-      {/* <input type="button" id="myButton"  name="" value="update" /> */}
   </form>
-
-
 </div>
     );
   }
 }
 
-export default TransactionForm;
+TransactionAdd.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+const styles = theme => ({
+  root:{
+  }
+});
+
+export default withStyles(styles)(TransactionAdd);

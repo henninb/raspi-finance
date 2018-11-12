@@ -1,9 +1,9 @@
-import React from 'react';
-import Select from 'react-select';
+import React, { Component } from 'react'
+import Select from 'react-select'
 import { withStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 
-class SimpleSelect extends React.Component {
+class SimpleSelect extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -15,6 +15,7 @@ class SimpleSelect extends React.Component {
   }
 
   ComponentDidMount () {
+/*
     axios.get("http://localhost:8080/select_accounts")
       .then((response) => {
         this.setState({accountNameOwners: response.data}, () => {
@@ -29,6 +30,8 @@ class SimpleSelect extends React.Component {
      .catch(function (error) {
          console.log(error);
      });
+*/
+
   }
 
   handleChange = (selectedOption) => {
@@ -44,7 +47,7 @@ class SimpleSelect extends React.Component {
    
         var joined = [];
         this.state.accountNameOwners.forEach(element => {
-          joined = joined.concat({ value:  element.accountNameOwner, label:  element.accountNameOwner });
+          joined = joined.concat({ value: element.accountNameOwner, label:  element.accountNameOwner });
         });
         this.setState({ options: joined });
         });
@@ -58,10 +61,13 @@ class SimpleSelect extends React.Component {
     //const { selectedOption } = this.state;
 
     return (
+     <div>
       <Select
+        placeholder="account name owner..."
         onChange={this.handleChange}
         options={this.state.options}
       />
+    </div>
     );
   }
 }
