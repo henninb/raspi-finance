@@ -64,13 +64,9 @@ class TransactionAdd extends Component {
     });
 
     let date_val = new Date(obj['transactionDate']);
+    let utc_val = new Date(date_val.getTime() + date_val.getTimezoneOffset() * 60000);
 
-    //var d = new Date(0); // The 0 there is the key, which sets the date to the epoch
-    //alert(d.setUTCSeconds(utcSeconds));
-    //obj['transactionDate'] = ((date_val.getTime() - date_val.getMilliseconds())/1000);
-    //obj['transactionDate'] = date_val.valueOf();
-    //TODO: fix the date issue
-    obj['transactionDate'] = date_val.getTime()/1000|0;
+    obj['transactionDate'] = Math.round(utc_val.getTime() / 1000);
     obj['amount'] = obj['amount'].replace("$", "");
 
     var payload = JSON.stringify(obj);
@@ -92,14 +88,13 @@ class TransactionAdd extends Component {
     //        'Content-Type': 'application/json',
     //    }
     //})
-  //axios.defaults.headers.common['Content-Type'] = 'application/json'
-  //axios.defaults.headers.post['Content-Type'] = 'application/json';
+    //axios.defaults.headers.common['Content-Type'] = 'application/json'
+    //axios.defaults.headers.post['Content-Type'] = 'application/json';
     //let headers = {
     //  'Content-Type': 'application/json;charset=utf-8',
     //  'Accept': 'application/json;charset=utf-8',
     //}
-          //'Content-Type': 'application/json',
-
+    //'Content-Type': 'application/json',
 
     //let headers = {
     //  headers: {
@@ -210,7 +205,7 @@ class TransactionAdd extends Component {
 
       <label>Account Name Owner</label>
 
-      <input required type="search" id="accountNameOwner" key="accountNameOwner" list="accounts" placeholder=" pick an account name owner..." />
+      <input required type="search" id="accountNameOwner" key="accountNameOwner" list="accounts" placeholder=" pick an account name owner..." autocomplete="off" />
       
       <datalist id="accounts">
         {  this.state.accounts.map(accounts => {
@@ -236,11 +231,11 @@ class TransactionAdd extends Component {
       </select>
 
       <label>Description</label>
-      <TextField required id="description" label="Description Required" type="text" placeholder="transaction description..." autoComplete="on" defaultValue="" />
+      <TextField required id="description" label="*Required" type="text" placeholder="transaction description..." autoComplete="off" defaultValue="" />
 
       <label>Category</label>
       {/* <TextField id="category" key="category" type="text" placeholder="transaction category..." defaultValue="" /> */}
-      <TextField id="category" key="category" type="text" placeholder="transaction category..." defaultValue="" />
+      <TextField id="category" key="category" type="text" placeholder="transaction category..." defaultValue="" autoComplete="off"/>
 
       <label>Amount</label>
       {/* <TextField id="amount" key="amount" type="number" step="0.01" placeholder="dollar amount..." /> */}
@@ -256,7 +251,7 @@ class TransactionAdd extends Component {
       </select>
 
       <label>Notes</label>
-      <TextField id="notes" type="text" key="notes" placeholder="transaction notes..." defaultValue="" />
+      <TextField id="notes" type="text" key="notes" placeholder="transaction notes..." defaultValue="" autoComplete="off" />
       <button id="submit">Submit</button>
   </form>
 </div>

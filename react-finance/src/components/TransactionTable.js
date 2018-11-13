@@ -74,30 +74,28 @@ export class TransactionTable extends Component {
          <Paper className={classes.root}>
           <Table className={classes.table} id='blah'>
             <TableHead>
-              <TableRow header={true}>
-                <TableCell>Action</TableCell>
-                <TableCell date>date</TableCell>
-                <TableCell>description</TableCell>
-                <TableCell>category</TableCell>
-                <TableCell currency="true">amount</TableCell>
-                <TableCell numeric>cleared</TableCell>
-                <TableCell>notes</TableCell>
+              {/* <TableRow header={true}> */}
+              <TableRow>
+                <CustomTableCell>action</CustomTableCell>
+                <CustomTableCell>date</CustomTableCell>
+                <CustomTableCell>description</CustomTableCell>
+                <CustomTableCell>category</CustomTableCell>
+                <CustomTableCell>amount</CustomTableCell>
+                <CustomTableCell>cleared</CustomTableCell>
+                <CustomTableCell>notes</CustomTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {this.state.rows.map(row => {
                   return (
-              <TableRow key={row.guid} id={row.guid} hover={true}>
+              <TableRow className={classes.row} key={row.guid} id={row.guid} hover={true}>
                   <TableCell>
                     <div>
-
-					{/* <a href={() => this.handleClickOpen(row.guid)}> <img border="0" alt="delete" src={delete_logo} /> </a> */}
-
-			   <Button className={classes.button} onClick={() => this.handleClickOpen(row.guid)}><img src={delete_logo} className="" alt="delete_logo" /></Button> 
-			   <Button className={classes.button} ><img src={edit_logo} className="" alt="edit_logo" /></Button> 
+                      <Button className={classes.button} onClick={() => this.handleClickOpen(row.guid)}><img src={delete_logo} className="" alt="delete_logo" /></Button> 
+                      <Button className={classes.button} ><img src={edit_logo} className="" alt="edit_logo" /></Button> 
                     </div>
                   </TableCell>
-                  <TableCell date>{this.fromEpochDate(row.transactionDate)}</TableCell>
+                  <TableCell>{this.fromEpochDate(row.transactionDate)}</TableCell>
                   <TableCell>{row.description}</TableCell>
                   <TableCell>{row.category}</TableCell>
                   <TableCell currency="true">{row.amount}</TableCell>
@@ -130,7 +128,18 @@ TransactionTable.defaultProps = {
   classes: {},
 }
 
-const styles = theme => ({
+
+const CustomTableCell = withStyles(theme => ({
+  head: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  body: {
+    fontSize: 14,
+  },
+}))(TableCell);
+
+const styles = (theme) => ({
   root: {
     width: '100%',
     marginTop: theme.spacing.unit * 3,
@@ -140,12 +149,13 @@ const styles = theme => ({
     minWidth: 700,
     fontSize: 'x-small',
   },
+  row: {
+    '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.background.default,
+    },
+  },
   button: {
-  //z-index: -1,
-  outline: 'none',
-  //width:1000,
-  //height:1,
-  //backgroundColor: '#4CAF50',
+    outline: 'none',
   },
 });
 
