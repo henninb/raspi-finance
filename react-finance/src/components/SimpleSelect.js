@@ -11,11 +11,9 @@ class SimpleSelect extends Component {
       options: [],
       accountNameOwners: [],
     };
-    this.getData()
   }
 
-  ComponentDidMount () {
-/*
+  componentDidMount () {
     axios.get("http://localhost:8080/select_accounts")
       .then((response) => {
         this.setState({accountNameOwners: response.data}, () => {
@@ -30,31 +28,12 @@ class SimpleSelect extends Component {
      .catch(function (error) {
          console.log(error);
      });
-*/
-
   }
 
   handleChange = (selectedOption) => {
     //this.setState({ selectedOption });
 
     window.location.href = 'http://localhost:3000/list/' + selectedOption.value;
-  }
-  
-  getData = () => {
-    axios.get("http://localhost:8080/select_accounts")
-      .then((response) => {
-        this.setState({accountNameOwners: response.data}, () => {
-   
-        var joined = [];
-        this.state.accountNameOwners.forEach(element => {
-          joined = joined.concat({ value: element.accountNameOwner, label:  element.accountNameOwner });
-        });
-        this.setState({ options: joined });
-        });
-     })
-     .catch(function (error) {
-         console.log(error);
-     });
   }
 
   render() {
