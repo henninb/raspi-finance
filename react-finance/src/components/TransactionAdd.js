@@ -9,9 +9,12 @@ import SimpleSelect from './SimpleSelect'
 import AppHeader from './AppHeader'
 import { withStyles } from '@material-ui/core/styles'
 import { ValidatorForm, TextValidator} from 'react-material-ui-form-validator'
+import { showNotification } from '../store/notification/actionCreator'
+import uuid from 'uuidv4'
+//import dateFormat from 'dateFormat'
 import './TransactionPage.css'
 
-const uuid = require('uuidv4');
+//const uuid = require('uuidv4');
 const dateFormat = require('dateformat');
 
 class TransactionAdd extends Component {
@@ -22,7 +25,6 @@ class TransactionAdd extends Component {
       options: [],
       accountNameOwners: [],
     };
-    this.getData();
   }
 
   submitHandler(payload) {
@@ -37,23 +39,6 @@ class TransactionAdd extends Component {
      });
   }
 
-  getData = () => {
-    axios.get("http://localhost:8080/select_accounts")
-      .then((response) => {
-        this.setState({accountNameOwners: response.data}, () => {
-
-        var joined = [];
-        this.state.accountNameOwners.forEach(element => {
-          joined = joined.concat({ value: element.accountNameOwner, label:  element.accountNameOwner });
-        });
-        this.setState({ options: joined });
-        });
-     })
-     .catch(function (error) {
-         console.log(error);
-     });
-  }
-
   submitit() {
     var obj = {};
     var form1 = document.getElementById("myform");
@@ -65,7 +50,6 @@ class TransactionAdd extends Component {
 
     let date_val = new Date(obj['transactionDate']);
     let utc_val = new Date(date_val.getTime() + date_val.getTimezoneOffset() * 60000);
-
     obj['transactionDate'] = Math.round(utc_val.getTime() / 1000);
     obj['amount'] = obj['amount'].replace("$", "");
 
@@ -75,54 +59,6 @@ class TransactionAdd extends Component {
     alert(payload);
 
     var endpoint = "http://localhost:8080/insert";
-
-    //var headers = {
-    //headers: {
-    //  'Content-Type': 'application/json',
-    //  'Accept': 'application/json',
-    //},
-    //}
-
-    //return axios.post(endpoint, json_indata, {
-    //    headers: {
-    //        'Content-Type': 'application/json',
-    //    }
-    //})
-    //axios.defaults.headers.common['Content-Type'] = 'application/json'
-    //axios.defaults.headers.post['Content-Type'] = 'application/json';
-    //let headers = {
-    //  'Content-Type': 'application/json;charset=utf-8',
-    //  'Accept': 'application/json;charset=utf-8',
-    //}
-    //'Content-Type': 'application/json',
-
-    //let headers = {
-    //  headers: {
-    //      'Content-Type': 'application/json;charset=UTF-8',
-    //      //"Access-Control-Allow-Origin": "*",
-    //  }
-    //};
-
-    //return axios.post(endpoint, payload, headers)
-    //.then((res) => {
-    //  console.log("RESPONSE RECEIVED: ", res);
-    //})
-    //.catch((err) => {
-    //  console.log("AXIOS ERROR: ", err);
-    //})
-
-    //alert(dateFormat(new Date(), 'yyyy-mm-dd'));
-
-    ////sends a POST, no header changes
-    //let headers = {
-    //  'Accept': 'application/json',
-    //  'Content-Type': 'application/json;charset=UTF-8',
-    //  "Access-Control-Allow-Origin": "*",
-    //}
-    //return axios.post(endpoint, payload, headers)
-    //$("#myform").attr("method", "post");
-    //form1.attr("method", "post");
-    //this.submitHandler(payload);
     let request = new XMLHttpRequest();
     request.open('POST', endpoint, true);
     request.setRequestHeader("Content-Type", "application/json");
@@ -130,34 +66,6 @@ class TransactionAdd extends Component {
     //request.setRequestHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
     //request.setRequestHeader("Access-Control-Allow-Headers", "accept, content-type");
     request.send(payload);
-    //this.transitionTo(endpoint);
-    //window.location.href = 'http://localhost:3000/add';
-    //return <Redirect to='/add' />
-    ////send the OPTIONS message
-    //return axios({
-    //  method: 'POST',
-    //  url: endpoint,
-    //  mode: 'no-cors',
-    //  headers: {
-    //    'Content-Type': 'application/json',
-    //  },
-    //  data: payload,
-    //}).then(response => {
-    //   alert(response.data);
-    //   return response.data;
-    //})
-
-    //return axios({
-    //  method:'POST',
-    //  url: endpoint,
-    //  data: payload,
-    //})
-    //
-    //.then((response) => {
-    //  this.setState({ output: response.data});
-    //  alert(this.state.output);
-    //}
-    //);
   }
 
   createSelectItems(elements1) {
@@ -176,6 +84,7 @@ class TransactionAdd extends Component {
   }
 
   componentDidMount() {
+   // var x = this.props.showNotification(true, 'test')
     axios.get("http://localhost:8080/select_accounts").then(result => {
       this.setState({
         accounts:result.data,
@@ -189,7 +98,7 @@ class TransactionAdd extends Component {
     const { classes } = this.props;
 
     return (
-<div>
+  <div>
   <DropdownMenu />
   <AppHeader title="Finance App" />
   <SimpleSelect />
@@ -238,7 +147,6 @@ class TransactionAdd extends Component {
       <TextField id="category" key="category" type="text" placeholder="transaction category..." defaultValue="" autoComplete="off"/>
 
       <label>Amount</label>
-      {/* <TextField id="amount" key="amount" type="number" step="0.01" placeholder="dollar amount..." /> */}
       <CurrencyInput id="amount" key="amount" prefix="$" precision="2" placeholder="dollar amount..." />
 
       <label>Cleared</label>
@@ -268,4 +176,10 @@ const styles = theme => ({
   }
 });
 
+const mapDispatchToProps = {
+  showNotification,
+}
+
 export default withStyles(styles)(TransactionAdd);
+
+//export default connect(mapStateToProps, mapDispatchToProps)(TransactionAdd)
