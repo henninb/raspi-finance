@@ -9,12 +9,12 @@ import SimpleSelect from './SimpleSelect'
 import AppHeader from './AppHeader'
 import { withStyles } from '@material-ui/core/styles'
 import { ValidatorForm, TextValidator} from 'react-material-ui-form-validator'
-import { showNotification } from '../store/notification/actionCreator'
+import { showNotification, showAccounts } from '../store/notification/actionCreator'
 import uuid from 'uuidv4'
-//import dateFormat from 'dateFormat'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import './TransactionPage.css'
 
-//const uuid = require('uuidv4');
 const dateFormat = require('dateformat');
 
 class TransactionAdd extends Component {
@@ -78,13 +78,13 @@ class TransactionAdd extends Component {
     return items;
   }
 
-  onChange(e) {
-      this.setState({
-      });
-  }
+  //onChange(e) {
+  //    this.setState({
+  //    });
+  //}
 
   componentDidMount() {
-   // var x = this.props.showNotification(true, 'test')
+    //this.props.showNotification(true, 'blah123')
     axios.get("http://localhost:8080/select_accounts").then(result => {
       this.setState({
         accounts:result.data,
@@ -92,6 +92,9 @@ class TransactionAdd extends Component {
     }).catch(error => {
       console.log(error)
     })
+	//const { notificationIsShown } = this.props
+	//alert(notificationIsShown);
+    //alert(JSON.stringify(this.props));
   }
 
   render() {
@@ -105,7 +108,6 @@ class TransactionAdd extends Component {
 
     {/*<form onSubmit={this.submitit} name="myform" id="myform" method="post"> */}
     <form onSubmit={this.submitit} name="myform" id="myform">
-
       <label>guid</label>
       <TextField required id="guid" type="text" value={uuid()} key="guid" disabled={true} />
 
@@ -167,19 +169,36 @@ class TransactionAdd extends Component {
   }
 }
 
-TransactionAdd.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
+//TransactionAdd.propTypes = {
+//  classes: PropTypes.object.isRequired,
+//};
 
 const styles = theme => ({
   root:{
   }
 });
 
-const mapDispatchToProps = {
-  showNotification,
+const mapStateToProps = state => {
+  const { notification } = state
+  const { isShown, message } = notification
+  
+  //alert(JSON.stringify(state));
+  return {
+    notificationIsShown: isShown,
+    notificationMessage: message,
+  }
 }
 
-export default withStyles(styles)(TransactionAdd);
 
-//export default connect(mapStateToProps, mapDispatchToProps)(TransactionAdd)
+//const mapDispatchToProps = dispatch => bindActionCreators({
+//  showNotification,
+//  showAccounts,
+//}, dispatch)
+
+const mapDispatchToProps = {
+  showNotification,
+  showAccounts,
+}
+
+//export default compose(withStyles(styles), connect(mapStateToProps, mapDispatchToProps))(TransactionAdd)
+export default withStyles(styles) (connect(mapStateToProps, mapDispatchToProps) (TransactionAdd))
