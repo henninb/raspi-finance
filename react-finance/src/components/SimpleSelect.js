@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 import Select from 'react-select'
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { showNotification, showAccounts } from '../store/notification/actionCreator'
 import axios from 'axios';
 
 class SimpleSelect extends Component {
@@ -11,6 +14,9 @@ class SimpleSelect extends Component {
       options: [],
       accountNameOwners: [],
     };
+  }
+  
+  componentWillUnmount() {
   }
 
   componentDidMount () {
@@ -31,9 +37,9 @@ class SimpleSelect extends Component {
   }
 
   handleChange = (selectedOption) => {
-    //this.setState({ selectedOption });
-
-    window.location.href = 'http://localhost:3000/list/' + selectedOption.value;
+    if( selectedOption.value != "" ) {
+      this.props.showNotification(false, selectedOption.value);
+    }
   }
 
   render() {
@@ -54,4 +60,9 @@ class SimpleSelect extends Component {
 const styles = theme => ({
 });
 
-export default withStyles(styles)(SimpleSelect);
+const mapDispatchToProps = {
+  showNotification,
+  showAccounts,
+}
+
+export default withStyles(styles) (connect(null, mapDispatchToProps) (SimpleSelect))
