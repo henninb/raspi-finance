@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Select from 'react-select'
 import { withStyles } from '@material-ui/core/styles'
 import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
+//import { bindActionCreators } from 'redux'
 import { showNotification, showAccounts } from '../store/notification/actionCreator'
 import axios from 'axios';
 
@@ -10,7 +10,6 @@ class SimpleSelect extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      //selectedOption: null,
       options: [],
       accountNameOwners: [],
     };
@@ -20,31 +19,29 @@ class SimpleSelect extends Component {
   }
 
   componentDidMount () {
-    axios.get("http://localhost:8080/select_accounts")
+    axios.get('http://localhost:8080/select_accounts')
       .then((response) => {
         this.setState({accountNameOwners: response.data}, () => {
    
-        var joined = [];
+        var joined = []
         this.state.accountNameOwners.forEach(element => {
-          joined = joined.concat({ value:  element.accountNameOwner, label:  element.accountNameOwner });
+          joined = joined.concat({ value:  element.accountNameOwner, label:  element.accountNameOwner })
         });
-        this.setState({ options: joined });
+        this.setState({ options: joined })
         });
      })
      .catch(function (error) {
-         console.log(error);
+         console.log(error)
      });
   }
 
   handleChange = (selectedOption) => {
-    if( selectedOption.value != "" ) {
+    if( selectedOption.value !== '' ) {
       this.props.showNotification(false, selectedOption.value);
     }
   }
 
   render() {
-    //const { selectedOption } = this.state;
-
     return (
      <div>
       <Select
