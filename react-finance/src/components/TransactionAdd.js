@@ -2,17 +2,13 @@ import React, { Component } from 'react'
 import TextField from '@material-ui/core/TextField'
 import axios from 'axios'
 import CurrencyInput from 'react-currency-input'
-import PropTypes from 'prop-types'
-import classNames from 'classnames'
 import DropdownMenu from './DropdownMenu'
 import SimpleSelect from './SimpleSelect'
 import AppHeader from './AppHeader'
 import { withStyles } from '@material-ui/core/styles'
-import { ValidatorForm, TextValidator} from 'react-material-ui-form-validator'
-import { showNotification, showAccounts } from '../store/notification/actionCreator'
+import { showNotification } from '../store/notification/actionCreator'
 import uuid from 'uuidv4'
 import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import './TransactionPage.css'
 
 const dateFormat = require('dateformat');
@@ -92,16 +88,11 @@ class TransactionAdd extends Component {
     }).catch(error => {
       console.log(error)
     })
-	//const { notificationIsShown } = this.props
-	//alert(notificationIsShown);
-    //alert(JSON.stringify(this.props));
   }
 
   render() {
-    const { classes } = this.props;
-
     return (
-  <div>
+  <div id="" className="" >
   <DropdownMenu />
   <AppHeader title="Finance App" />
   <SimpleSelect />
@@ -142,7 +133,7 @@ class TransactionAdd extends Component {
       </select>
 
       <label>Description</label>
-      <TextField required id="description" label="*Required" type="text" placeholder="transaction description..." autoComplete="off" defaultValue="" />
+      <TextField required id="description" label="*Required" type="text" placeholder="transaction description..." autoComplete="off" onkeydown="" defaultValue="" />
 
       <label>Category</label>
       {/* <TextField id="category" key="category" type="text" placeholder="transaction category..." defaultValue="" /> */}
@@ -169,35 +160,26 @@ class TransactionAdd extends Component {
   }
 }
 
-//TransactionAdd.propTypes = {
-//  classes: PropTypes.object.isRequired,
-//};
-
 const styles = theme => ({
   root:{
-  }
+  },
+  blah: {
+    'hidden' : '',
+  },
 });
 
 const mapStateToProps = state => {
   const { notification } = state
   const { isShown, message } = notification
-  
-  //alert(JSON.stringify(state));
+
   return {
     notificationIsShown: isShown,
     notificationMessage: message,
   }
 }
 
-
-//const mapDispatchToProps = dispatch => bindActionCreators({
-//  showNotification,
-//  showAccounts,
-//}, dispatch)
-
 const mapDispatchToProps = {
   showNotification,
-  showAccounts,
 }
 
 //export default compose(withStyles(styles), connect(mapStateToProps, mapDispatchToProps))(TransactionAdd)

@@ -14,7 +14,7 @@ import Button from '@material-ui/core/Button'
 import DialogDeleteConfirm from './DialogDeleteConfirm'
 import delete_logo from '../images/delete-24px.svg'
 import edit_logo from '../images/edit-24px.svg'
-import { showNotification, showAccounts } from '../store/notification/actionCreator'
+import { showNotification } from '../store/notification/actionCreator'
 //import { FilterDrawer, filterSelectors, filterActions } from 'material-ui-filter'
 
 export class TransactionTable extends Component {
@@ -56,7 +56,6 @@ export class TransactionTable extends Component {
   };
 
   componentWillUnmount() {
-
   }
   
   
@@ -67,16 +66,16 @@ export class TransactionTable extends Component {
     if( this.props.notificationIsShown === false ) {
       //alert('componentDidUpdate')
       this.setState({ loading: true, });
-    this.props.showNotification(true, this.props.accountNameOwner);
-    axios.get("http://localhost:8080/get_by_account_name_owner/" + this.props.accountNameOwner)
+      this.props.showNotification(true, this.props.accountNameOwner);
+      axios.get("http://localhost:8080/get_by_account_name_owner/" + this.props.accountNameOwner)
       .then(result => {
-        this.setState({ toggleView:'spin', });
-        this.setState({ rows:result.data, });
-        this.setState({ toggleView:'none', });
-      
-    }).catch(error => {
-      console.log(error)
-    })
+          this.setState({ toggleView:'spin', });
+          this.setState({ rows:result.data, });
+          this.setState({ toggleView:'none', });
+      })
+      .catch(error => {
+        console.log(error)
+      })
     }
   }
 
@@ -85,13 +84,17 @@ export class TransactionTable extends Component {
 
   render() {
     const classes = this.props
-    let x = '';
+    let toggleLoading = false
+
     return(
     <div className={classes.TransactionTable}>
   
-    <LoadingData type={this.state.toggleView} 
+  <LoadingData 
+      className=""
+      type={this.state.toggleView} 
       open={this.state.toggleView}
-      onClose={this.state.toggleView} />;
+      onClose={this.state.toggleView} />
+
      <Paper className={classes.root}>
       <Table className={classes.table} id='blah'>
         <TableHead>
