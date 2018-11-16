@@ -23,7 +23,7 @@ export class TransactionTable extends Component {
       this.state = {
         rows:[],
         clickOpen: false,
-        toggleView: 'spin',
+        toggleView: 'none',
         guidToDelete: null,
         loading: false,
       }
@@ -34,42 +34,30 @@ export class TransactionTable extends Component {
       clickOpen: true,
       guidToDelete: guid,
     });
-  };
+  }
 
   handleClose = (value) => {
     this.setState({ selectedValue: value, clickOpen: false });
-  };
+  }
 
   fromEpochDate(utcSeconds) {
-      //var dateFormat = require('dateformat');
-      //var now = new Date();
-      //dateFormat(now, "mm-dd-yyyy");
-
       var transactionDate = new Date(0);
       transactionDate.setUTCSeconds(utcSeconds);
       return transactionDate.toLocaleDateString("en-US");
-  };
-
-  createDeleteUrl( guid ) {
-      var url = 'http://localhost:8080/delete/' + guid;
-      return url;
-  };
+  }
 
   componentWillUnmount() {
   }
-  
-  
+
   componentWillReceiveProps(nextProps) {
   }
-  
+
   componentDidUpdate() {
     if( this.props.notificationIsShown === false ) {
-      //alert('componentDidUpdate')
-      this.setState({ loading: true, });
+      this.setState({ toggleView:'spin', });
       this.props.showNotification(true, this.props.accountNameOwner);
       axios.get("http://localhost:8080/get_by_account_name_owner/" + this.props.accountNameOwner)
       .then(result => {
-          this.setState({ toggleView:'spin', });
           this.setState({ rows:result.data, });
           this.setState({ toggleView:'none', });
       })
@@ -84,7 +72,6 @@ export class TransactionTable extends Component {
 
   render() {
     const classes = this.props
-    let toggleLoading = false
 
     return(
     <div className={classes.TransactionTable}>
@@ -95,10 +82,9 @@ export class TransactionTable extends Component {
       open={this.state.toggleView}
       onClose={this.state.toggleView} />
 
-     <Paper className={classes.root}>
-      <Table className={classes.table} id='blah'>
-        <TableHead>
-          {/* <TableRow header={true}> */}
+     <Paper className={''}>
+      <Table className={this.props.classes.view} id="blah">
+          <TableHead className={''}>
           <TableRow>
             <CustomTableCell>action</CustomTableCell>
             <CustomTableCell>date</CustomTableCell>
@@ -157,9 +143,12 @@ const CustomTableCell = withStyles(theme => ({
   head: {
     backgroundColor: theme.palette.common.black,
     color: theme.palette.common.white,
+    //display: 'inline',
+    //display: 'none',
+    display: '',
   },
   body: {
-    fontSize: 14,
+    fontSize: 10,
   },
 }))(TableCell);
 
@@ -172,6 +161,7 @@ const styles = (theme) => ({
   table: {
     minWidth: 700,
     fontSize: 'x-small',
+    //display: 'none',
   },
   row: {
     '&:nth-of-type(odd)': {
@@ -179,7 +169,22 @@ const styles = (theme) => ({
     },
   },
   button: {
-    outline: 'none',
+    display: 'none',
+  },
+  view: {
+    //display: 'none',
+    display: '',
+  },
+  head: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+    //color: 'white',
+    //display: 'inline',
+    //display: 'none',
+    //display: '',
+  },
+  body: {
+    fontSize: 10,
   },
 });
 
