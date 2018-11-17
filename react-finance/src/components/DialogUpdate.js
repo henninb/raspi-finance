@@ -28,15 +28,29 @@ class DialogUpdate extends Component {
   }
 
   
-    componentDidUpdate() {
+  componentDidUpdate() {
     if ( this.props.guid !== null ) {
       axios.get('http://localhost:8080/select/' + this.props.guid)
-      //axios.get('http://localhost:8080/select/51d685eb-1dbc-4b23-9bd3-87e4bb7bccdb')
       .then(result => {
         this.setState({
           transaction: result.data,
-          loaded: true,
         })
+        let transactionDate = document.getElementById("transactionDate")
+        let accountNameOwner = document.getElementById("accountNameOwner")
+        let accountType = document.getElementById("accountType")
+        let description = document.getElementById("description")
+        let category = document.getElementById("category")
+        let amount = document.getElementById("amount")
+        let cleared = document.getElementById("cleared")
+        let notes = document.getElementById("notes")
+        transactionDate.defaultValue = dateFormat(new Date(this.state.transaction.transactionDate), 'yyyy-mm-dd')
+        accountNameOwner.defaultValue = this.state.transaction.accountNameOwner
+        accountType.defaultValue = this.state.transaction.accountType
+        description.defaultValue = this.state.transaction.description
+        category.defaultValue = this.state.transaction.category
+        //amount.value = this.state.transaction.amount
+        cleared.value = this.state.transaction.cleared
+        notes.defaultValue = this.state.transaction.notes
       }).catch(error => {
         console.log(error)
       })
@@ -55,26 +69,16 @@ class DialogUpdate extends Component {
     })
   }
   
-  //delete this 
-  handleListItemClick = (value, guid) => {
-    if( value === true ) {
-      var row = document.getElementById(guid);
-      if( row !== null ) {
-        row.remove();
-        
-        fetch('http://localhost:8080/select/' + guid)
-        .then(function(response) {
-          return response.json();
-        })
-        .then(function(myJson) {
-          console.log(JSON.stringify(myJson));
-        });
-      } else {
-        alert(guid + 'is returning null from the table.');
+  handleAccountChange() {
+    let account_name_owner = document.getElementById("accountNameOwner")
+    let account_type = document.getElementById("accountType")
+
+    this.state.accounts.map(accounts => {
+      if( account_name_owner.value === accounts.accountNameOwner ) {
+        account_type.value = accounts.accountType
       }
-    }
-    this.props.onClose(value);
-  };
+    })
+  }
 
   render() {
     const { classes, onClose, selectedValue, ...other } = this.props;
@@ -92,7 +96,7 @@ class DialogUpdate extends Component {
 
       <label>Account Name Owner</label>
 
-      <input required type="search" id="accountNameOwner" key="accountNameOwner" list="accounts" placeholder=" pick an account name owner..." autocomplete="off" />
+      <input required type="search" id="accountNameOwner" key="accountNameOwner" list="accounts" placeholder=" pick an account name owner..." autocomplete="off" onChange={this.handleAccountChange.bind(this)} />
       
       <datalist id="accounts">
         {
@@ -102,14 +106,12 @@ class DialogUpdate extends Component {
         }
       </datalist>
 
-      <label>Account Type</label>
-      <select id="accountType" key="accountType" >
-        <option value="credit">credit</option>
-        <option value="debit">debit</option>
-      </select>
+      {/* <label>Account Type</label> */}
+      <label></label>
+      <TextField required id="accountType" type="hidden" defaultValue="" key="accountType" disabled={true} />
 
       <label>Description</label>
-      <TextField required id="description" label="*Required" type="text" placeholder="transaction description..." autoComplete="off" onkeydown=""  defaultValue={'kat '+ this.state.transaction.description} />
+      <TextField required id="description" type="text" placeholder="transaction description..." autoComplete="off" onkeydown="" />
 
       <label>Category</label>
       <TextField id="category" key="category" type="text" placeholder="transaction category..." defaultValue="" autoComplete="off"/>
