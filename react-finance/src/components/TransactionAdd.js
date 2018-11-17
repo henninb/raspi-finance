@@ -9,7 +9,7 @@ import { withStyles } from '@material-ui/core/styles'
 import { showNotification } from '../store/notification/actionCreator'
 import uuid from 'uuidv4'
 import { connect } from 'react-redux'
-//import './TransactionPage.css'
+import './TransactionPage.css'
 
 const dateFormat = require('dateformat');
 
