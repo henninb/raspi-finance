@@ -9,10 +9,10 @@ import Dialog from '@material-ui/core/Dialog';
 import blue from '@material-ui/core/colors/blue';
 
 const styles = {
-  avatar: {
-    backgroundColor: blue[100],
-    color: blue[400],
-  },
+  //avatar: {
+  //  backgroundColor: blue[50],
+  //  color: blue[400],
+  //},
 };
 
 class DialogDeleteConfirm extends Component {
@@ -51,8 +51,8 @@ class DialogDeleteConfirm extends Component {
     const { classes, onClose, selectedValue, ...other } = this.props;
 
     return (
-      <Dialog onClose={this.handleClose} aria-labelledby="simple-dialog-title" {...other}>
-        <DialogTitle id="title">Ok to delete?</DialogTitle>
+      <Dialog onClose={this.handleClose} {...other}>
+        <DialogTitle id="title">Ok to delete {this.props.guid}</DialogTitle>
         <div>
           <List>
             <ListItem button onClick={() => this.handleListItemClick(true, this.props.guid)}>
@@ -60,7 +60,7 @@ class DialogDeleteConfirm extends Component {
             </ListItem>
 
             <ListItem button onClick={() => this.handleListItemClick(false, this.props.guid)}>
-              <ListItemText primary="No" />
+              <ListItemText primary="Cancel" />
             </ListItem>
           </List>
         </div>
