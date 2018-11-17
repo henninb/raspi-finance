@@ -1,7 +1,7 @@
 import { createStore } from 'redux'
 import rootReducer from './index'
 
-export const middleware = []
+//export const middleware = []
 
 export default function configureStore () {
   return createStore(

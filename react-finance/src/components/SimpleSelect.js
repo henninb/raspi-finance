@@ -2,8 +2,7 @@ import React, { Component } from 'react'
 import Select from 'react-select'
 import { withStyles } from '@material-ui/core/styles'
 import { connect } from 'react-redux'
-//import { bindActionCreators } from 'redux'
-import { showNotification, showAccounts } from '../store/notification/actionCreator'
+import { setAccount } from '../store/account/actionCreator'
 import axios from 'axios';
 
 class SimpleSelect extends Component {
@@ -37,7 +36,7 @@ class SimpleSelect extends Component {
 
   handleChange = (selectedOption) => {
     if( selectedOption.value !== '' ) {
-      this.props.showNotification(false, selectedOption.value);
+      this.props.setAccount(false, selectedOption.value);
     }
   }
 
@@ -58,8 +57,7 @@ const styles = theme => ({
 });
 
 const mapDispatchToProps = {
-  showNotification,
-  showAccounts,
+  setAccount,
 }
 
 export default withStyles(styles) (connect(null, mapDispatchToProps) (SimpleSelect))

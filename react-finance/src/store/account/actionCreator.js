@@ -1,4 +1,4 @@
-import { SHOW_NOTIFICATION, SHOW_ACCOUNTS } from './actionType'
+import { SHOW_NOTIFICATION, SET_ACCOUNT } from './actionType'
 
 export function showNotification (isShown, message) {
    let x = {
@@ -12,9 +12,9 @@ export function showNotification (isShown, message) {
   return x
 }
 
-export function showAccounts (isShown, message) {
+export function setAccount (isShown, message) {
   return {
-    type: SHOW_ACCOUNTS,
+    type: SET_ACCOUNT,
     payload: {
       isShown,
       message,

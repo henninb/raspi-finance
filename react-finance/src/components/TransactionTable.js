@@ -15,7 +15,7 @@ import DialogDeleteConfirm from './DialogDeleteConfirm'
 import DialogUpdate from './DialogUpdate'
 import delete_logo from '../images/delete-24px.svg'
 import edit_logo from '../images/edit-24px.svg'
-import { showNotification } from '../store/notification/actionCreator'
+import { setAccount } from '../store/account/actionCreator'
 import MUIDataTable from 'mui-datatables'
 //import { FilterDrawer, filterSelectors, filterActions } from 'material-ui-filter'
 
@@ -80,7 +80,7 @@ export class TransactionTable extends Component {
   componentDidUpdate() {
     if( this.props.notificationIsShown === false ) {
       this.setState({ toggleView:'spin', });
-      this.props.showNotification(true, this.props.accountNameOwner);
+      this.props.setAccount(true, this.props.accountNameOwner);
       axios.get('http://localhost:8080/get_by_account_name_owner/' + this.props.accountNameOwner)
       .then(result => {
           this.setState({ rows:result.data, });
@@ -241,7 +241,7 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = {
-  showNotification,
+  setAccount,
 }
 
 export default withStyles(styles) (connect(mapStateToProps, mapDispatchToProps) (TransactionTable));

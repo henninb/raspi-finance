@@ -1,12 +1,11 @@
-import { SHOW_NOTIFICATION, SHOW_ACCOUNTS } from './actionType'
+import { SHOW_NOTIFICATION, SET_ACCOUNT } from './actionType'
 
 export const initialNotificationState = {
   isShown: false,
   message: '',
 }
 
-//export default function notificationReducer (state = initialNotificationState, action = {}) {
-export default function notificationReducer (state = initialNotificationState, action = {}) {
+export default function accountReducer (state = initialNotificationState, action = {}) {
   switch (action.type) {
     case SHOW_NOTIFICATION: {
       const { payload } = action
@@ -18,8 +17,15 @@ export default function notificationReducer (state = initialNotificationState, a
       }
       return newState
     }
-    case SHOW_ACCOUNTS: {
-      return 'SHOW_ACCOUNTS'
+    case SET_ACCOUNT: {
+      const { payload } = action
+      const { isShown, message } = payload
+      const newState = {
+        ...state,
+        isShown,
+        message,
+      }
+      return newState
     }
     default:
       return state
