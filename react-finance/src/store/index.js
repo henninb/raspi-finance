@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux'
-import notification from './account/reducer'
+import account from './account/reducer'
 
 const rootReducer = combineReducers({
-  notification,
+  account,
 })
 
 export default rootReducer

@@ -33,8 +33,8 @@ const styles = theme => ({
 });
 
 const mapStateToProps = state => {
-  const { notification } = state
-  const { isShown, message } = notification
+  const { account } = state
+  const { isShown, message } = account
 
   return {
     notificationIsShown: isShown,
