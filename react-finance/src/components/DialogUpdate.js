@@ -17,7 +17,6 @@ class DialogUpdate extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      guid: null,
       accounts: [],
       transaction: {},
       loaded: false,
@@ -28,7 +27,24 @@ class DialogUpdate extends Component {
     this.props.onClose(this.props.selectedValue);
   }
 
-  componentDidMount() {
+  
+    componentDidUpdate() {
+    if ( this.props.guid !== null ) {
+      axios.get('http://localhost:8080/select/' + this.props.guid)
+      //axios.get('http://localhost:8080/select/51d685eb-1dbc-4b23-9bd3-87e4bb7bccdb')
+      .then(result => {
+        this.setState({
+          transaction: result.data,
+          loaded: true,
+        })
+      }).catch(error => {
+        console.log(error)
+      })
+    }
+  }
+  
+  componentDidMount = () => {
+    // var localThis = this
     axios.get('http://localhost:8080/select_accounts')
     .then(result => {
       this.setState({
@@ -37,18 +53,9 @@ class DialogUpdate extends Component {
     }).catch(error => {
       console.log(error)
     })
-
-    axios.get('http://localhost:8080/select/' + this.props.guid)
-    .then(result => {
-      this.setState({
-        transaction: result.data,
-        loaded: true,
-      })
-    }).catch(error => {
-      console.log(error)
-    })
   }
   
+  //delete this 
   handleListItemClick = (value, guid) => {
     if( value === true ) {
       var row = document.getElementById(guid);
@@ -76,7 +83,6 @@ class DialogUpdate extends Component {
       <Dialog onClose={this.handleClose} {...other}>
         <DialogTitle id="title">Update {this.props.guid}</DialogTitle>
         <div>
-     {this.state.loaded === true ? JSON.stringify(this.state.transaction) : 'none' }
     <form onSubmit={this.submitit} name="myform" id="myform">
       <label>guid</label>
       <TextField required id="guid" type="text" value={this.props.guid} key="guid" disabled={true} />
@@ -103,7 +109,7 @@ class DialogUpdate extends Component {
       </select>
 
       <label>Description</label>
-      <TextField required id="description" label="*Required" type="text" placeholder="transaction description..." autoComplete="off" onkeydown="" defaultValue="" />
+      <TextField required id="description" label="*Required" type="text" placeholder="transaction description..." autoComplete="off" onkeydown=""  defaultValue={'kat '+ this.state.transaction.description} />
 
       <label>Category</label>
       <TextField id="category" key="category" type="text" placeholder="transaction category..." defaultValue="" autoComplete="off"/>

@@ -6,7 +6,6 @@ import DropdownMenu from './DropdownMenu'
 import SimpleSelect from './SimpleSelect'
 import AppHeader from './AppHeader'
 import { withStyles } from '@material-ui/core/styles'
-import { setAccount } from '../store/account/actionCreator'
 import uuid from 'uuidv4'
 import { connect } from 'react-redux'
 import './TransactionPage.css'
@@ -36,8 +35,8 @@ class TransactionAdd extends Component {
 
   submitit() {
     var obj = {};
-    var form1 = document.getElementById("myform")
-    var elements1 = form1.querySelectorAll("input, select")
+    let form1 = document.getElementById("myform")
+    let elements1 = form1.querySelectorAll("input, select")
 
     elements1.forEach(item => {
       obj[item.id] = item.value;
@@ -62,6 +61,17 @@ class TransactionAdd extends Component {
     //request.setRequestHeader("Access-Control-Allow-Headers", "accept, content-type");
     request.send(payload);
   }
+  
+  handleAccountChange() {
+    let account_name_owner = document.getElementById("accountNameOwner")
+    let account_type = document.getElementById("accountType")
+
+    this.state.accounts.map(accounts => {
+      if( account_name_owner.value === accounts.accountNameOwner ) {
+        account_type.value = accounts.accountType
+      }
+    })
+  }
 
   post() {
     let endpoint = 'http://localhost:8080/insert'
@@ -71,8 +81,7 @@ class TransactionAdd extends Component {
           url: endpoint,
         })
           .then((response) => {
-            this.setState({ output: response.data.data })
-            this.setState({ isShow: false })
+            this.setState({ output: response.data })
           })
   }
 
@@ -87,10 +96,10 @@ class TransactionAdd extends Component {
   }
 
   componentDidMount() {
-    //this.props.showNotification(true, 'blah123')
-    axios.get('http://localhost:8080/select_accounts').then(result => {
+    axios.get('http://localhost:8080/select_accounts')
+    .then(result => {
       this.setState({
-        accounts:result.data,
+        accounts: result.data,
       })
     }).catch(error => {
       console.log(error)
@@ -103,7 +112,7 @@ class TransactionAdd extends Component {
   <DropdownMenu />
   <AppHeader title="Finance App" />
   <SimpleSelect />
-
+  {JSON.stringify(this.state)}
     {/*<form onSubmit={this.submitit} name="myform" id="myform" method="post"> */}
     <form onSubmit={this.submitit} name="myform" id="myform">
       <label>guid</label>
@@ -114,7 +123,7 @@ class TransactionAdd extends Component {
 
       <label>Account Name Owner</label>
 
-      <input required type="search" id="accountNameOwner" key="accountNameOwner" list="accounts" placeholder=" pick an account name owner..." autocomplete="off" />
+      <input required type="search" id="accountNameOwner" key="accountNameOwner" list="accounts" placeholder=" pick an account name owner..." autocomplete="off" onChange={this.handleAccountChange.bind(this)} />
       
       <datalist id="accounts">
         {  this.state.accounts.map(accounts => {
@@ -134,10 +143,7 @@ class TransactionAdd extends Component {
 */}
 
       <label>Account Type</label>
-      <select id="accountType" key="accountType" >
-        <option value="credit">credit</option>
-        <option value="debit">debit</option>
-      </select>
+      <TextField required id="accountType" type="text" value="" key="accountType" disabled={true}  />
 
       <label>Description</label>
       <TextField required id="description" label="*Required" type="text" placeholder="transaction description..." autoComplete="off" onkeydown="" defaultValue="" />
@@ -175,15 +181,15 @@ const styles = theme => ({
   },
 });
 
-const mapStateToProps = state => {
-  const { notification } = state
-  const { isShown, message } = notification
-
-  return {
-    notificationIsShown: isShown,
-    notificationMessage: message,
-  }
-}
+//const mapStateToProps = state => {
+//  const { account } = state
+//  const { isShown, message } = account
+//
+//  return {
+//    notificationIsShown: isShown,
+//    notificationMessage: message,
+//  }
+//}
 
 //export default compose(withStyles(styles), connect(mapStateToProps, mapDispatchToProps))(TransactionAdd)
-export default withStyles(styles) (connect(mapStateToProps, null) (TransactionAdd))
+export default withStyles(styles) (connect(null, null) (TransactionAdd))
