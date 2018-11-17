@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux'
-import notification from './notification/reducer'
+import notification from './account/reducer'
 
 const rootReducer = combineReducers({
   notification,

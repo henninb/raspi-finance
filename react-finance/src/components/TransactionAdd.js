@@ -6,7 +6,7 @@ import DropdownMenu from './DropdownMenu'
 import SimpleSelect from './SimpleSelect'
 import AppHeader from './AppHeader'
 import { withStyles } from '@material-ui/core/styles'
-import { showNotification } from '../store/notification/actionCreator'
+import { setAccount } from '../store/account/actionCreator'
 import uuid from 'uuidv4'
 import { connect } from 'react-redux'
 import './TransactionPage.css'
@@ -19,7 +19,6 @@ class TransactionAdd extends Component {
     this.state = {
       accounts: [],
       options: [],
-      //accountNameOwners: [],
     };
   }
 
@@ -186,9 +185,5 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = {
-  showNotification,
-}
-
 //export default compose(withStyles(styles), connect(mapStateToProps, mapDispatchToProps))(TransactionAdd)
-export default withStyles(styles) (connect(mapStateToProps, mapDispatchToProps) (TransactionAdd))
+export default withStyles(styles) (connect(mapStateToProps, null) (TransactionAdd))
