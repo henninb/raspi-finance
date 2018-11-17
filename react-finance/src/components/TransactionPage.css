@@ -46,7 +46,7 @@ input:focus {
   outline: 3px solid gold;
 }
 
-@media (min-width: 375px) {
+@media (min-width: 400px) {
   form {
     grid-template-columns: 200px 1fr;
     grid-gap: 12px;
