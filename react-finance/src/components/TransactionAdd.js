@@ -82,18 +82,18 @@ class TransactionAdd extends Component {
         })
           .then((response) => {
             this.setState({ output: response.data })
-          })
+        })
   }
 
-  createSelectItems(elements1) {
-    let items = [];
-
-    elements1.forEach(item => {
-      items.push(<option key={item} value={item}>{item}</option>);
-    });
-
-    return items;
-  }
+  //createSelectItems(elements1) {
+  //  let items = [];
+  //
+  //  elements1.forEach(item => {
+  //    items.push(<option key={item} value={item}>{item}</option>);
+  //  });
+  //
+  //  return items;
+  //}
 
   componentDidMount() {
     axios.get('http://localhost:8080/select_accounts')
@@ -143,10 +143,10 @@ class TransactionAdd extends Component {
 */}
 
       <label>Account Type</label>
-      <TextField required id="accountType" type="text" value="" key="accountType" disabled={true}  />
+      <TextField required id="accountType" type="text" defaultValue="" key="accountType" disabled={true} />
 
       <label>Description</label>
-      <TextField required id="description" label="*Required" type="text" placeholder="transaction description..." autoComplete="off" onkeydown="" defaultValue="" />
+      <TextField required id="description" type="text" placeholder="transaction description..." autoComplete="off" onkeydown="" defaultValue="" />
 
       <label>Category</label>
       {/* <TextField id="category" key="category" type="text" placeholder="transaction category..." defaultValue="" /> */}
@@ -176,20 +176,7 @@ class TransactionAdd extends Component {
 const styles = theme => ({
   root:{
   },
-  blah: {
-    'hidden' : '',
-  },
 });
-
-//const mapStateToProps = state => {
-//  const { account } = state
-//  const { isShown, message } = account
-//
-//  return {
-//    notificationIsShown: isShown,
-//    notificationMessage: message,
-//  }
-//}
 
 //export default compose(withStyles(styles), connect(mapStateToProps, mapDispatchToProps))(TransactionAdd)
 export default withStyles(styles) (connect(null, null) (TransactionAdd))
