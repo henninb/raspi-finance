@@ -9,7 +9,7 @@ import { withStyles } from '@material-ui/core/styles'
 import { showNotification } from '../store/notification/actionCreator'
 import uuid from 'uuidv4'
 import { connect } from 'react-redux'
-import './TransactionPage.css'
+//import './TransactionPage.css'
 
 const dateFormat = require('dateformat');
 
@@ -19,7 +19,7 @@ class TransactionAdd extends Component {
     this.state = {
       accounts: [],
       options: [],
-      accountNameOwners: [],
+      //accountNameOwners: [],
     };
   }
 
@@ -37,8 +37,8 @@ class TransactionAdd extends Component {
 
   submitit() {
     var obj = {};
-    var form1 = document.getElementById("myform");
-    var elements1 = form1.querySelectorAll( "input, select" );
+    var form1 = document.getElementById("myform")
+    var elements1 = form1.querySelectorAll("input, select")
 
     elements1.forEach(item => {
       obj[item.id] = item.value;
@@ -49,12 +49,12 @@ class TransactionAdd extends Component {
     obj['transactionDate'] = Math.round(utc_val.getTime() / 1000);
     obj['amount'] = obj['amount'].replace("$", "");
 
-    var payload = JSON.stringify(obj);
+    let payload = JSON.stringify(obj);
 
     console.log(payload);
     alert(payload);
 
-    var endpoint = "http://localhost:8080/insert";
+    let endpoint = 'http://localhost:8080/insert'
     let request = new XMLHttpRequest();
     request.open('POST', endpoint, true);
     request.setRequestHeader("Content-Type", "application/json");
@@ -62,6 +62,19 @@ class TransactionAdd extends Component {
     //request.setRequestHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
     //request.setRequestHeader("Access-Control-Allow-Headers", "accept, content-type");
     request.send(payload);
+  }
+
+  post() {
+    let endpoint = 'http://localhost:8080/insert'
+    let payload = ''
+        return axios({
+          method: 'POST',
+          url: endpoint,
+        })
+          .then((response) => {
+            this.setState({ output: response.data.data })
+            this.setState({ isShow: false })
+          })
   }
 
   createSelectItems(elements1) {
@@ -74,14 +87,9 @@ class TransactionAdd extends Component {
     return items;
   }
 
-  //onChange(e) {
-  //    this.setState({
-  //    });
-  //}
-
   componentDidMount() {
     //this.props.showNotification(true, 'blah123')
-    axios.get("http://localhost:8080/select_accounts").then(result => {
+    axios.get('http://localhost:8080/select_accounts').then(result => {
       this.setState({
         accounts:result.data,
       })
