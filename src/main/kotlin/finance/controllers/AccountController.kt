@@ -7,7 +7,8 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 
-@CrossOrigin(origins = arrayOf("http://localhost:3000"))
+//@CrossOrigin(origins = arrayOf("http://localhost:3000"))
+@CrossOrigin
 @RestController
 //@RequestMapping("/account")
 class AccountController {

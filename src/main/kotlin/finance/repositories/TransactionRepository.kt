@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.Model
+import java.util.*
 
 
 interface TransactionRepository<T : Transaction> : JpaRepository<T, Long> {
@@ -33,7 +34,7 @@ interface TransactionRepository<T : Transaction> : JpaRepository<T, Long> {
     fun findByAccountNameOwnerIgnoreCaseOrderByTransactionDateAsc(accountNameOwner: String): List<Transaction>
 
     //TODO: add LIMIT 1
-    fun findByGuid(guid: String): Transaction
+    fun findByGuid(guid: String): Optional<Transaction>
 
     // Using SpEL expression
     @Query("SELECT SUM(amount) FROM #{#entityName} WHERE cleared = 1 AND accountNameOwner=?1")

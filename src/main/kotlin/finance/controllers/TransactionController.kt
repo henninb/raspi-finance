@@ -19,6 +19,9 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.GetMapping
 import java.util.stream.Collectors
 import java.util.stream.StreamSupport
+import org.apache.catalina.Manager
+import java.util.*
+
 
 //@CrossOrigin(origins = arrayOf("http://localhost:3000"))
 @CrossOrigin
@@ -56,22 +59,24 @@ class TransactionController {
     //http://localhost:8080/select/340c315d-39ad-4a02-a294-84a74c1c7ddc
     @GetMapping(path = arrayOf("/select/{guid}"))
     fun findtTransaction(@PathVariable guid: String): Transaction {
-        val transaction: Transaction
-        LOGGER.info("getTransaction=" + guid)
-        transaction = transactionService!!.findByGuid(guid)
-        if (transaction.accountNameOwner != "" ) {
+        val transactionOption: Optional<Transaction> = transactionService!!.findByGuid(guid)
+        //val transaction: Transaction = transactionService.findByGuid(guid)
+        if( transactionOption.isPresent ) {
+            val transaction: Transaction = transactionOption.get()
             return transaction
-        } else {
-            return Transaction()
         }
+        return Transaction()
     }
 
     //http://localhost:8080/update/340c315d-39ad-4a02-a294-84a74c1c7ddc
     //TODO: ResponseEntity code fix
-    @PutMapping(path = arrayOf("/update"), consumes = arrayOf("application/json"), produces = arrayOf("application/json"))
-    fun updateTransaction(@RequestBody transaction: Transaction ) {
+    @PatchMapping(path = arrayOf("/update/{guid}"), consumes = arrayOf("application/json"), produces = arrayOf("application/json"))
+    //fun updateTransaction(@ModelAttribute transaction: Transaction ) {
+    fun updateTransaction(@RequestBody transaction: Map<String, String>) {
         //TODO: need to figure out how to perform this operation
-        val transaction = transactionService!!.findByGuid("guid")
+        //val transaction = transactionService!!.findByGuid("guid")
+        val toBePatchedTransaction = mapper.convertValue(transaction, Transaction::class.java)
+        transactionService!!.patchTransaction(toBePatchedTransaction)
     }
 
     //http://localhost:8080/insert
@@ -86,7 +91,7 @@ class TransactionController {
             transactionService?.insertTransaction(transaction)
             resultMessage.message = "Successfully processed add message."
             resultMessage.resultCode = 0
-            resultMessage.guid = transaction.guid!!
+            resultMessage.guid = transaction.guid
             resultMessage.setDate(ZonedDateTime.now())
 
             resultString = mapper.writeValueAsString(resultMessage)
@@ -108,34 +113,11 @@ class TransactionController {
     //@GetMapping(value = "/delete/{guid}")
     //TODO: ResponseEntity code fix
     @GetMapping(path = arrayOf("/delete/{guid}"))
-    fun deleteTransaction(@PathVariable guid: String): String {
-        val restResult = ResultMessage()
-        var resultString : String = ""
-        restResult.guid = guid
-
-        LOGGER.info(guid)
-        try {
-            val transaction = transactionService!!.findByGuid(guid)
-            LOGGER.info(transaction.description)
-            LOGGER.info(transaction.accountNameOwner)
-            LOGGER.info(transaction.guid)
-            LOGGER.info("transactions.contains(transaction) is found.")
-
+    fun deleteTransaction(@PathVariable guid: String) {
+        val transactionOption: Optional<Transaction> = transactionService!!.findByGuid(guid)
+        if(transactionOption.isPresent ) {
+            //val transaction: Transaction = transactionOption.get();
             transactionService!!.deleteByGuid(guid)
-            restResult.message = "Successfully processed delete message."
-            restResult.resultCode = 0
-            restResult.setDate(ZonedDateTime.now())
-            resultString = mapper.writeValueAsString(restResult)
-            //return resultString
-        } catch (ex: Exception) {
-            LOGGER.info(ex.message)
-            restResult.message = "Failure to processed delete message: " + "Exception: " + ex + " Exception message:" + ex.message
-            restResult.resultCode = 100
-            restResult.setDate(ZonedDateTime.now())
-            resultString = mapper.writeValueAsString(restResult)
-            //return resultString
-        } finally {
-            return resultString
         }
     }
 
