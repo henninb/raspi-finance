@@ -71,10 +71,19 @@ class MasterRoute : RouteBuilder() {
                 .routeId("processEachTransaction")
                 .split(body())
                 .convertBodyTo(Transaction::class.java)
-                //.log(LoggingLevel.INFO, "*** processEachTransaction: " + "\${body}")
                 .process(stringTransactionProcessor)
+                //.log("headers - \${headers}")
                 .convertBodyTo(String::class.java)
-                .to("file:" + jsonFilesInputPath + File.separator + ".processed?fileName=\${id}.json&autoCreate=true")
+//                .process(Processor {
+//                      fun process(exchange: Exchange) {
+//                        exchange.setProperty("queryParams", "one")
+//                     }
+//                    })
+//                    .log("We have: \${property.queryParams} and \${property.queryString} !")
+//
+                    //.to("file:" + jsonFilesInputPath + File.separator + ".processed?fileName=\${id}.json&autoCreate=true")
+                .log("guid for writting = \${property.guid}")
+                .to("file:" + jsonFilesInputPath + File.separator + ".processed?fileName=\${property.guid}.json&autoCreate=true")
                 .removeHeaders("*", "CamelFileLength", "CamelFileNameProduced")
                 .to("activemq:queue:" + "finance_drop")
         .end()
@@ -82,7 +91,6 @@ class MasterRoute : RouteBuilder() {
         from("activemq:queue:" + "finance_drop" + "?concurrentConsumers=1&maxConcurrentConsumers=1")
                 .autoStartup(true)
                 .routeId("insertTransaction")
-                //.log(LoggingLevel.INFO, "insertTransaction: " + "\${body}")
                 .convertBodyTo(String::class.java)
                 .process(insertTransactionProcessor)
                 .log(LoggingLevel.INFO, "inserted Transaction successfully.")

@@ -14,6 +14,7 @@ open class StringTransactionProcessor : Processor {
     @Throws(Exception::class)
     override fun process(exchange: Exchange) {
         val transaction = exchange.`in`.getBody(Transaction::class.java)
+        exchange.setProperty("guid", transaction.guid)
         exchange.`in`.body = transaction.toString()
     }
 }

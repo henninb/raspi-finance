@@ -9,8 +9,12 @@ import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
-import java.util.ArrayList
 import java.util.function.Consumer
+import org.apache.catalina.Manager
+import org.springframework.util.ClassUtils.isPresent
+import com.sun.deploy.util.SearchPath.findOne
+import java.util.*
+
 
 @Service
 open class TransactionService {
@@ -55,13 +59,13 @@ open class TransactionService {
         }
     }
 
-    //TODO: Debating on how to pass the updated fields to this method
-    fun updateTransaction(guid: String, list: Map<String, String>) {
-        val transaction: Transaction = findByGuid(guid);
-
-        transaction.cleared = list["cleared"]!!.toInt()
-        transactionRepository.saveAndFlush(transaction)
-    }
+//    //TODO: Debating on how to pass the updated fields to this method
+//    fun updateTransaction(guid: String, list: Map<String, String>) {
+//        val transaction: Optional<Transaction> = findByGuid(guid);
+//
+//        transaction.cleared = list["cleared"]!!.toInt()
+//        transactionRepository.saveAndFlush(transaction)
+//    }
 
     fun insertTransaction(transaction: Transaction) {
         val transactionId: Long = transaction.transactionId;
@@ -92,9 +96,9 @@ open class TransactionService {
         return transaction
     }
 
-    fun findByGuid(guid: String): Transaction {
-        val transaction: Transaction = transactionRepository.findByGuid(guid)
-        if( transaction.transactionId == 0L ) {
+    fun findByGuid(guid: String): Optional<Transaction> {
+        val transaction: Optional<Transaction> = transactionRepository.findByGuid(guid)
+        if( transaction.isPresent ) {
             //TODO: failure
         }
         return transaction
@@ -108,5 +112,17 @@ open class TransactionService {
         }
         return transactions;
         //return transactionRepository.findByAccountNameOwnerIgnoreCaseOrderByTransactionDate(accountNameOwner)
+    }
+
+    fun patchTransaction( transaction: Transaction) {
+        //val optionalManager = transactionRepository.findOne(transaction.guid)
+        val optionalTransaction = transactionRepository.findByGuid(transaction.guid)
+        if (optionalTransaction.isPresent()) {
+            val fromDb = optionalTransaction.get()
+            LOGGER.info("patchTransaction()=" + fromDb.guid)
+            // bean utils will copy non null values from toBePatched to fromDb manager.
+            //beanUtils.copyProperties(fromDb, toBePatched)
+            //updateManager(fromDb)
+        }
     }
 }

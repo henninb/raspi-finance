@@ -9130,7 +9130,7 @@ react-material-ui-form-validator@^2.0.2:
   dependencies:
     react-form-validator-core "0.5.0"
 
-react-number-format@^4.0.3:
+react-number-format@^4.0.4:
   version "4.0.4"
   resolved "https://registry.yarnpkg.com/react-number-format/-/react-number-format-4.0.4.tgz#0a9fffdcc0f43031eb8587aa22d616dca0852239"
   integrity sha512-dWoen/2/RVAFT8+WF+ekgRvQugeINJqtQVzHcHag79bL5tJct9nFS52gMSbxREkPxDD5kbG09JjXNxLCYWUkqA==

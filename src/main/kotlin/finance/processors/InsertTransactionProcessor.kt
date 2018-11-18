@@ -35,16 +35,17 @@ open class InsertTransactionProcessor : Processor {
 
             resultMessage.message = "Successfully processed add message."
             resultMessage.resultCode = 0
-            resultMessage.guid = transaction.guid!!
+            resultMessage.guid = transaction.guid
             resultMessage.setDate(ZonedDateTime.now())
             resultString = mapper.writeValueAsString(resultMessage)
-            //LOGGER.info(resultString)
+
+            //exchange.setProperty("guid", transaction.guid)
             exchange.`in`.body = transaction.toString()
         } catch (dive: DataIntegrityViolationException) {
             if (dive.message!!.contains("could not execute statement; SQL [n/a]; constraint [guid_idx]")) {
                 resultMessage.message = "Failure to processed add message: " + "Exception: " + dive + " Exception message:" + dive.message
                 resultMessage.resultCode = 202
-                resultMessage.guid = transactionFailure!!.guid!!
+                resultMessage.guid = transactionFailure!!.guid
                 resultMessage.setDate(ZonedDateTime.now())
                 resultString = mapper.writeValueAsString(resultMessage)
                 LOGGER.error(resultString)
@@ -53,7 +54,6 @@ open class InsertTransactionProcessor : Processor {
         } catch (e: Exception) {
             resultMessage.message = "Failure to processed add message: " + "Exception: " + e + " Exception message:" + e.message
             resultMessage.resultCode = 203
-            //resultMessage.guid = transactionFailure!!.guid!!
             resultMessage.setDate(ZonedDateTime.now())
             resultString = mapper.writeValueAsString(resultMessage)
             LOGGER.error(resultString)
