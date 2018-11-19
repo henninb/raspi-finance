@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import TextField from '@material-ui/core/TextField'
-import axios from 'axios'
 import CurrencyInput from 'react-currency-input'
 import DropdownMenu from './DropdownMenu'
 import SimpleSelect from './SimpleSelect'
@@ -8,6 +7,7 @@ import AppHeader from './AppHeader'
 import { withStyles } from '@material-ui/core/styles'
 import uuid from 'uuidv4'
 import { connect } from 'react-redux'
+import axios from 'axios'
 import './TransactionPage.css'
 
 const dateFormat = require('dateformat');
@@ -19,6 +19,7 @@ class TransactionAdd extends Component {
       accounts: [],
       options: [],
     };
+    //this.submitHandler.bind(this)
   }
 
   submitHandler(payload) {

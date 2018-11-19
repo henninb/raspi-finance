@@ -76,6 +76,9 @@ class TransactionController {
         //TODO: need to figure out how to perform this operation
         //val transaction = transactionService!!.findByGuid("guid")
         val toBePatchedTransaction = mapper.convertValue(transaction, Transaction::class.java)
+        LOGGER.info("updateTransaction")
+        LOGGER.info(toBePatchedTransaction.toString())
+        //System.exit(1)
         transactionService!!.patchTransaction(toBePatchedTransaction)
     }
 
@@ -112,13 +115,16 @@ class TransactionController {
     //http://localhost:8080/delete/38739c5b-e2c6-41cc-82c2-d41f39a33f9a
     //@GetMapping(value = "/delete/{guid}")
     //TODO: ResponseEntity code fix
-    @GetMapping(path = arrayOf("/delete/{guid}"))
-    fun deleteTransaction(@PathVariable guid: String) {
+    @DeleteMapping(path = arrayOf("/delete/{guid}"))
+    fun deleteTransaction(@PathVariable guid: String): ResponseEntity<String> {
         val transactionOption: Optional<Transaction> = transactionService!!.findByGuid(guid)
         if(transactionOption.isPresent ) {
+            LOGGER.info("deleteTransaction() description: " + transactionOption.get().description);
             //val transaction: Transaction = transactionOption.get();
             transactionService!!.deleteByGuid(guid)
+            return ResponseEntity("{status: \"OK\"}", HttpStatus.OK)
         }
+        return ResponseEntity("{status: \"Not OK\"}", HttpStatus.NO_CONTENT)
     }
 
     companion object {
