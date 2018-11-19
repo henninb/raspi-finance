@@ -1,29 +1,40 @@
-import { SHOW_NOTIFICATION, SET_ACCOUNT } from './actionType'
+import { SET_ACCOUNT, SET_TRANSACTION, SET_TRANSACTION_LOAD_STATUS } from './actionType'
 
-export const initialNotificationState = {
+export const initialState = {
   isShown: false,
-  message: '',
+  accountNameOwners: '',
+  viewStatus: 'none',
+  transactions: '',
 }
 
-export default function accountReducer (state = initialNotificationState, action = {}) {
+export default function accountReducer (state = initialState, action = {}) {
   switch (action.type) {
-    case SHOW_NOTIFICATION: {
+    case SET_ACCOUNT: {
       const { payload } = action
-      const { isShown, message } = payload
+      const { isShown, accountNameOwners } = payload
       const newState = {
         ...state,
         isShown,
-        message,
+        accountNameOwners,
       }
       return newState
     }
-    case SET_ACCOUNT: {
+    case SET_TRANSACTION: {
       const { payload } = action
-      const { isShown, message } = payload
+      const { viewStatus, transactions } = payload
       const newState = {
         ...state,
-        isShown,
-        message,
+        viewStatus,
+        transactions,
+      }
+      return newState
+    }
+    case SET_TRANSACTION_LOAD_STATUS: {
+      const { payload } = action
+      const { viewStatus } = payload
+      const newState = {
+        ...state,
+        viewStatus,
       }
       return newState
     }

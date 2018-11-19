@@ -34,11 +34,11 @@ const styles = theme => ({
 
 const mapStateToProps = state => {
   const { account } = state
-  const { isShown, message } = account
+  const { isShown, accountNameOwners } = account
 
   return {
     notificationIsShown: isShown,
-    notificationMessage: message,
+    notificationMessage: accountNameOwners,
   }
 }
 

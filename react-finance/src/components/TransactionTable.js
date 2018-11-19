@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-//import { object, func } from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import { connect } from 'react-redux'
 import axios from 'axios'
@@ -15,7 +14,7 @@ import DialogDeleteConfirm from './DialogDeleteConfirm'
 import DialogUpdate from './DialogUpdate'
 import delete_logo from '../images/delete-24px.svg'
 import edit_logo from '../images/edit-24px.svg'
-import { setAccount } from '../store/account/actionCreator'
+import { setAccount, setTransaction, setTransactionLoadStatus } from '../store/account/actionCreator'
 import MUIDataTable from 'mui-datatables'
 //import { FilterDrawer, filterSelectors, filterActions } from 'material-ui-filter'
 
@@ -29,8 +28,10 @@ export class TransactionTable extends Component {
         toggleView: 'none',
         guidToDelete: null,
         guidToUpdate: null,
-        loading: false,
       }
+    this.handleClickDelete.bind(this)
+    this.handleClickUpdate.bind(this)
+    //this.viewTable.bind(this)
   }
 
   handleClickDelete = (guid) => {
@@ -66,25 +67,18 @@ export class TransactionTable extends Component {
 
   componentWillReceiveProps(nextProps) {
   }
-  
-  viewTable() {
-    //if( this.props.notificationIsShown === false ) {
-      if( this.state.toggleView === 'spin' ) {
-        return this.props.hideTable
-      } else {
-        return this.props.viewTable
-      }
-    //}
-  }
 
-  componentDidUpdate() {
+  componentDidUpdate( prevProps, prevState ) {
+	  
+	  alert('componentDidUpdate')
+	  
     if( this.props.notificationIsShown === false ) {
-      this.setState({ toggleView:'spin', });
+      this.props.setTransactionLoadStatus('spin')
       this.props.setAccount(true, this.props.accountNameOwner);
       axios.get('http://localhost:8080/get_by_account_name_owner/' + this.props.accountNameOwner)
       .then(result => {
-          this.setState({ rows:result.data, });
-          this.setState({ toggleView:'none', });
+          this.props.setTransaction('none', result.data)
+          this.setState({ rows: result.data, })
       })
       .catch(error => {
         console.log(error)
@@ -93,6 +87,9 @@ export class TransactionTable extends Component {
   }
 
   componentDidMount () {
+    //alert('accountNameOwner - componentDidMount=' + this.props.accountNameOwner)
+    this.props.setAccount(true, []);
+    this.props.setTransaction('none', [{"guid":"e85890bb-ff14-4fa3-a23b-db59e323b0c1","sha256":"","accountType":"credit","accountNameOwner":"discover_brian","description":"none","category":"","notes":"","cleared":0,"reoccurring":false,"amount":"0.0","transactionDate":0,"dateUpdated":0,"dateAdded":0}])
   }
 
   render() {
@@ -100,16 +97,16 @@ export class TransactionTable extends Component {
 
     return(
     <div className="">
-    
+    {/* JSON.stringify(this.state) */}
+    {JSON.stringify(this.props.transactionList)}
+    {/* Array.from(this.props.transactionList).map(row => {})*/}
 
-  <LoadingData 
-      className=""
-      type={this.state.toggleView} 
-      open={this.state.toggleView}
-      onClose={this.state.toggleView} />
+    {/* <LoadingData className=""  type={this.state.toggleView} */}
+    <LoadingData className="" type={this.props.loadingStatus} />
+
       {/* <div className={this.props.notificationIsShown === true ? this.props.showTable: this.props.hideTable}> */}
-<div className={this.props.hideTable}>
-      <Table id="mytable">
+    <div className={this.props.hideTable}>
+      <Table id="transactionTable" key="transactionTable">
           <TableHead>
           <TableRow>
             <CustomTableCell>action</CustomTableCell>
@@ -232,16 +229,19 @@ const styles = (theme) => ({
 
 const mapStateToProps = state => {
   const { account } = state
-  const { isShown, message } = account
+  const { isShown, accountNameOwners, transactions, viewStatus } = account
 
   return {
     notificationIsShown: isShown,
-    notificationMessage: message,
+    transactionList: transactions,
+    loadingStatus: viewStatus,
   }
 }
 
 const mapDispatchToProps = {
   setAccount,
+  setTransaction,
+  setTransactionLoadStatus,
 }
 
 export default withStyles(styles) (connect(mapStateToProps, mapDispatchToProps) (TransactionTable));

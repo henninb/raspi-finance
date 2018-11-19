@@ -1,23 +1,31 @@
-import { SHOW_NOTIFICATION, SET_ACCOUNT } from './actionType'
+import { SET_ACCOUNT, SET_TRANSACTION, SET_TRANSACTION_LOAD_STATUS } from './actionType'
 
-export function showNotification (isShown, message) {
-   let x = {
-    type: SHOW_NOTIFICATION,
+export function setTransaction (viewStatus, transactions) {
+  return {
+    type: SET_TRANSACTION,
     payload: {
-      isShown,
-      message,
+      viewStatus,
+      transactions,
     },
-   }
-
-  return x
+  }
 }
 
-export function setAccount (isShown, message) {
+export function setTransactionLoadStatus (viewStatus) {
+  return {
+    type: SET_TRANSACTION_LOAD_STATUS,
+    payload: {
+      viewStatus,
+    },
+  }
+}
+
+
+export function setAccount (isShown, accountNameOwners) {
   return {
     type: SET_ACCOUNT,
     payload: {
       isShown,
-      message,
+      accountNameOwners,
     },
   }
 }
