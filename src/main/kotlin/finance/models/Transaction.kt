@@ -10,7 +10,7 @@ import finance.utils.TransactionDeserializer
 import finance.utils.TransactionSerializer
 import java.sql.Date
 import javax.validation.constraints.NotNull
-
+import javax.validation.constraints.Size
 
 @Entity(name = "TransactionEntity")
 @Table(name = "t_transaction")
@@ -49,14 +49,19 @@ class Transaction {
     var transactionId: Long = 0L
     @Column(unique=true)
     @NotNull
+    @Size(min = 36, max = 36)
     var guid: String = ""
     var accountId: Long = 0
+    @Size(min = 5, max = 6)
     var accountType: String? = null
     @NotNull
+    @Size(min = 1, max = 40)
     var accountNameOwner: String? = null
     var transactionDate: Date = Date(0)
     @NotNull
+    @Size(min = 1, max = 75)
     var description: String? = null
+    @Size(max = 50)
     var category: String? = null
     @NotNull
     var amount: Double = 0.0
@@ -64,9 +69,11 @@ class Transaction {
     @Column(name = "cleared")
     var cleared: Int = 0
     var reoccurring: Boolean = true;
+    @Size(max = 100)
     var notes: String? = null
     var dateUpdated: Timestamp = Timestamp(0)
     var dateAdded: Timestamp = Timestamp(0)
+    @Size(max = 70)
     var sha256: String? = null
 
 //    override fun toString(): String {
