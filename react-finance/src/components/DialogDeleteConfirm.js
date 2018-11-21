@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Dialog from '@material-ui/core/Dialog';
+import PropTypes from 'prop-types'
+import { withStyles } from '@material-ui/core/styles'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemText from '@material-ui/core/ListItemText'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import Dialog from '@material-ui/core/Dialog'
+import Button from '@material-ui/core/Button'
 //import blue from '@material-ui/core/colors/blue';
 import axios from 'axios'
 
@@ -28,10 +29,9 @@ class DialogDeleteConfirm extends Component {
 
   handleClose = () => {
     this.props.onClose(this.props.selectedValue);
-  };
+  }
 
   handleListItemClick = (value, guid) => {
-    // alert('got here')
     if( value === true ) {
       let transactionTable = document.getElementById('transactionTable')
       let row = document.getElementById(guid)
@@ -55,15 +55,11 @@ class DialogDeleteConfirm extends Component {
         console.log(error);
         alert(error);
       });
-      } else {
-        alert(guid + 'is returning null from the table.');
       }
     }
     if( this.props !== null ) {
       this.props.onClose(value)
     }
-    //return false
-    //this.props.onClose(value)
   };
 
   render() {
@@ -73,7 +69,8 @@ class DialogDeleteConfirm extends Component {
       <Dialog onClose={this.handleClose} {...other}>
         <DialogTitle id="title">Ok to delete {this.props.guid}</DialogTitle>
         <div>
-{JSON.stringify(this.props)}
+{/* JSON.stringify(this.props)*/}
+	{/*
           <List>
             <ListItem button onClick={() => this.handleListItemClick(true, this.props.guid)}>
               <ListItemText primary="Yes" />
@@ -83,6 +80,9 @@ class DialogDeleteConfirm extends Component {
               <ListItemText primary="Cancel" />
             </ListItem>
           </List>
+	*/}
+          <Button onClick={() => this.handleListItemClick(true, this.props.guid)}>Yes</Button> 
+          <Button onClick={() => this.handleListItemClick(false, this.props.guid)}>No</Button> 
         </div>
       </Dialog>
     );
