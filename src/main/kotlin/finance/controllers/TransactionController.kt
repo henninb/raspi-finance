@@ -17,9 +17,9 @@ import java.time.ZonedDateTime
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.GetMapping
+import java.sql.Date
 import java.util.stream.Collectors
 import java.util.stream.StreamSupport
-import org.apache.catalina.Manager
 import java.util.*
 
 
@@ -68,18 +68,46 @@ class TransactionController {
         return Transaction()
     }
 
+    //curl --header "Content-Type: application/json-patch+json" --request PATCH --data '{"guid":"a064b942-1e78-4913-adb3-b992fc1b4dd3","sha256":"","accountType":"credit","accountNameOwner":"discover_brian","description":"Last Updated","category":"","notes":"","cleared":0,"reoccurring":false,"amount":"0.00","transactionDate":1512730594,"dateUpdated":1487332021,"dateAdded":1487332021}' http://localhost:8080/update/a064b942-1e78-4913-adb3-b992fc1b4dd3
     //http://localhost:8080/update/340c315d-39ad-4a02-a294-84a74c1c7ddc
     //TODO: ResponseEntity code fix
-    @PatchMapping(path = arrayOf("/update/{guid}"), consumes = arrayOf("application/json"), produces = arrayOf("application/json"))
+    //application/json-patch+json
+    @PatchMapping(path = arrayOf("/update/{guid}"), consumes = arrayOf("application/json-patch+json"), produces = arrayOf("application/json"))
     //fun updateTransaction(@ModelAttribute transaction: Transaction ) {
-    fun updateTransaction(@RequestBody transaction: Map<String, String>) {
-        //TODO: need to figure out how to perform this operation
-        //val transaction = transactionService!!.findByGuid("guid")
+    fun updateTransaction(@RequestBody transaction: Map<String, String>): ResponseEntity<String> {
+        var toBePatchedTransaction1: Transaction = Transaction()
+        //toBePatchedTransaction1.cleared = transaction["cleared"]!!.toInt()
+        if (transaction.containsKey("guid")) {
+            toBePatchedTransaction1.guid = transaction["guid"].toString()
+        }
+        if (transaction.containsKey("accountNameOwner")) {
+            toBePatchedTransaction1.accountNameOwner = transaction["accountNameOwner"].toString()
+        }
+        if (transaction.containsKey("transactionDate")) {
+            toBePatchedTransaction1.transactionDate = Date(transaction["transactionDate"]!!.toLong() * 1000)
+        }
+        if (transaction.containsKey("description")) {
+            toBePatchedTransaction1.description = transaction["description"].toString()
+        }
+        if (transaction.containsKey("category")) {
+            toBePatchedTransaction1.category = transaction["category"].toString()
+        }
+        if (transaction.containsKey("amount")) {
+            toBePatchedTransaction1.amount = transaction["amount"]!!.toDouble()
+        }
+        if (transaction.containsKey("cleared")) {
+            toBePatchedTransaction1.cleared = transaction["cleared"]!!.toInt()
+        }
+        if (transaction.containsKey("notes")) {
+            toBePatchedTransaction1.notes = transaction["notes"].toString()
+        }
+
         val toBePatchedTransaction = mapper.convertValue(transaction, Transaction::class.java)
         LOGGER.info("updateTransaction")
-        LOGGER.info(toBePatchedTransaction.toString())
+        //LOGGER.info(toBePatchedTransaction.toString())
         //System.exit(1)
-        transactionService!!.patchTransaction(toBePatchedTransaction)
+        transactionService!!.patchTransaction(toBePatchedTransaction1)
+        return ResponseEntity.ok("resource updated")
     }
 
     //http://localhost:8080/insert
@@ -122,7 +150,7 @@ class TransactionController {
             LOGGER.info("deleteTransaction() description: " + transactionOption.get().description);
             //val transaction: Transaction = transactionOption.get();
             transactionService!!.deleteByGuid(guid)
-            return ResponseEntity("{status: \"OK\"}", HttpStatus.OK)
+            return ResponseEntity.ok("{status: \"OK\"}")
         }
         return ResponseEntity("{status: \"Not OK\"}", HttpStatus.NO_CONTENT)
     }

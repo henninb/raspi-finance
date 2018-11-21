@@ -7,13 +7,16 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import finance.models.Transaction
 import org.slf4j.LoggerFactory
 import java.io.IOException
+import java.nio.charset.StandardCharsets
 import java.sql.Date
 import java.sql.Timestamp
 import java.text.DecimalFormat
+import java.text.Normalizer
 
 class TransactionDeserializer @JvmOverloads constructor(vc: Class<*>? = null) : StdDeserializer<Transaction>(vc) {
 
     private val LOGGER = LoggerFactory.getLogger(this.javaClass)
+    private val ASCII = StandardCharsets.US_ASCII.newEncoder()
 
     @Throws(IOException::class)
     override fun deserialize(jsonParser: JsonParser, ctxt: DeserializationContext): Transaction {
@@ -25,80 +28,71 @@ class TransactionDeserializer @JvmOverloads constructor(vc: Class<*>? = null) : 
             LOGGER.warn("node is null")
         }
 
-        var guid = ""
+        fun deserializeString(name: String) : String {
+            var str = ""
+            try {
+                str = node!!.get(name).asText()
+                if( !ASCII.canEncode(str) ) {
+                    LOGGER.warn("invalid chars in " + name)
+                }
+                str = Normalizer.normalize(str, Normalizer.Form.NFD)
+                        .replace("[^\\p{ASCII}]".toRegex(), "")
+                        .replace("^\\s+".toRegex(), "")
+                        .replace("\\s+$".toRegex(), "")
+                        .replace("\\s{2}+".toRegex(), " ")
+            }
+            catch(ex: Exception) {
+                LOGGER.warn(name + " was null.")
+            }
+            return str
+        }
+
+        val guid = deserializeString("guid")
+        val sha256 = deserializeString("sha256")
+        val accountType = deserializeString("accountType")
+        val accountNameOwner = deserializeString("accountNameOwner")
+        val description = deserializeString("description")
+        val category = deserializeString("category")
+        val notes = deserializeString("notes")
+
+        var amount = 0.00
         try {
-            guid = node!!.get("guid").asText()
-        }
-        catch(ex: Exception) {
-            //TODO: generate a guid
-            LOGGER.warn("guid was null")
+            amount = (DecimalFormat("#.##").format(node!!.get("amount").asDouble())).toDouble()
+        } catch (ex: Exception) {
+            LOGGER.warn("amount was null.")
         }
 
-        var sha256 = ""
+        var cleared = 2
         try {
-            sha256 = node!!.get("sha256").asText()
+            cleared = node!!.get("cleared").asInt()
+        } catch (ex: Exception) {
+            LOGGER.warn("cleared was null.")
         }
-        catch(ex: Exception) {
-            LOGGER.warn("sha256 was null")
-        }
-
-        var accountType = ""
-        try {
-            accountType = node!!.get("accountType").asText()
-        }
-        catch(ex: Exception) {
-            LOGGER.warn("accountType was null and set to default value of credit.")
-        }
-
-        val accountNameOwner = node!!.get("accountNameOwner").asText()
-        if( accountNameOwner == null ) {
-            LOGGER.warn("accountNameOwner is null is not cool")
-        }
-
-        val description = node.get("description").asText()
-        if( description == null ) {
-            LOGGER.warn("description is null is not cool")
-        }
-        var category = node.get("category").asText()
-        if( category == null ) {
-            LOGGER.warn("category is null and is now set to empty.")
-            category = ""
-        }
-
-        var notes = node.get("notes").asText()
-        if( notes == null ) {
-            LOGGER.warn("notes is null and is now set to empty.")
-            notes = ""
-        }
-
-        //TODO: tidy up these possible failures
-        val amount = (DecimalFormat("#.##").format(node.get("amount").asDouble())).toDouble()
-        val cleared = node.get("cleared").asInt()
 
         var reoccurring = false
         try {
-            reoccurring = node.get("reoccurring").asBoolean()
+            reoccurring = node!!.get("reoccurring").asBoolean()
         } catch( e: Exception) {
             LOGGER.warn("reoccurring is null and is now set to false.")
         }
 
         var transactionDate = Date(0)
         try {
-            transactionDate = Date(node.get("transactionDate").asLong() * 1000)
+            transactionDate = Date(node!!.get("transactionDate").asLong() * 1000)
         } catch( e: Exception) {
             LOGGER.warn("transactionDate is null and is now set to Date(0).")
         }
 
         var dateUpdated = Timestamp(0)
         try {
-            dateUpdated = Timestamp(node.get("dateUpdated").asLong() * 1000)
+            dateUpdated = Timestamp(node!!.get("dateUpdated").asLong() * 1000)
         } catch( e: Exception) {
             LOGGER.warn("dateUpdated is null and is now set to Timestamp(0).")
         }
 
         var dateAdded = Timestamp(0)
         try {
-            dateAdded = Timestamp(node.get("dateAdded").asLong() * 1000)
+            dateAdded = Timestamp(node!!.get("dateAdded").asLong() * 1000)
         } catch( e: Exception) {
             LOGGER.warn("dateAdded is null and is now set to Timestamp(0).")
         }

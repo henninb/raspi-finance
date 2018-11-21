@@ -86,13 +86,22 @@ class DialogUpdate extends Component {
     let elements1 = form1.querySelectorAll("input, select")
 
     elements1.forEach(item => {
-      obj[item.id] = item.value;
-    });
+		if( item.id == 'guid' || item.id == 'accountNameOwner' ){ 
 
-    let date_val = new Date(obj['transactionDate']);
-    let utc_val = new Date(date_val.getTime() + date_val.getTimezoneOffset() * 60000);
-    obj['transactionDate'] = Math.round(utc_val.getTime() / 1000);
-    obj['amount'] = obj['amount'].replace("$", "");
+		obj[item.id] = item.value;
+		}
+		})
+    //obj["guid"] = elements1.guid
+    //obj["accountNameOwner"] = elements1["accountNameOwner"]
+
+    //elements1.forEach(item => {
+    //  obj[item.id] = item.value;
+    //})
+    //
+    //let date_val = new Date(obj['transactionDate']);
+    //let utc_val = new Date(date_val.getTime() + date_val.getTimezoneOffset() * 60000);
+    //obj['transactionDate'] = Math.round(utc_val.getTime() / 1000);
+    //obj['amount'] = obj['amount'].replace("$", "");
 
     let payload = JSON.stringify(obj);
 
@@ -102,7 +111,7 @@ class DialogUpdate extends Component {
     let endpoint = 'http://localhost:8080/update/' + obj['guid']
     let request = new XMLHttpRequest();
     request.open('PATCH', endpoint, true);
-    request.setRequestHeader("Content-Type", "application/json");
+    request.setRequestHeader("Content-Type", "application/json-patch+json");
     //request.setRequestHeader("Access-Control-Allow-Origin", "*");
     //request.setRequestHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
     //request.setRequestHeader("Access-Control-Allow-Headers", "accept, content-type");

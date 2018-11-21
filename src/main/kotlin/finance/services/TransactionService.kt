@@ -10,11 +10,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import java.util.function.Consumer
-import org.apache.catalina.Manager
-import org.springframework.util.ClassUtils.isPresent
-import com.sun.deploy.util.SearchPath.findOne
 import java.util.*
-
 
 @Service
 open class TransactionService {
@@ -117,12 +113,22 @@ open class TransactionService {
     fun patchTransaction( transaction: Transaction) {
         //val optionalManager = transactionRepository.findOne(transaction.guid)
         val optionalTransaction = transactionRepository.findByGuid(transaction.guid)
+        LOGGER.info("patchTransaction - findByGuid()=" + transaction.guid)
         if (optionalTransaction.isPresent()) {
             val fromDb = optionalTransaction.get()
             LOGGER.info("patchTransaction()=" + fromDb.guid)
+
+            if( fromDb.accountNameOwner != transaction.accountNameOwner && transaction.accountNameOwner != "" ) {
+                fromDb.accountNameOwner = transaction.accountNameOwner;
+                LOGGER.info("Saved transaction where account_name_owner_changed")
+                transactionRepository.save(fromDb)
+            }
+
             // bean utils will copy non null values from toBePatched to fromDb manager.
             //beanUtils.copyProperties(fromDb, toBePatched)
             //updateManager(fromDb)
+        } else {
+            LOGGER.warn("guid not found=" + transaction.guid)
         }
     }
 }
