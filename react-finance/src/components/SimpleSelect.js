@@ -18,18 +18,26 @@ class SimpleSelect extends Component {
   }
 
   componentDidMount () {
-    axios.get('http://localhost:8080/select_accounts')
-      .then((response) => {
+    
+    let endpoint = 'http://localhost:8080/select_accounts'
+    let payload = ''
+
+    axios.get(endpoint, payload, {
+    headers: {
+        'Content-Type': 'application/json',
+    }
+    })
+      .then(response => {
         this.setState({accountNameOwners: response.data}, () => {
    
         var joined = []
         this.state.accountNameOwners.forEach(element => {
           joined = joined.concat({ value:  element.accountNameOwner, label:  element.accountNameOwner })
-        });
+        })
         this.setState({ options: joined })
-        });
+        })
      })
-     .catch(function (error) {
+     .catch(error => {
          console.log(error)
      });
   }

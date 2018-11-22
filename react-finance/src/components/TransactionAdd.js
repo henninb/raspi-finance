@@ -22,16 +22,22 @@ class TransactionAdd extends Component {
     //this.submitHandler.bind(this)
   }
 
-  submitHandler(payload) {
-   axios.post('http://localhost:8080/insert', payload)
-     .then(function(response){
-       console.log(response);
+  submitHandler( payload ) {
+    let endpoint = 'http://localhost:8080/insert'
+
+    axios.post(endpoint, payload, {
+    headers: {
+        'Content-Type': 'application/json',
+    }
+    })
+    .then(response => {
+       console.log(response)
        alert(response);
    })
-     .catch(function(error){
-       console.log(error);
-       alert(error);
-     });
+   .catch(error => {
+     console.log(error)
+     alert(error);
+   })
   }
 
   submitit() {
@@ -54,13 +60,29 @@ class TransactionAdd extends Component {
     alert(payload);
 
     let endpoint = 'http://localhost:8080/insert'
-    let request = new XMLHttpRequest();
-    request.open('POST', endpoint, true);
-    request.setRequestHeader("Content-Type", "application/json");
-    //request.setRequestHeader("Access-Control-Allow-Origin", "*");
-    //request.setRequestHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-    //request.setRequestHeader("Access-Control-Allow-Headers", "accept, content-type");
-    request.send(payload);
+
+    axios.post(endpoint, payload, {
+    headers: {
+        'Content-Type': 'application/json',
+    }
+    })
+    .then(response => {
+       console.log(response)
+       alert(response);
+   })
+   .catch(error => {
+     console.log(error)
+     alert(error);
+   })
+
+
+	//let request = new XMLHttpRequest();
+    //request.open('POST', endpoint, true);
+    //request.setRequestHeader("Content-Type", "application/json");
+    ////request.setRequestHeader("Access-Control-Allow-Origin", "*");
+    ////request.setRequestHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+    ////request.setRequestHeader("Access-Control-Allow-Headers", "accept, content-type");
+    //request.send(payload);
   }
   
   handleAccountChange() {
@@ -74,33 +96,19 @@ class TransactionAdd extends Component {
     })
   }
 
-  post() {
-    let endpoint = 'http://localhost:8080/insert'
-    let payload = ''
-        return axios({
-          method: 'POST',
-          url: endpoint,
-        })
-          .then((response) => {
-            this.setState({ output: response.data })
-        })
-  }
-
-  //createSelectItems(elements1) {
-  //  let items = [];
-  //
-  //  elements1.forEach(item => {
-  //    items.push(<option key={item} value={item}>{item}</option>);
-  //  });
-  //
-  //  return items;
-  //}
-
   componentDidMount() {
-    axios.get('http://localhost:8080/select_accounts')
-    .then(result => {
+
+    let endpoint = 'http://localhost:8080/select_accounts'
+    let payload = ''
+
+    axios.get(endpoint, payload, {
+    headers: {
+        'Content-Type': 'application/json',
+    }
+    })
+    .then(response => {
       this.setState({
-        accounts: result.data,
+        accounts: response.data,
       })
     }).catch(error => {
       console.log(error)

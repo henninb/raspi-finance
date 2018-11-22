@@ -75,38 +75,38 @@ class TransactionController {
     @PatchMapping(path = arrayOf("/update/{guid}"), consumes = arrayOf("application/json-patch+json"), produces = arrayOf("application/json"))
     //fun updateTransaction(@ModelAttribute transaction: Transaction ) {
     fun updateTransaction(@RequestBody transaction: Map<String, String>): ResponseEntity<String> {
-        var toBePatchedTransaction1: Transaction = Transaction()
-        //toBePatchedTransaction1.cleared = transaction["cleared"]!!.toInt()
-        if (transaction.containsKey("guid")) {
-            toBePatchedTransaction1.guid = transaction["guid"].toString()
-        }
-        if (transaction.containsKey("accountNameOwner")) {
-            toBePatchedTransaction1.accountNameOwner = transaction["accountNameOwner"].toString()
-        }
-        if (transaction.containsKey("transactionDate")) {
-            toBePatchedTransaction1.transactionDate = Date(transaction["transactionDate"]!!.toLong() * 1000)
-        }
-        if (transaction.containsKey("description")) {
-            toBePatchedTransaction1.description = transaction["description"].toString()
-        }
-        if (transaction.containsKey("category")) {
-            toBePatchedTransaction1.category = transaction["category"].toString()
-        }
-        if (transaction.containsKey("amount")) {
-            toBePatchedTransaction1.amount = transaction["amount"]!!.toDouble()
-        }
-        if (transaction.containsKey("cleared")) {
-            toBePatchedTransaction1.cleared = transaction["cleared"]!!.toInt()
-        }
-        if (transaction.containsKey("notes")) {
-            toBePatchedTransaction1.notes = transaction["notes"].toString()
-        }
+//        var toBePatchedTransaction1: Transaction = Transaction()
+//
+//        if (transaction.containsKey("guid")) {
+//            toBePatchedTransaction1.guid = transaction["guid"].toString()
+//        }
+//        if (transaction.containsKey("accountNameOwner")) {
+//            toBePatchedTransaction1.accountNameOwner = transaction["accountNameOwner"].toString()
+//        }
+//        if (transaction.containsKey("transactionDate")) {
+//            toBePatchedTransaction1.transactionDate = Date(transaction["transactionDate"]!!.toLong() * 1000)
+//        }
+//        if (transaction.containsKey("description")) {
+//            toBePatchedTransaction1.description = transaction["description"].toString()
+//        }
+//        if (transaction.containsKey("category")) {
+//            toBePatchedTransaction1.category = transaction["category"].toString()
+//        }
+//        if (transaction.containsKey("amount")) {
+//            toBePatchedTransaction1.amount = transaction["amount"]!!.toDouble()
+//        }
+//        if (transaction.containsKey("cleared")) {
+//            toBePatchedTransaction1.cleared = transaction["cleared"]!!.toInt()
+//        }
+//        if (transaction.containsKey("notes")) {
+//            toBePatchedTransaction1.notes = transaction["notes"].toString()
+//        }
 
         val toBePatchedTransaction = mapper.convertValue(transaction, Transaction::class.java)
-        LOGGER.info("updateTransaction")
+        //LOGGER.info("updateTransaction")
         //LOGGER.info(toBePatchedTransaction.toString())
         //System.exit(1)
-        transactionService!!.patchTransaction(toBePatchedTransaction1)
+        transactionService!!.patchTransaction(toBePatchedTransaction)
         return ResponseEntity.ok("resource updated")
     }
 

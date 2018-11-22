@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
 import { withStyles } from '@material-ui/core/styles'
-//import axios from 'axios'
-//import SimpleSelect from './SimpleSelect'
 import './DropdownMenu.css'
 
 class DropdownMenu extends Component {  
@@ -16,17 +14,6 @@ class DropdownMenu extends Component {
       var url = '/list/' + accountNameOwner;
       return url;
   }
-/*  
-  componentDidMount() {
-    axios.get("http://localhost:8080/select_accounts").then(result => {
-      this.setState({
-        accounts:result.data,
-      })
-    }).catch(error => {
-      console.log(error)
-    })
-  }
-*/
 
   render() {
     return (

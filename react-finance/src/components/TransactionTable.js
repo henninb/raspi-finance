@@ -70,34 +70,68 @@ export class TransactionTable extends Component {
   }
 
   componentDidUpdate( prevProps, prevState ) {
-    //alert('componentDidUpdate')
     if( this.props.notificationIsShown === false ) {
       this.props.setTransactionLoadStatus('spin')
-      this.props.setAccount(true, this.props.accountNameOwner);
-      axios.get('http://localhost:8080/get_by_account_name_owner/' + this.props.accountNameOwner)
-      .then(result => {
-          this.props.setTransaction('none', result.data)
+      this.props.setAccount(true, this.props.accountNameOwner)
+	  
+    let endpoint = 'http://localhost:8080/get_by_account_name_owner/' + this.props.accountNameOwner
+    let payload = ''
 
-          var newRows = []
-          
-          result.data.forEach(function (element) {
-            var newRow = []
-            newRow.push('amount')
-            newRow.push(element.transactionDate)
-            newRow.push(element.description)
-            newRow.push(element.category)
-            newRow.push(element.amount)
-            newRow.push(element.cleared)
-            newRow.push(element.notes)
-            newRows.push(newRow)
-          })
+    axios.get(endpoint, payload, {
+    headers: {
+        'Content-Type': 'application/json',
+    }
+    })
+    .then(response => {
 
-          this.setState({ myRows: newRows, })
-          this.setState({ rows: result.data, })
+      this.props.setTransaction('none', response.data)
+
+      var newRows = []
+      
+      response.data.forEach(function (element) {
+        var newRow = []
+        newRow.push('amount')
+        newRow.push(element.transactionDate)
+        newRow.push(element.description)
+        newRow.push(element.category)
+        newRow.push(element.amount)
+        newRow.push(element.cleared)
+        newRow.push(element.notes)
+        newRows.push(newRow)
       })
-      .catch(error => {
-        console.log(error)
-      })
+
+      this.setState({ myRows: newRows, })
+      this.setState({ rows: response.data, })
+    })
+    .catch(error => {
+      console.log(error);
+      alert(error);
+    })
+	  
+      //axios.get('http://localhost:8080/get_by_account_name_owner/' + this.props.accountNameOwner)
+      //.then(result => {
+      //    this.props.setTransaction('none', result.data)
+      //
+      //    var newRows = []
+      //    
+      //    result.data.forEach(function (element) {
+      //      var newRow = []
+      //      newRow.push('amount')
+      //      newRow.push(element.transactionDate)
+      //      newRow.push(element.description)
+      //      newRow.push(element.category)
+      //      newRow.push(element.amount)
+      //      newRow.push(element.cleared)
+      //      newRow.push(element.notes)
+      //      newRows.push(newRow)
+      //    })
+      //
+      //    this.setState({ myRows: newRows, })
+      //    this.setState({ rows: result.data, })
+      //})
+      //.catch(error => {
+      //  console.log(error)
+      //})
     }
   }
 
@@ -109,8 +143,8 @@ export class TransactionTable extends Component {
 
   render() {
     //const classes = this.props
-	
-	let content = <Table title={'Door List'} data={this.state.myRows} columns={this.state.columns} />
+
+    let content = <Table title={'List'} data={this.state.myRows} columns={this.state.columns} />
 
     return(
     <div className="">
