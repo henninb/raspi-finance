@@ -46,15 +46,32 @@ class DialogDeleteConfirm extends Component {
 //var element = document.getElementById(elementId);
 //element.parentNode.removeChild(guid);
 
-      axios.delete('http://localhost:8080/delete/' + guid)
-      .then(function(response){
-        console.log(response);
-        //alert(response);
-      })
-      .catch(function(error){
-        console.log(error);
-        alert(error);
-      });
+    let endpoint = 'http://localhost:8080/delete/' + guid
+    let payload = ''
+
+    axios.delete(endpoint, payload, {
+    headers: {
+        'Content-Type': 'application/json',
+    }
+    })
+    .then(response => {
+      console.log(response)
+      alert(JSON.stringify(response))
+    })
+    .catch(error => {
+      console.log(error)
+      alert(error)
+    })
+
+      //axios.delete('http://localhost:8080/delete/' + guid)
+      //.then(function(response) {
+      //  console.log(response);
+      //  alert(response);
+      //})
+      //.catch(function(error){
+      //  console.log(error);
+      //  alert(error);
+      //})
       }
     }
     if( this.props !== null ) {

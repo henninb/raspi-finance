@@ -20,8 +20,9 @@ class DialogUpdate extends Component {
     this.state = {
       accounts: [],
       transaction: {},
-      loaded: false,
+      open: false,
     };
+    //this.submitit.bind(this)
   }
 
   handleClose = () => {
@@ -30,19 +31,26 @@ class DialogUpdate extends Component {
 
   componentDidUpdate() {
     if ( this.props.guid !== null ) {
-      axios.get('http://localhost:8080/select/' + this.props.guid)
-      .then(result => {
+      let endpoint = 'http://localhost:8080/select/' + this.props.guid
+      let payload = ''
+      
+      axios.get(endpoint, payload, {
+      headers: {
+          'Content-Type': 'application/json',
+      }
+      })
+      .then(response => {
         this.setState({
-          transaction: result.data,
+          transaction: response.data,
         })
-        let transactionDate = document.getElementById("transactionDate")
-        let accountNameOwner = document.getElementById("accountNameOwner")
-        let accountType = document.getElementById("accountType")
-        let description = document.getElementById("description")
-        let category = document.getElementById("category")
-        let amount = document.getElementById("amount")
-        let cleared = document.getElementById("cleared")
-        let notes = document.getElementById("notes")
+        let transactionDate = document.getElementById('transactionDate')
+        let accountNameOwner = document.getElementById('accountNameOwner')
+        let accountType = document.getElementById('accountType')
+        let description = document.getElementById('description')
+        let category = document.getElementById('category')
+        let amount = document.getElementById('amount')
+        let cleared = document.getElementById('cleared')
+        let notes = document.getElementById('notes')
         transactionDate.defaultValue = dateFormat(new Date(this.state.transaction.transactionDate * 1000), 'yyyy-mm-dd')
         accountNameOwner.defaultValue = this.state.transaction.accountNameOwner
         accountType.defaultValue = this.state.transaction.accountType
@@ -59,10 +67,18 @@ class DialogUpdate extends Component {
   
   componentDidMount = () => {
     // var localThis = this
-    axios.get('http://localhost:8080/select_accounts')
-    .then(result => {
+
+    let endpoint = 'http://localhost:8080/select_accounts'
+    let payload = ''
+
+    axios.get(endpoint, payload, {
+    headers: {
+        'Content-Type': 'application/json',
+    }
+    })
+    .then(response => {
       this.setState({
-        accounts: result.data,
+        accounts: response.data,
       })
     }).catch(error => {
       console.log(error)
@@ -70,8 +86,8 @@ class DialogUpdate extends Component {
   }
   
   handleAccountChange() {
-    let account_name_owner = document.getElementById("accountNameOwner")
-    let account_type = document.getElementById("accountType")
+    let account_name_owner = document.getElementById('accountNameOwner')
+    let account_type = document.getElementById('accountType')
 
     this.state.accounts.map(accounts => {
       if( account_name_owner.value === accounts.accountNameOwner ) {
@@ -79,53 +95,95 @@ class DialogUpdate extends Component {
       }
     })
   }
+  
+  fromEpochDate(utcSeconds) {
+      var transactionDate = new Date(0);
+      transactionDate.setUTCSeconds(utcSeconds);
+      return transactionDate.toLocaleDateString("en-US");
+  }
+  
+  toEochDate(transactionDate) {
+    let date_val = new Date(transactionDate)
+    let utc_val = new Date(date_val.getTime() + date_val.getTimezoneOffset() * 60000)
+    //alert(transactionDate)
 
-  submitit() {
-    var obj = {};
-    let form1 = document.getElementById("myform")
-    let elements1 = form1.querySelectorAll("input, select")
+    return Math.round(utc_val.getTime() / 1000)
+  }
 
+  submitit(transaction) {
+    let obj = {}
+    let transactionUpdateForm = document.getElementById('transactionUpdateForm')
+    let elements1 = transactionUpdateForm.querySelectorAll("input, select")
+
+	//alert(this.toEochDate(transaction.transactionDate))
     elements1.forEach(item => {
-		if( item.id == 'guid' || item.id == 'accountNameOwner' ){ 
+      if( item.id == 'guid' ) { 
+        obj[item.id] = item.value;
+      }
 
-		obj[item.id] = item.value;
-		}
-		})
-    //obj["guid"] = elements1.guid
-    //obj["accountNameOwner"] = elements1["accountNameOwner"]
-
-    //elements1.forEach(item => {
-    //  obj[item.id] = item.value;
-    //})
-    //
-    //let date_val = new Date(obj['transactionDate']);
-    //let utc_val = new Date(date_val.getTime() + date_val.getTimezoneOffset() * 60000);
-    //obj['transactionDate'] = Math.round(utc_val.getTime() / 1000);
-    //obj['amount'] = obj['amount'].replace("$", "");
+      if( item.id == 'accountNameOwner' && item.value !== transaction.accountNameOwner ) {
+        obj[item.id] = item.value;
+      }
+      if( item.id == 'accountType' && item.value !== transaction.accountType ) {
+        obj[item.id] = item.value;
+      }
+      if( item.id == 'transactionDate' && this.toEochDate(item.value) !== this.toEochDate(transaction.transactionDate) ) {
+        obj[item.id] = this.toEochDate(item.value)
+      }
+      if( item.id == 'description' && item.value != transaction.description ) {
+        obj[item.id] = item.value;
+      }
+      if( item.id == 'category' && item.value != transaction.category ) {
+        obj[item.id] = item.value;
+      }
+      if( item.id == 'cleared' && item.value != transaction.cleared ) {
+        obj[item.id] = item.value;
+      }
+      if( item.id == 'amount' && item.value != transaction.amount ) {
+        obj[item.id] = item.value;
+      }
+      if( item.id == 'notes' && item.value != transaction.notes ) {
+        obj[item.id] = item.value;
+      }
+    })
 
     let payload = JSON.stringify(obj);
-
+    let endpoint = 'http://localhost:8080/update/' + obj['guid']
     console.log(payload);
     alert(payload);
 
-    let endpoint = 'http://localhost:8080/update/' + obj['guid']
-    let request = new XMLHttpRequest();
-    request.open('PATCH', endpoint, true);
-    request.setRequestHeader("Content-Type", "application/json-patch+json");
-    //request.setRequestHeader("Access-Control-Allow-Origin", "*");
-    //request.setRequestHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-    //request.setRequestHeader("Access-Control-Allow-Headers", "accept, content-type");
-    request.send(payload);
+    axios.patch(endpoint, payload, {
+    headers: {
+        'Content-Type': 'application/json-patch+json',
+    }
+    })
+    .then(response => {
+      console.log(response)
+      alert(JSON.stringify(response))
+    })
+    .catch(error => {
+      console.log(error);
+      alert(error);
+    })
+
+//    let endpoint = 'http://localhost:8080/update/' + obj['guid']
+//    let request = new XMLHttpRequest();
+//    request.open('PATCH', endpoint, true);
+//    request.setRequestHeader("Content-Type", "application/json-patch+json");
+//    //request.setRequestHeader("Access-Control-Allow-Origin", "*");
+//    //request.setRequestHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+//    //request.setRequestHeader("Access-Control-Allow-Headers", "accept, content-type");
+//    request.send(payload);
   }
 
   render() {
     const { classes, onClose, selectedValue, ...other } = this.props;
 
   return (
-    <Dialog onClose={this.handleClose} {...other}>
+    <Dialog open={this.state.open} onClose={this.handleClose} {...other}>
     {/* <DialogTitle id="title">Update {this.props.guid}</DialogTitle> */}
     <div>
-    <form onSubmit={this.submitit} name="myform" id="myform">
+    <form onSubmit={() => this.submitit(this.state.transaction)} name="transactionUpdateForm" id="transactionUpdateForm">
       <label>guid</label>
       <TextField required id="guid" type="text" value={this.props.guid} key="guid" disabled={true} />
     
@@ -134,7 +192,7 @@ class DialogUpdate extends Component {
     
       <label>Account Name Owner</label>
     
-      <input required type="search" id="accountNameOwner" key="accountNameOwner" list="accounts" placeholder=" pick an account name owner..." autocomplete="off" onChange={this.handleAccountChange.bind(this)} />
+      <input required type="search" id="accountNameOwner" key="accountNameOwner" list="accounts" placeholder=" pick an account name owner..." autoComplete="off" onChange={this.handleAccountChange.bind(this)} />
       
       <datalist id="accounts">
         {
