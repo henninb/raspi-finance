@@ -12,6 +12,7 @@ import TableRow from '@material-ui/core/TableRow'
 import Button from '@material-ui/core/Button'
 import DialogDeleteConfirm from './DialogDeleteConfirm'
 import DialogUpdate from './DialogUpdate'
+import DialogFormUpdate from './DialogFormUpdate'
 import delete_logo from '../images/delete-24px.svg'
 import edit_logo from '../images/edit-24px.svg'
 import { setAccount, setTransaction, setTransactionLoadStatus } from '../store/account/actionCreator'
@@ -28,6 +29,7 @@ export class TransactionTable extends Component {
         toggleView: 'none',
         guidToDelete: null,
         guidToUpdate: null,
+        accountNameOwnerList: null,
         myRows: [],
       }
     this.handleClickDelete.bind(this)
@@ -66,7 +68,7 @@ export class TransactionTable extends Component {
   componentWillUnmount() {
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps( nextProps, nextState ) {
   }
 
   componentDidUpdate( prevProps, prevState ) {
@@ -139,6 +141,20 @@ export class TransactionTable extends Component {
     //alert('accountNameOwner - componentDidMount=' + this.props.accountNameOwner)
     this.props.setAccount(true, []);
     this.props.setTransaction('none', [{"guid":"e85890bb-ff14-4fa3-a23b-db59e323b0c1","sha256":"","accountType":"credit","accountNameOwner":"discover_brian","description":"none","category":"","notes":"","cleared":0,"reoccurring":false,"amount":"0.0","transactionDate":0,"dateUpdated":0,"dateAdded":0}])
+
+    let endpoint = 'http://localhost:8080/select_accounts'
+    let payload = ''
+
+    axios.get(endpoint, payload, {
+    headers: {
+        'Content-Type': 'application/json',
+    }
+    })
+    .then(response => {
+      this.setState({ accountNameOwnerList: response.data, })
+    }).catch(error => {
+      console.log(error)
+    })
   }
 
   render() {
@@ -175,9 +191,10 @@ export class TransactionTable extends Component {
           <TableRow className={this.props.classes.row} key={row.guid} id={row.guid} hover={true}>
               <TableCell>
                 <div>
-                  <Button className={this.props.classes.button} onClick={() => this.handleClickDelete(row.guid)}><img src={delete_logo} className="" alt="delete_logo" /></Button> 
-                  <Button className={this.props.classes.button} onClick={() => this.handleClickUpdate(row.guid)}><img src={edit_logo} className="" alt="edit_logo" /></Button> 
-                </div>
+                  <Button className={this.props.classes.button} onClick={() => this.handleClickDelete(row.guid)}><img src={delete_logo} className="" alt="delete_logo" /></Button>
+                  <Button className={this.props.classes.button} onClick={() => this.handleClickUpdate(row.guid)}><img src={edit_logo} className="" alt="edit_logo" /></Button>
+                <DialogFormUpdate transaction={row} accountNameOwnerList={this.state.accountNameOwnerList} />
+				</div>
               </TableCell>
               <TableCell>{this.fromEpochDate(row.transactionDate)}</TableCell>
               <TableCell>{row.description}</TableCell>
@@ -190,9 +207,6 @@ export class TransactionTable extends Component {
           })}
         </TableBody>
       </Table>
-      
-      {/*content*/}
-
 
     <DialogUpdate
       guid={this.state.guidToUpdate}

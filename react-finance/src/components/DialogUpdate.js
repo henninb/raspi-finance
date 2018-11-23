@@ -6,7 +6,7 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import Dialog from '@material-ui/core/Dialog'
 import blue from '@material-ui/core/colors/blue'
 import TextField from '@material-ui/core/TextField'
-import NumberFormat from 'react-number-format';
+import NumberFormat from 'react-number-format'
 import axios from 'axios'
 
 const dateFormat = require('dateformat');
@@ -20,7 +20,7 @@ class DialogUpdate extends Component {
     this.state = {
       accounts: [],
       transaction: {},
-      open: false,
+      openStatus: false,
     };
     //this.submitit.bind(this)
   }
@@ -177,10 +177,10 @@ class DialogUpdate extends Component {
   }
 
   render() {
-    const { classes, onClose, selectedValue, ...other } = this.props;
+    const { classes, onClose, selectedValue, ...other } = this.props
 
   return (
-    <Dialog open={this.state.open} onClose={this.handleClose} {...other}>
+    <Dialog open={true} onClose={this.handleClose} {...other}>
     {/* <DialogTitle id="title">Update {this.props.guid}</DialogTitle> */}
     <div>
     <form onSubmit={() => this.submitit(this.state.transaction)} name="transactionUpdateForm" id="transactionUpdateForm">

@@ -22,6 +22,7 @@ class DialogDeleteConfirm extends Component {
     super(props);
     this.state = {
       guid: null,
+      openStatus: false,
     };
     this.handleClose.bind(this)
     this.handleListItemClick.bind(this)
@@ -83,11 +84,11 @@ class DialogDeleteConfirm extends Component {
     const { classes, onClose, selectedValue, ...other } = this.props;
 
     return (
-      <Dialog onClose={this.handleClose} {...other}>
+      <Dialog open={true} onClose={this.handleClose} {...other}>
         <DialogTitle id="title">Ok to delete {this.props.guid}</DialogTitle>
         <div>
 {/* JSON.stringify(this.props)*/}
-	{/*
+    {/*
           <List>
             <ListItem button onClick={() => this.handleListItemClick(true, this.props.guid)}>
               <ListItemText primary="Yes" />

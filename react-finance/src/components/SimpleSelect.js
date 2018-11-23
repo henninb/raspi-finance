@@ -30,7 +30,7 @@ class SimpleSelect extends Component {
       .then(response => {
         this.setState({accountNameOwners: response.data}, () => {
    
-        var joined = []
+        let joined = []
         this.state.accountNameOwners.forEach(element => {
           joined = joined.concat({ value:  element.accountNameOwner, label:  element.accountNameOwner })
         })
