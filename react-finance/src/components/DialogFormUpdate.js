@@ -6,13 +6,16 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
+import { withStyles } from '@material-ui/core/styles'
+import { connect } from 'react-redux'
+import { setUpdatedTransaction } from '../store/account/actionCreator'
 import Select from 'react-select'
 import edit_logo from '../images/edit-24px.svg'
 import axios from 'axios'
 
 const dateFormat = require('dateformat');
 
-export default class DialogFormUpdate extends Component {
+class DialogFormUpdate extends Component {
   state = {
     open: false,
     clearedOptions: [],
@@ -29,17 +32,41 @@ export default class DialogFormUpdate extends Component {
     this.setState({ open: false })
   }
 
+  validateText = () => {
+  }
+
+  fromEpochDate(utcSeconds) {
+      var transactionDate = new Date(0);
+      transactionDate.setUTCSeconds(utcSeconds);
+      return transactionDate.toLocaleDateString("en-US");
+  }
+
+  toEochDate(transactionDate) {
+    let date_val = new Date(transactionDate)
+    let utc_val = new Date(date_val.getTime() + date_val.getTimezoneOffset() * 60000)
+
+    return Math.round(utc_val.getTime() / 1000)
+  }
+
   handleCloseUpdate = (value) => {
     let obj = {}
     let transactionDate = document.getElementById('transactionDate')
     let description = document.getElementById('description')
     let category = document.getElementById('category')
     let notes = document.getElementById('notes')
+    let amount = document.getElementById('amount')
+    let cleared = document.getElementById('cleared')
+    let accountNameOwner = document.getElementById('accountNameOwner')
 
-	obj['guid'] = this.props.transaction.guid
-	alert(transactionDate.value + ' - ' + this.props.transaction.transactionDate)
+    obj['guid'] = this.props.transaction.guid
+    
+    //alert(accountNameOwner.innerHTML)
+    //alert(accountNameOwner.textContent)
+    
+    if( this.toEochDate(transactionDate.value) !== this.props.transaction.transactionDate ) {
+      obj['transactionDate'] = this.toEochDate(transactionDate.value)
+    }
     if( description.value !== this.props.transaction.description ) {
-      alert('description changed')
       obj['description'] = description.value
     }
     if( category.value !== this.props.transaction.category ) {
@@ -47,6 +74,21 @@ export default class DialogFormUpdate extends Component {
     }
     if( notes.value !== this.props.transaction.notes ) {
       obj['notes'] = notes.value
+    }
+    if( amount.value !== this.props.transaction.amount ) {
+      obj['amount'] = amount.value
+    }
+    if( accountNameOwner.textContent !== "account name owner..." && accountNameOwner.textContent !== this.props.transaction.accountNameOwner ) {
+      obj['accountNameOwner'] = accountNameOwner.textContent
+
+      this.props.accountNameOwnerList.forEach(element1 => {
+        if( accountNameOwner.textContent === element1.accountNameOwner ) {
+          obj['accountType'] = element1.accountType
+        }
+      })
+    }
+    if( cleared.textContent !== "transaction cleared..." && cleared.textContent !== this.props.transaction.cleared ) {
+      obj['cleared'] = cleared.textContent
     }
     let payload = JSON.stringify(obj)
     let endpoint = 'http://localhost:8080/update/' + this.props.transaction.guid
@@ -60,7 +102,10 @@ export default class DialogFormUpdate extends Component {
     })
     .then(response => {
       console.log(response)
-      alert(JSON.stringify(response))
+      
+      this.props.setUpdatedTransaction(this.props.transaction.guid)
+      //alert(JSON.stringify(response))
+      this.props.handler()
     })
     .catch(error => {
       console.log(error);
@@ -68,6 +113,7 @@ export default class DialogFormUpdate extends Component {
     })
 
     this.setState({ open: false })
+
   }
   
   handleAccountNameOwnerChange = (selectedAccountNameOwner) => {
@@ -92,7 +138,7 @@ export default class DialogFormUpdate extends Component {
     clearedList.push(1)
     clearedList.push(0)
 
-	//MenuItem vs option
+    //MenuItem vs option
     this.props.accountNameOwnerList.forEach(element1 => {
       accountNameOwnerJoinedList = accountNameOwnerJoinedList.concat({ value:  element1.accountNameOwner, label:  element1.accountNameOwner })
     })
@@ -102,31 +148,33 @@ export default class DialogFormUpdate extends Component {
     })
 
     this.setState({ accountNameOwnerOptions: accountNameOwnerJoinedList, clearedOptions: clearedJoinedList })
+    let accountNameOwner = document.getElementById('accountNameOwner')
+    //accountNameOwner.textContent = this.props.transaction.accountNameOwner
   }
-  
-  
+
   render() {
     const { accountNameOwnerList, transaction } = this.props
-	
+
     return (
       <div>
-	  {/* <Button onClick={this.handleClickOpen}>Update</Button> */}
+      {/* <Button onClick={this.handleClickOpen}>Update</Button> */}
         <Button><img onClick={this.handleClickOpen} src={edit_logo} className="" alt="edit_logo" /></Button>
   
         <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
           <DialogTitle id="form-dialog-title">Update Transaction</DialogTitle>
           <DialogContent>
             <DialogContentText>Update transaction details.</DialogContentText>
-
+           <div>
             <Select label="Account Name Owner" id="accountNameOwner" key="accountNameOwner" defaultValue="" placeholder="account name owner..." onChange={this.handleAccountNameOwnerChange} options={this.state.accountNameOwnerOptions} />
             <TextField autoFocus label="Transaction Date" id="transactionDate" type="date" key="transactionDate" defaultValue={dateFormat(new Date(transaction.transactionDate * 1000), 'yyyy-mm-dd')} margin="dense" fullWidth />
             {/* <TextField autoFocus label="Account Type" required id="accountType" type="text" defaultValue="" key="accountType" disabled={false} margin="dense" fullWidth /> */}
-            <TextField autoFocus label="Description" required id="description" type="text" placeholder="transaction description..." defaultValue={transaction.description} onkeydown="" margin="dense" fullWidth />
+            <TextField autoFocus label="Description" required id="description" type="text" placeholder="transaction description..." defaultValue={transaction.description} onKeyDown={this.validateText} margin="dense" fullWidth />
             <TextField autoFocus label="Category" id="category" key="category" type="text" placeholder="transaction category..." defaultValue={transaction.category} margin="dense" fullWidth />
             <TextField autoFocus label="Amount" type="text" id="amount" key="amount" defaultValue={transaction.amount} autoComplete="on" margin="dense" />
             <Select autoFocus label="Cleared" placeholder="transaction cleared..." id="cleared" key="cleared" useDefault={true} defaultValue={transaction.cleared} margin="dense" onChange={this.handleClearedChange} options={this.state.clearedOptions} />
             <TextField autoFocus label="Notes" id="notes" type="text" key="notes" placeholder="transaction notes..." defaultValue={transaction.notes} autoComplete="on" margin="dense" fullWidth />
-     </DialogContent>
+          </div>
+          </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose} color="primary">
               Cancel
@@ -137,6 +185,16 @@ export default class DialogFormUpdate extends Component {
           </DialogActions>
         </Dialog>
       </div>
-    );
+    )
   }
 }
+
+const styles = {
+}
+
+const mapDispatchToProps = {
+  setUpdatedTransaction,
+}
+
+//export default withStyles(styles)(DialogFormUpdate);
+export default withStyles(styles) (connect(null, mapDispatchToProps) (DialogFormUpdate));

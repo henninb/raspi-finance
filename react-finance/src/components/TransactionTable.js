@@ -16,8 +16,10 @@ import DialogFormUpdate from './DialogFormUpdate'
 import delete_logo from '../images/delete-24px.svg'
 import edit_logo from '../images/edit-24px.svg'
 import { setAccount, setTransaction, setTransactionLoadStatus } from '../store/account/actionCreator'
-import MUIDataTable from 'mui-datatables'
+//import MUIDataTable from 'mui-datatables'
+import DialogFormAdd from './DialogFormAdd'
 //import { FilterDrawer, filterSelectors, filterActions } from 'material-ui-filter'
+//https://stackoverflow.com/questions/35537229/how-to-update-parents-state-in-react
 
 export class TransactionTable extends Component {
   constructor (props) {
@@ -30,11 +32,11 @@ export class TransactionTable extends Component {
         guidToDelete: null,
         guidToUpdate: null,
         accountNameOwnerList: null,
-        myRows: [],
       }
     this.handleClickDelete.bind(this)
     this.handleClickUpdate.bind(this)
     //this.viewTable.bind(this)
+    this.handler = this.handler.bind(this)
   }
 
   handleClickDelete = (guid) => {
@@ -45,18 +47,21 @@ export class TransactionTable extends Component {
   }
 
   handleClickUpdate = (guid) => {
-    this.setState({
-      clickOpenUpdate: true,
-      guidToUpdate: guid,
-    });
+    this.setState({  clickOpenUpdate: true, guidToUpdate: guid, })
+  }
+  
+  handler(e) {
+    //e.preventDefault()
+	//alert('update handler called')
+    this.props.setAccount(false, this.props.accountNameOwner)
   }
 
   handleCloseUpdate = (value) => {
-    this.setState({ selectedUpdateValue: value, clickOpenUpdate: false });
+    this.setState({ selectedUpdateValue: value, clickOpenUpdate: false, })
   }
 
   handleCloseDelete = (value) => {
-    this.setState({ selectedDeleteValue: value, clickOpenDelete: false });
+    this.setState({ selectedDeleteValue: value, clickOpenDelete: false, })
   }
 
   fromEpochDate(utcSeconds) {
@@ -68,79 +73,38 @@ export class TransactionTable extends Component {
   componentWillUnmount() {
   }
 
-  componentWillReceiveProps( nextProps, nextState ) {
+  componentWillReceiveProps = (nextProps, nextState) => {
   }
 
   componentDidUpdate( prevProps, prevState ) {
     if( this.props.notificationIsShown === false ) {
       this.props.setTransactionLoadStatus('spin')
       this.props.setAccount(true, this.props.accountNameOwner)
-	  
-    let endpoint = 'http://localhost:8080/get_by_account_name_owner/' + this.props.accountNameOwner
-    let payload = ''
 
-    axios.get(endpoint, payload, {
-    headers: {
-        'Content-Type': 'application/json',
-    }
-    })
-    .then(response => {
+      let endpoint = 'http://localhost:8080/get_by_account_name_owner/' + this.props.accountNameOwner
+      let payload = ''
 
-      this.props.setTransaction('none', response.data)
-
-      var newRows = []
-      
-      response.data.forEach(function (element) {
-        var newRow = []
-        newRow.push('amount')
-        newRow.push(element.transactionDate)
-        newRow.push(element.description)
-        newRow.push(element.category)
-        newRow.push(element.amount)
-        newRow.push(element.cleared)
-        newRow.push(element.notes)
-        newRows.push(newRow)
+      axios.get(endpoint, payload, {
+      headers: {
+          'Content-Type': 'application/json',
+      }
       })
-
-      this.setState({ myRows: newRows, })
-      this.setState({ rows: response.data, })
-    })
-    .catch(error => {
-      console.log(error);
-      alert(error);
-    })
-	  
-      //axios.get('http://localhost:8080/get_by_account_name_owner/' + this.props.accountNameOwner)
-      //.then(result => {
-      //    this.props.setTransaction('none', result.data)
-      //
-      //    var newRows = []
-      //    
-      //    result.data.forEach(function (element) {
-      //      var newRow = []
-      //      newRow.push('amount')
-      //      newRow.push(element.transactionDate)
-      //      newRow.push(element.description)
-      //      newRow.push(element.category)
-      //      newRow.push(element.amount)
-      //      newRow.push(element.cleared)
-      //      newRow.push(element.notes)
-      //      newRows.push(newRow)
-      //    })
-      //
-      //    this.setState({ myRows: newRows, })
-      //    this.setState({ rows: result.data, })
-      //})
-      //.catch(error => {
-      //  console.log(error)
-      //})
+      .then(response => {
+      
+        this.props.setTransaction('none', response.data)
+        this.setState({ rows: response.data, })
+      })
+      .catch(error => {
+        console.log(error);
+        alert(error);
+      })
     }
   }
 
   componentDidMount () {
     //alert('accountNameOwner - componentDidMount=' + this.props.accountNameOwner)
     this.props.setAccount(true, []);
-    this.props.setTransaction('none', [{"guid":"e85890bb-ff14-4fa3-a23b-db59e323b0c1","sha256":"","accountType":"credit","accountNameOwner":"discover_brian","description":"none","category":"","notes":"","cleared":0,"reoccurring":false,"amount":"0.0","transactionDate":0,"dateUpdated":0,"dateAdded":0}])
+    this.props.setTransaction('none', [])
 
     let endpoint = 'http://localhost:8080/select_accounts'
     let payload = ''
@@ -160,19 +124,18 @@ export class TransactionTable extends Component {
   render() {
     //const classes = this.props
 
-    let content = <Table title={'List'} data={this.state.myRows} columns={this.state.columns} />
-
     return(
-    <div className="">
+    <div>
     {/* JSON.stringify(this.state) */}
     {/* JSON.stringify(this.props.transactionList) */}
     {/* Array.from(this.props.transactionList).map(row => {})*/}
-
     {/* <LoadingData className=""  type={this.state.toggleView} */}
+
+    <DialogFormAdd accountNameOwnerList={this.state.accountNameOwnerList} />
     <LoadingData className="" type={this.props.loadingStatus} />
 
-      {/* <div className={this.props.notificationIsShown === true ? this.props.showTable: this.props.hideTable}> */}
-    <div className={this.props.hideTable}>
+    {/* <div className={this.props.notificationIsShown === false ? this.props.classes.showTable: this.props.classes.hideTable}> */}
+    <div className={this.props.classes.showTable}>
       <Table id="transactionTable" key="transactionTable">
           <TableHead>
           <TableRow>
@@ -192,9 +155,9 @@ export class TransactionTable extends Component {
               <TableCell>
                 <div>
                   <Button className={this.props.classes.button} onClick={() => this.handleClickDelete(row.guid)}><img src={delete_logo} className="" alt="delete_logo" /></Button>
-                  <Button className={this.props.classes.button} onClick={() => this.handleClickUpdate(row.guid)}><img src={edit_logo} className="" alt="edit_logo" /></Button>
-                <DialogFormUpdate transaction={row} accountNameOwnerList={this.state.accountNameOwnerList} />
-				</div>
+                  {/*<Button className={this.props.classes.button} onClick={() => this.handleClickUpdate(row.guid)}><img src={edit_logo} className="" alt="edit_logo" /></Button> */}
+                <DialogFormUpdate handler={this.handler} transaction={row} accountNameOwnerList={this.state.accountNameOwnerList} />
+              </div>
               </TableCell>
               <TableCell>{this.fromEpochDate(row.transactionDate)}</TableCell>
               <TableCell>{row.description}</TableCell>
@@ -207,13 +170,6 @@ export class TransactionTable extends Component {
           })}
         </TableBody>
       </Table>
-
-    <DialogUpdate
-      guid={this.state.guidToUpdate}
-      selectedValue={this.state.selectedUpdateValue}
-      open={this.state.clickOpenUpdate}
-      onClose={this.handleCloseUpdate}
-    />
 
     <DialogDeleteConfirm
       guid={this.state.guidToDelete}
@@ -297,12 +253,13 @@ const styles = (theme) => ({
 
 const mapStateToProps = state => {
   const { account } = state
-  const { isShown, accountNameOwners, transactions, viewStatus } = account
+  const { isShown, accountNameOwners, transactions, viewStatus, updatedTransaction } = account
 
   return {
     notificationIsShown: isShown,
     transactionList: transactions,
     loadingStatus: viewStatus,
+    uTransaction: updatedTransaction,
   }
 }
 
