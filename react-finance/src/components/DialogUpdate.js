@@ -117,32 +117,32 @@ class DialogUpdate extends Component {
 
 	//alert(this.toEochDate(transaction.transactionDate))
     elements1.forEach(item => {
-      if( item.id == 'guid' ) { 
+      if( item.id === 'guid' ) { 
         obj[item.id] = item.value;
       }
 
-      if( item.id == 'accountNameOwner' && item.value !== transaction.accountNameOwner ) {
+      if( item.id === 'accountNameOwner' && item.value !== transaction.accountNameOwner ) {
         obj[item.id] = item.value;
       }
-      if( item.id == 'accountType' && item.value !== transaction.accountType ) {
+      if( item.id === 'accountType' && item.value !== transaction.accountType ) {
         obj[item.id] = item.value;
       }
-      if( item.id == 'transactionDate' && this.toEochDate(item.value) !== this.toEochDate(transaction.transactionDate) ) {
+      if( item.id === 'transactionDate' && this.toEochDate(item.value) !== this.toEochDate(transaction.transactionDate) ) {
         obj[item.id] = this.toEochDate(item.value)
       }
-      if( item.id == 'description' && item.value != transaction.description ) {
+      if( item.id === 'description' && item.value != transaction.description ) {
         obj[item.id] = item.value;
       }
-      if( item.id == 'category' && item.value != transaction.category ) {
+      if( item.id === 'category' && item.value != transaction.category ) {
         obj[item.id] = item.value;
       }
-      if( item.id == 'cleared' && item.value != transaction.cleared ) {
+      if( item.id === 'cleared' && item.value != transaction.cleared ) {
         obj[item.id] = item.value;
       }
-      if( item.id == 'amount' && item.value != transaction.amount ) {
+      if( item.id === 'amount' && item.value != transaction.amount ) {
         obj[item.id] = item.value;
       }
-      if( item.id == 'notes' && item.value != transaction.notes ) {
+      if( item.id === 'notes' && item.value != transaction.notes ) {
         obj[item.id] = item.value;
       }
     })
@@ -165,15 +165,6 @@ class DialogUpdate extends Component {
       console.log(error);
       alert(error);
     })
-
-//    let endpoint = 'http://localhost:8080/update/' + obj['guid']
-//    let request = new XMLHttpRequest();
-//    request.open('PATCH', endpoint, true);
-//    request.setRequestHeader("Content-Type", "application/json-patch+json");
-//    //request.setRequestHeader("Access-Control-Allow-Origin", "*");
-//    //request.setRequestHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-//    //request.setRequestHeader("Access-Control-Allow-Headers", "accept, content-type");
-//    request.send(payload);
   }
 
   render() {

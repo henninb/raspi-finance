@@ -8,13 +8,17 @@ import { withStyles } from '@material-ui/core/styles'
 
 class TransactionList extends Component {
 
+  componentWillReceiveProps( nextProps, nextState ) {
+    //alert('will receive props')
+  }
+
   render() {
     //const { accountNameOwner } = this.props.match.params
     //const { notificationMessage } = this.props
 
     return (
       <div>
-        <DropdownMenu />
+      {/* <DropdownMenu /> */}
         <AppHeader title="Finance App" />
         {/* JSON.stringify(this.props) */}
         <SimpleSelect accountNameOwner={this.props.notificationMessage} />
