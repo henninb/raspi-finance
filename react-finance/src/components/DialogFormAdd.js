@@ -63,11 +63,10 @@ export default class DialogFormAdd extends Component {
     obj['amount'] = amount.value
     obj['cleared'] = cleared.textContent
     obj['accountNameOwner'] = accountNameOwner.textContent
-    
+
     this.state.accountNameOwnerList.forEach(element1 => {
       if( accountNameOwner.textContent === element1.accountNameOwner ) {
         obj['accountType'] = element1.accountType
-        //break
       }
     })
 
@@ -84,6 +83,7 @@ export default class DialogFormAdd extends Component {
     .then(response => {
       console.log(response)
       alert(JSON.stringify(response))
+      this.props.handler()
     })
     .catch(error => {
       console.log(error);
@@ -92,7 +92,7 @@ export default class DialogFormAdd extends Component {
 
     this.setState({ open: false })
   }
-  
+
   handleAccountNameOwnerChange = (selectedAccountNameOwner) => {
     if( selectedAccountNameOwner.value !== '' ) {
     }
@@ -102,7 +102,7 @@ export default class DialogFormAdd extends Component {
     if( selectedCleared.value !== '' ) {
     }
   }
-  
+
   componentDidMount = () => {
     let clearedList = []
     let accountNameOwnerList = []
@@ -122,17 +122,15 @@ export default class DialogFormAdd extends Component {
     .then(response => {
       this.setState({ accountNameOwnerList: response.data, })
       //accountNameOwnerList = response.data
-	  
       this.state.accountNameOwnerList.forEach(element1 => {
         //alert(element1.accountNameOwner)
         accountNameOwnerJoinedList = accountNameOwnerJoinedList.concat({ value:  element1.accountNameOwner, label:  element1.accountNameOwner })
         clearedList.forEach(element1 => {
         clearedJoinedList = clearedJoinedList.concat({ value:  element1, label:  element1 })
       })
-      
+
       this.setState({ accountNameOwnerOptions: accountNameOwnerJoinedList, clearedOptions: clearedJoinedList })
     })
-	  
     }).catch(error => {
       console.log(error)
     })
@@ -142,7 +140,7 @@ export default class DialogFormAdd extends Component {
     return (
       <div>
         <Button><img onClick={this.handleClickOpen} src={add_logo} className="" alt="add_logo" /></Button>
-  
+
         <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
           <DialogTitle id="form-dialog-title">Add Transaction</DialogTitle>
           <DialogContent>

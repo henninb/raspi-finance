@@ -59,10 +59,10 @@ class DialogFormUpdate extends Component {
     let accountNameOwner = document.getElementById('accountNameOwner')
 
     obj['guid'] = this.props.transaction.guid
-    
+
     //alert(accountNameOwner.innerHTML)
     //alert(accountNameOwner.textContent)
-    
+
     if( this.toEochDate(transactionDate.value) !== this.props.transaction.transactionDate ) {
       obj['transactionDate'] = this.toEochDate(transactionDate.value)
     }
@@ -102,7 +102,7 @@ class DialogFormUpdate extends Component {
     })
     .then(response => {
       console.log(response)
-      
+
       this.props.setUpdatedTransaction(this.props.transaction.guid)
       //alert(JSON.stringify(response))
       this.props.handler()
@@ -115,7 +115,7 @@ class DialogFormUpdate extends Component {
     this.setState({ open: false })
 
   }
-  
+
   handleAccountNameOwnerChange = (selectedAccountNameOwner) => {
     if( selectedAccountNameOwner.value !== '' ) {
       //alert(selectedAccountNameOwner)
@@ -129,7 +129,7 @@ class DialogFormUpdate extends Component {
       //this.props.setAccount(false, selectedAccountNameOwner.value);
     }
   }
-  
+
   componentDidMount () {
     let clearedList = []
     let accountNameOwnerList = []
@@ -159,7 +159,7 @@ class DialogFormUpdate extends Component {
       <div>
       {/* <Button onClick={this.handleClickOpen}>Update</Button> */}
         <Button><img onClick={this.handleClickOpen} src={edit_logo} className="" alt="edit_logo" /></Button>
-  
+
         <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
           <DialogTitle id="form-dialog-title">Update Transaction</DialogTitle>
           <DialogContent>

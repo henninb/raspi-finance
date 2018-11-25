@@ -11,10 +11,6 @@ import Button from '@material-ui/core/Button'
 import axios from 'axios'
 
 const styles = {
-  //avatar: {
-  //  backgroundColor: blue[50],
-  //  color: blue[400],
-  //},
 };
 
 class DialogDeleteConfirm extends Component {
@@ -37,42 +33,33 @@ class DialogDeleteConfirm extends Component {
       let transactionTable = document.getElementById('transactionTable')
       let row = document.getElementById(guid)
       if( transactionTable !== undefined && transactionTable !== null) {
-      if( row !== undefined && row !== null) {
-        //row remove causes problems
-        ////////////////////////////////row.remove()
-        //row.parentNode.removeChild(guid)
-        //alert('got here')
-        //transactionTable.removeChild(guid)
-      }
-//var element = document.getElementById(elementId);
-//element.parentNode.removeChild(guid);
+        if( row !== undefined && row !== null) {
+          //row remove causes problems
+          ////////////////////////////////row.remove()
+          //row.parentNode.removeChild(guid)
+          //alert('got here')
+          //transactionTable.removeChild(guid)
+          //var element = document.getElementById(elementId);
+          //element.parentNode.removeChild(guid);
+        }
 
-    let endpoint = 'http://localhost:8080/delete/' + guid
-    let payload = ''
+        let endpoint = 'http://localhost:8080/delete/' + guid
+        let payload = ''
 
-    axios.delete(endpoint, payload, {
-    headers: {
-        'Content-Type': 'application/json',
-    }
-    })
-    .then(response => {
-      console.log(response)
-      alert(JSON.stringify(response))
-    })
-    .catch(error => {
-      console.log(error)
-      alert(error)
-    })
-
-      //axios.delete('http://localhost:8080/delete/' + guid)
-      //.then(function(response) {
-      //  console.log(response);
-      //  alert(response);
-      //})
-      //.catch(function(error){
-      //  console.log(error);
-      //  alert(error);
-      //})
+        axios.delete(endpoint, payload, {
+        headers: {
+            'Content-Type': 'application/json',
+        }
+        })
+        .then(response => {
+          console.log(response)
+          alert(JSON.stringify(response))
+          this.props.handler()
+        })
+        .catch(error => {
+          console.log(error)
+          alert(error)
+        })
       }
     }
     if( this.props !== null ) {
@@ -85,22 +72,10 @@ class DialogDeleteConfirm extends Component {
 
     return (
       <Dialog open={true} onClose={this.handleClose} {...other}>
-        <DialogTitle id="title">Ok to delete {this.props.guid}</DialogTitle>
+        <DialogTitle id="title">Ok to delete</DialogTitle>
         <div>
-{/* JSON.stringify(this.props)*/}
-    {/*
-          <List>
-            <ListItem button onClick={() => this.handleListItemClick(true, this.props.guid)}>
-              <ListItemText primary="Yes" />
-            </ListItem>
-
-            <ListItem button onClick={() => this.handleListItemClick(false, this.props.guid)}>
-              <ListItemText primary="Cancel" />
-            </ListItem>
-          </List>
-	*/}
-          <Button onClick={() => this.handleListItemClick(true, this.props.guid)}>Yes</Button> 
-          <Button onClick={() => this.handleListItemClick(false, this.props.guid)}>No</Button> 
+          <Button onClick={() => this.handleListItemClick(true, this.props.guid)}>Delete</Button>
+          <Button onClick={() => this.handleListItemClick(false, this.props.guid)}>Cancel</Button>
         </div>
       </Dialog>
     );

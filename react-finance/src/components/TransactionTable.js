@@ -11,7 +11,6 @@ import TableRow from '@material-ui/core/TableRow'
 //import Paper from '@material-ui/core/Paper'
 import Button from '@material-ui/core/Button'
 import DialogDeleteConfirm from './DialogDeleteConfirm'
-import DialogUpdate from './DialogUpdate'
 import DialogFormUpdate from './DialogFormUpdate'
 import delete_logo from '../images/delete-24px.svg'
 import edit_logo from '../images/edit-24px.svg'
@@ -28,14 +27,12 @@ export class TransactionTable extends Component {
         rows:[],
         clickOpenDelete: false,
         columns: [ 'action', 'date', 'description', 'category', 'amount', 'cleared', 'notes' ],
-        toggleView: 'none',
         guidToDelete: null,
         guidToUpdate: null,
         accountNameOwnerList: null,
       }
     this.handleClickDelete.bind(this)
     this.handleClickUpdate.bind(this)
-    //this.viewTable.bind(this)
     this.handler = this.handler.bind(this)
   }
 
@@ -49,11 +46,12 @@ export class TransactionTable extends Component {
   handleClickUpdate = (guid) => {
     this.setState({  clickOpenUpdate: true, guidToUpdate: guid, })
   }
-  
-  handler(e) {
+
+  handler = (e) => {
     //e.preventDefault()
-	//alert('update handler called')
-    this.props.setAccount(false, this.props.accountNameOwner)
+    if( this.props.accountNameOwner !== '' && this.props.accountNameOwner !== null && this.props.accountNameOwner.length != 0 ) {
+      this.props.setAccount(false, this.props.accountNameOwner)
+    }
   }
 
   handleCloseUpdate = (value) => {
@@ -90,7 +88,7 @@ export class TransactionTable extends Component {
       }
       })
       .then(response => {
-      
+
         this.props.setTransaction('none', response.data)
         this.setState({ rows: response.data, })
       })
@@ -131,7 +129,7 @@ export class TransactionTable extends Component {
     {/* Array.from(this.props.transactionList).map(row => {})*/}
     {/* <LoadingData className=""  type={this.state.toggleView} */}
 
-    <DialogFormAdd accountNameOwnerList={this.state.accountNameOwnerList} />
+    <DialogFormAdd handler={this.handler} accountNameOwnerList={this.state.accountNameOwnerList} />
     <LoadingData className="" type={this.props.loadingStatus} />
 
     {/* <div className={this.props.notificationIsShown === false ? this.props.classes.showTable: this.props.classes.hideTable}> */}
@@ -176,6 +174,7 @@ export class TransactionTable extends Component {
       selectedValue={this.state.selectedDeleteValue}
       open={this.state.clickOpenDelete}
       onClose={this.handleCloseDelete}
+      handler={this.handler}
     />
 </div>
   </div>
@@ -217,7 +216,7 @@ const styles = (theme) => ({
     border: 'none',
     background: 'none',
     borderCollapse: 'collapse',
-    backgroundColor: 'white', 
+    backgroundColor: 'white',
   },
   showTable: {
     //in use
@@ -239,7 +238,7 @@ const styles = (theme) => ({
   },
   currency: {
     '&:after': {
-      content: '.00', 
+      content: '.00',
     },
     //not working
     //'&:hover:not($disabled):not($error):not($focused):before': {
@@ -259,7 +258,6 @@ const mapStateToProps = state => {
     notificationIsShown: isShown,
     transactionList: transactions,
     loadingStatus: viewStatus,
-    uTransaction: updatedTransaction,
   }
 }
 
