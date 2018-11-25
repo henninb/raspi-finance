@@ -111,42 +111,45 @@ open class TransactionService {
     }
 
     fun patchTransaction( transaction: Transaction) {
-        //val optionalManager = transactionRepository.findOne(transaction.guid)
         val optionalTransaction = transactionRepository.findByGuid(transaction.guid)
-        LOGGER.info("patchTransaction - findByGuid()=" + transaction.guid)
         if (optionalTransaction.isPresent()) {
             var updateFlag = false
             val fromDb = optionalTransaction.get()
-            LOGGER.info("patchTransaction()=" + fromDb.guid)
 
             if( fromDb.accountNameOwner != transaction.accountNameOwner && transaction.accountNameOwner != "" ) {
-                fromDb.accountNameOwner = transaction.accountNameOwner;
-                LOGGER.info("Saved transaction where accountNameOwner changed")
+                fromDb.accountNameOwner = transaction.accountNameOwner
+                updateFlag = true
+            }
+            if( fromDb.accountType != transaction.accountType && transaction.accountType != "" ) {
+                fromDb.accountType = transaction.accountType
                 updateFlag = true
             }
             if( fromDb.description != transaction.description && transaction.description != "" ) {
                 fromDb.description = transaction.description;
-                LOGGER.info("Saved transaction where description changed")
                 updateFlag = true
             }
             if( fromDb.category != transaction.category && transaction.category != "" ) {
-                fromDb.category = transaction.category;
-                LOGGER.info("Saved transaction where category changed")
+                fromDb.category = transaction.category
                 updateFlag = true
             }
-            if( fromDb.notes != transaction.notes && transaction.notes != "" ) {
-                fromDb.notes = transaction.notes;
-                LOGGER.info("Saved transaction where notes changed")
+            if( transaction.notes != "" && fromDb.notes != transaction.notes  ) {
+                fromDb.notes = transaction.notes
                 updateFlag = true
             }
-
             if( fromDb.cleared != transaction.cleared && transaction.cleared != 2 ) {
-                fromDb.cleared = transaction.cleared;
-                LOGGER.info("Saved transaction where cleared changed")
+                fromDb.cleared = transaction.cleared
                 updateFlag = true
             }
-
+            if( transaction.amount != fromDb.amount ) {
+                fromDb.amount = transaction.amount
+                updateFlag = true
+            }
+            if( transaction.transactionDate != Date(0) && transaction.transactionDate != fromDb.transactionDate ) {
+                fromDb.transactionDate = transaction.transactionDate
+                updateFlag = true
+            }
             if( updateFlag ) {
+                LOGGER.info("Saved transaction as the data has changed")
                 transactionRepository.save(fromDb)
             }
             // bean utils will copy non null values from toBePatched to fromDb manager.
