@@ -13,12 +13,12 @@ class SimpleSelect extends Component {
       accountNameOwners: [],
     };
   }
-  
+
   componentWillUnmount() {
   }
 
   componentDidMount () {
-    
+
     let endpoint = 'http://localhost:8080/select_accounts'
     let payload = ''
 
@@ -29,7 +29,7 @@ class SimpleSelect extends Component {
     })
       .then(response => {
         this.setState({accountNameOwners: response.data}, () => {
-   
+
         let joined = []
         this.state.accountNameOwners.forEach(element => {
           joined = joined.concat({ value:  element.accountNameOwner, label:  element.accountNameOwner })

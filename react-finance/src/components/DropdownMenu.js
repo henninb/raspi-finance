@@ -2,14 +2,14 @@ import React, { Component } from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import './DropdownMenu.css'
 
-class DropdownMenu extends Component {  
+class DropdownMenu extends Component {
   constructor(props) {
     super(props);
     this.state = {
       accounts: [],
     };
   }
-  
+
   setAccountUrl(accountNameOwner) {
       var url = '/list/' + accountNameOwner;
       return url;
@@ -27,7 +27,7 @@ class DropdownMenu extends Component {
           <a href="javascript:void(0)" className="dropbtn">Accounts</a>
           <div className="dropdown-content">
             {
-              this.state.accounts.map(accounts => { 
+              this.state.accounts.map(accounts => {
               return <a href={this.setAccountUrl(accounts.accountNameOwner)}>{accounts.accountNameOwner}</a>})
             }
           </div>

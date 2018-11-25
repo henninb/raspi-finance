@@ -9,7 +9,7 @@ class LoadingData extends Component {
       loadingFlag: false,
     };
   }
-  
+
   componentDidMount() {
   }
 
@@ -19,7 +19,7 @@ class LoadingData extends Component {
       <div>
       <ReactLoading type={type} color="green" height="10%" width="10%" />
       {/*<ReactLoading type="cylon" color="green" height="20%" width="20%" />
-       <ReactLoading display='inline' type='spin' color='green' height={'20%'} width={'20%'} /> 
+       <ReactLoading display='inline' type='spin' color='green' height={'20%'} width={'20%'} />
       <ReactLoading display='inline' type='spokes' color='purple' height={'20%'} width={'20%'} />  */}
       </div>
     );
