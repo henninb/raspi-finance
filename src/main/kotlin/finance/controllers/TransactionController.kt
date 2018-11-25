@@ -17,7 +17,6 @@ import java.time.ZonedDateTime
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.GetMapping
-import java.sql.Date
 import java.util.stream.Collectors
 import java.util.stream.StreamSupport
 import java.util.*
@@ -60,7 +59,6 @@ class TransactionController {
     @GetMapping(path = arrayOf("/select/{guid}"))
     fun findtTransaction(@PathVariable guid: String): Transaction {
         val transactionOption: Optional<Transaction> = transactionService!!.findByGuid(guid)
-        //val transaction: Transaction = transactionService.findByGuid(guid)
         if( transactionOption.isPresent ) {
             val transaction: Transaction = transactionOption.get()
             return transaction
@@ -70,42 +68,9 @@ class TransactionController {
 
     //curl --header "Content-Type: application/json-patch+json" --request PATCH --data '{"guid":"a064b942-1e78-4913-adb3-b992fc1b4dd3","sha256":"","accountType":"credit","accountNameOwner":"discover_brian","description":"Last Updated","category":"","notes":"","cleared":0,"reoccurring":false,"amount":"0.00","transactionDate":1512730594,"dateUpdated":1487332021,"dateAdded":1487332021}' http://localhost:8080/update/a064b942-1e78-4913-adb3-b992fc1b4dd3
     //http://localhost:8080/update/340c315d-39ad-4a02-a294-84a74c1c7ddc
-    //TODO: ResponseEntity code fix
-    //application/json-patch+json
     @PatchMapping(path = arrayOf("/update/{guid}"), consumes = arrayOf("application/json-patch+json"), produces = arrayOf("application/json"))
-    //fun updateTransaction(@ModelAttribute transaction: Transaction ) {
     fun updateTransaction(@RequestBody transaction: Map<String, String>): ResponseEntity<String> {
-//        var toBePatchedTransaction1: Transaction = Transaction()
-//
-//        if (transaction.containsKey("guid")) {
-//            toBePatchedTransaction1.guid = transaction["guid"].toString()
-//        }
-//        if (transaction.containsKey("accountNameOwner")) {
-//            toBePatchedTransaction1.accountNameOwner = transaction["accountNameOwner"].toString()
-//        }
-//        if (transaction.containsKey("transactionDate")) {
-//            toBePatchedTransaction1.transactionDate = Date(transaction["transactionDate"]!!.toLong() * 1000)
-//        }
-//        if (transaction.containsKey("description")) {
-//            toBePatchedTransaction1.description = transaction["description"].toString()
-//        }
-//        if (transaction.containsKey("category")) {
-//            toBePatchedTransaction1.category = transaction["category"].toString()
-//        }
-//        if (transaction.containsKey("amount")) {
-//            toBePatchedTransaction1.amount = transaction["amount"]!!.toDouble()
-//        }
-//        if (transaction.containsKey("cleared")) {
-//            toBePatchedTransaction1.cleared = transaction["cleared"]!!.toInt()
-//        }
-//        if (transaction.containsKey("notes")) {
-//            toBePatchedTransaction1.notes = transaction["notes"].toString()
-//        }
-
         val toBePatchedTransaction = mapper.convertValue(transaction, Transaction::class.java)
-        //LOGGER.info("updateTransaction")
-        //LOGGER.info(toBePatchedTransaction.toString())
-        //System.exit(1)
         transactionService!!.patchTransaction(toBePatchedTransaction)
         return ResponseEntity.ok("resource updated")
     }
@@ -141,18 +106,15 @@ class TransactionController {
     }
 
     //http://localhost:8080/delete/38739c5b-e2c6-41cc-82c2-d41f39a33f9a
-    //@GetMapping(value = "/delete/{guid}")
-    //TODO: ResponseEntity code fix
     @DeleteMapping(path = arrayOf("/delete/{guid}"))
     fun deleteTransaction(@PathVariable guid: String): ResponseEntity<String> {
         val transactionOption: Optional<Transaction> = transactionService!!.findByGuid(guid)
         if(transactionOption.isPresent ) {
-            LOGGER.info("deleteTransaction() description: " + transactionOption.get().description);
-            //val transaction: Transaction = transactionOption.get();
             transactionService!!.deleteByGuid(guid)
-            return ResponseEntity.ok("{status: \"OK\"}")
+            return ResponseEntity.ok("resource deleted")
         }
-        return ResponseEntity("{status: \"Not OK\"}", HttpStatus.NO_CONTENT)
+        //return ResponseEntity.notFound("resource not found, not deleted.")
+        return ResponseEntity("resource failed to delete", HttpStatus.NO_CONTENT)
     }
 
     companion object {
