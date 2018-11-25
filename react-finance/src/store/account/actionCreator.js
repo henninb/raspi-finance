@@ -1,4 +1,4 @@
-import { SET_ACCOUNT, SET_TRANSACTION, SET_TRANSACTION_LOAD_STATUS } from './actionType'
+import { SET_ACCOUNT, SET_TRANSACTION, SET_TRANSACTION_LOAD_STATUS, SET_UPDATED_TRANSACTION } from './actionType'
 
 export function setTransaction (viewStatus, transactions) {
   return {
@@ -26,6 +26,15 @@ export function setAccount (isShown, accountNameOwners) {
     payload: {
       isShown,
       accountNameOwners,
+    },
+  }
+}
+
+export function setUpdatedTransaction (updatedTransaction) {
+  return {
+    type: SET_UPDATED_TRANSACTION,
+    payload: {
+      updatedTransaction,
     },
   }
 }
