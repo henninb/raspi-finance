@@ -25,6 +25,7 @@ export class TransactionTable extends Component {
       super(props)
       this.state = {
         rows:[],
+        totals_cleared: 0.00,
         clickOpenDelete: false,
         columns: [ 'action', 'date', 'description', 'category', 'amount', 'cleared', 'notes' ],
         guidToDelete: null,
@@ -83,6 +84,7 @@ export class TransactionTable extends Component {
       let payload = ''
 
       axios.get(endpoint, payload, {
+      timeout: 0,
       headers: {
           'Content-Type': 'application/json',
       }
@@ -96,6 +98,27 @@ export class TransactionTable extends Component {
         console.log(error);
         alert(error);
       })
+
+
+      endpoint = 'http://localhost:8080/get_totals_cleared/' + this.props.accountNameOwner
+      payload = ''
+
+      axios.get(endpoint, payload, {
+      timeout: 0,
+      headers: {
+          'Content-Type': 'application/json',
+      }
+      })
+      .then(response => {
+		  alert(response)
+        this.setState({ totals_cleared: response.data, })
+      })
+      .catch(error => {
+        console.log(error);
+        alert(error);
+      })
+
+
     }
   }
 
@@ -108,6 +131,7 @@ export class TransactionTable extends Component {
     let payload = ''
 
     axios.get(endpoint, payload, {
+    timeout: 0,
     headers: {
         'Content-Type': 'application/json',
     }
@@ -129,7 +153,10 @@ export class TransactionTable extends Component {
     {/* Array.from(this.props.transactionList).map(row => {})*/}
     {/* <LoadingData className=""  type={this.state.toggleView} */}
 
+    <div className={this.props.classes.column}>
     <DialogFormAdd handler={this.handler} accountNameOwnerList={this.state.accountNameOwnerList} />
+    </div>
+    <div className={this.props.classes.column}>{this.state.totals_cleared}</div>
     <LoadingData className="" type={this.props.loadingStatus} />
 
     {/* <div className={this.props.notificationIsShown === false ? this.props.classes.showTable: this.props.classes.hideTable}> */}
@@ -247,6 +274,11 @@ const styles = (theme) => ({
       textAlign: 'right',
       //display: 'none',
     },
+  },
+  column: {
+    float: 'left',
+    padding: '5px',
+	bottom: 0,
   },
 });
 
