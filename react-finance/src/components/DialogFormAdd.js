@@ -76,6 +76,7 @@ export default class DialogFormAdd extends Component {
     alert(payload);
 
     axios.post(endpoint, payload, {
+    timeout: 0,
     headers: {
         'Content-Type': 'application/json',
     }
@@ -115,6 +116,7 @@ export default class DialogFormAdd extends Component {
     let payload = ''
 
     axios.get(endpoint, payload, {
+    timeout: 0,
     headers: {
         'Content-Type': 'application/json',
     }
