@@ -5,6 +5,7 @@ import finance.models.Account
 import finance.services.AccountService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 //@CrossOrigin(origins = arrayOf("http://localhost:3000"))
@@ -17,30 +18,29 @@ class AccountController {
     @Autowired
     internal var accountService: AccountService? = null
 
-    //TODO: ResponseEntity code fix
     @GetMapping(path = arrayOf("/select_accounts"))
-    fun selectAllActiveAccounts(): List<Account> {
+    fun selectAllActiveAccounts(): ResponseEntity<List<Account>> {
         val accounts : List<Account> = accountService!!.findAllAcitveAccounts()
         if( accounts.isEmpty() ) {
-            LOGGER.info("selectAllActiveAccounts() problem.")
-        } else {
-            LOGGER.info("selectAllActiveAccounts() good.")
+            LOGGER.info("no accounts found.")
+            return ResponseEntity.notFound().build()
         }
-        return accountService!!.findAllAcitveAccounts()
+        return ResponseEntity.ok(accounts)
     }
 
-    //TODO: ResponseEntity code fix
     @GetMapping(path = arrayOf("/select_all"))
-    fun select_all_accounts(): List<Account> {
-        return accountService!!.findAllOrderByAccountNameOwner()
+    fun select_all_accounts(): ResponseEntity<List<Account>> {
+        val accounts : List<Account> = accountService!!.findAllOrderByAccountNameOwner()
+        if( accounts.isEmpty() ) {
+            LOGGER.info("no accounts found.")
+            return ResponseEntity.notFound().build()
+        }
+        return ResponseEntity.ok(accounts)
     }
 
-    //TODO: ResponseEntity code fix
     @GetMapping(path = arrayOf("/select_account/{accountNameOwner}"))
-    fun select_account(@PathVariable accountNameOwner: String): Account {
-        val account: Account
-        LOGGER.info(accountNameOwner)
-        account = accountService!!.findByAccountNameOwner(accountNameOwner)
-        return account
+    fun select_account(@PathVariable accountNameOwner: String): ResponseEntity<Account> {
+        val account: Account = accountService!!.findByAccountNameOwner(accountNameOwner)
+        return ResponseEntity.ok(account)
     }
 }

@@ -1,26 +1,20 @@
 package finance.controllers
 
-import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import finance.models.Transaction
+import finance.pojos.Totals
 import finance.services.TransactionService
-import finance.pojos.ResultMessage
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import java.time.ZonedDateTime
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.GetMapping
-import java.util.stream.Collectors
-import java.util.stream.StreamSupport
 import java.util.*
-
 
 //@CrossOrigin(origins = arrayOf("http://localhost:3000"))
 @CrossOrigin
@@ -39,31 +33,41 @@ class TransactionController {
     //@RequestMapping(method = RequestMethod.GET, path = "pageable",  produces = MediaType.APPLICATION_JSON_VALUE)
     fun findAllTransactions(@RequestParam pageNumber: Int, @RequestParam pageSize: Int, pageable: Pageable): ResponseEntity<Page<Transaction>> {
         //var  pageable1: Pageable = PageRequest.of(pageNumber, pageSize, Sort.Direction.DESC, "amount")
-        var  pageable1: Pageable = PageRequest.of(pageNumber, pageSize)
+        val  pageable1: Pageable = PageRequest.of(pageNumber, pageSize)
         val transactions: Page<Transaction> = transactionService!!.findAllTransactions(pageable1)
-
-        return ResponseEntity(transactions, HttpStatus.OK)
+        if(transactions.isEmpty) {
+            ResponseEntity.notFound().build<List<Transaction>>()
+        }
+        return ResponseEntity.ok(transactions)
     }
 
-    //return ResponseEntity(entities, HttpStatus.OK);
     //http://localhost:8080/get_by_account_name_owner/amazon.gift_brian
     @GetMapping(path = arrayOf("/get_by_account_name_owner/{accountNameOwner}"))
     fun findByAccountNameOwner(@PathVariable accountNameOwner: String): ResponseEntity<List<Transaction>> {
-        return ResponseEntity.ok(StreamSupport
-                .stream(transactionService!!.findByAccountNameOwnerIgnoreCaseOrderByTransactionDate(accountNameOwner).spliterator(), false)
-                .collect(Collectors.toList()))
+        val transactions: List<Transaction> = transactionService!!.findByAccountNameOwnerIgnoreCaseOrderByTransactionDate(accountNameOwner)
+        if( transactions.isEmpty() ) {
+            ResponseEntity.notFound().build<List<Transaction>>()
+        }
+        return ResponseEntity.ok(transactions)
     }
 
-    //TODO: ResponseEntity code fix
+    //http://localhost:8080/get_totals_cleared/chase_brian
+    @GetMapping(path = arrayOf("/get_totals_cleared/{accountNameOwner}"))
+    fun totalsCleared(@PathVariable accountNameOwner: String): ResponseEntity<String> {
+        val totals: Totals = transactionService!!.getTotalsByAccountNameOwner(accountNameOwner)
+
+        return ResponseEntity.ok(mapper.writeValueAsString(totals))
+    }
+
     //http://localhost:8080/select/340c315d-39ad-4a02-a294-84a74c1c7ddc
     @GetMapping(path = arrayOf("/select/{guid}"))
-    fun findtTransaction(@PathVariable guid: String): Transaction {
+    fun findtTransaction(@PathVariable guid: String): ResponseEntity<Transaction> {
         val transactionOption: Optional<Transaction> = transactionService!!.findByGuid(guid)
         if( transactionOption.isPresent ) {
             val transaction: Transaction = transactionOption.get()
-            return transaction
+            return ResponseEntity.ok(transaction)
         }
-        return Transaction()
+        return ResponseEntity.notFound().build()  //404
     }
 
     //curl --header "Content-Type: application/json-patch+json" --request PATCH --data '{"guid":"a064b942-1e78-4913-adb3-b992fc1b4dd3","sha256":"","accountType":"credit","accountNameOwner":"discover_brian","description":"Last Updated","category":"","notes":"","cleared":0,"reoccurring":false,"amount":"0.00","transactionDate":1512730594,"dateUpdated":1487332021,"dateAdded":1487332021}' http://localhost:8080/update/a064b942-1e78-4913-adb3-b992fc1b4dd3
@@ -71,38 +75,19 @@ class TransactionController {
     @PatchMapping(path = arrayOf("/update/{guid}"), consumes = arrayOf("application/json-patch+json"), produces = arrayOf("application/json"))
     fun updateTransaction(@RequestBody transaction: Map<String, String>): ResponseEntity<String> {
         val toBePatchedTransaction = mapper.convertValue(transaction, Transaction::class.java)
-        transactionService!!.patchTransaction(toBePatchedTransaction)
-        return ResponseEntity.ok("resource updated")
+        val rc: Int = transactionService!!.patchTransaction(toBePatchedTransaction)
+        if( rc == 0) {
+            return ResponseEntity.ok("resource updated")
+        }
+        return ResponseEntity.notFound().build()
     }
 
     //http://localhost:8080/insert
     //TODO: ResponseEntity code fix
     @PostMapping(path = arrayOf("/insert"), consumes = arrayOf("application/json"), produces = arrayOf("application/json"))
-    //@PostMapping("/insert")
-    fun insertTransaction(@RequestBody transaction: Transaction) : String {
-        val resultMessage = ResultMessage()
-        var resultString: String = ""
-
-        try {
-            transactionService?.insertTransaction(transaction)
-            resultMessage.message = "Successfully processed add message."
-            resultMessage.resultCode = 0
-            resultMessage.guid = transaction.guid
-            resultMessage.setDate(ZonedDateTime.now())
-
-            resultString = mapper.writeValueAsString(resultMessage)
-            return resultString
-        } catch (jpe: JsonProcessingException) {
-            resultMessage.message = "Failure to processed add message: " + "Exception: " + jpe + " Exception message:" + jpe.message
-            resultMessage.resultCode = 200
-            resultString = mapper.writeValueAsString(resultMessage)
-            return resultString
-        } catch (e: Exception) {
-            resultMessage.message = "Failure to processed add message: " + "Exception: " + e + " Exception message:" + e.message
-            resultMessage.resultCode = 201
-            resultString = mapper.writeValueAsString(resultMessage)
-            return resultString
-        }
+    fun insertTransaction(@RequestBody transaction: Transaction) : ResponseEntity<String> {
+        transactionService?.insertTransaction(transaction)
+        return ResponseEntity.ok("resource inserted")
     }
 
     //http://localhost:8080/delete/38739c5b-e2c6-41cc-82c2-d41f39a33f9a
@@ -113,8 +98,7 @@ class TransactionController {
             transactionService!!.deleteByGuid(guid)
             return ResponseEntity.ok("resource deleted")
         }
-        //return ResponseEntity.notFound("resource not found, not deleted.")
-        return ResponseEntity("resource failed to delete", HttpStatus.NO_CONTENT)
+        return ResponseEntity.notFound().build() //404
     }
 
     companion object {
