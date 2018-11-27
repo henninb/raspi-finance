@@ -2,6 +2,7 @@ package finance.services
 
 
 import finance.models.Transaction
+import finance.pojos.Totals
 import finance.repositories.TransactionRepository
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -9,6 +10,7 @@ import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import java.math.BigDecimal
 import java.util.function.Consumer
 import java.util.*
 
@@ -43,45 +45,23 @@ open class TransactionService {
         return this.transactionRepository.findByAccountNameOwnerAndClearedOrderByTransactionDateDesc(accountNameOwner, cleared)
     }
 
-    //fun fetchAccoutTotals(accountNameOwner: String): Double {
-    //    return transactionRepository!!.fetchAccoutTotals(accountNameOwner)
-    //}
-
-    fun deleteByGuid(guid: String) {
-        try {
+    fun deleteByGuid(guid: String): Int {
+        val transactionOptional: Optional<Transaction> = transactionRepository.findByGuid(guid)
+        if( transactionOptional.isPresent) {
             transactionRepository.deleteByGuid(guid)
-        } catch (ex: Exception) {
-            LOGGER.info(ex.message)
+            return 0
         }
+        return 1
     }
 
-//    //TODO: Debating on how to pass the updated fields to this method
-//    fun updateTransaction(guid: String, list: Map<String, String>) {
-//        val transaction: Optional<Transaction> = findByGuid(guid);
-//
-//        transaction.cleared = list["cleared"]!!.toInt()
-//        transactionRepository.saveAndFlush(transaction)
-//    }
-
-    fun insertTransaction(transaction: Transaction) {
-        val transactionId: Long = transaction.transactionId;
-        val guid: String? = transaction.guid;
-        if ( guid != null && guid != "" ) {
-            var transactionFound = Transaction()
-            try {
-                transactionFound = transactionRepository.findByTransactionId(transactionId)
-            } catch (ex: EmptyResultDataAccessException) {
-                LOGGER.warn("Empty result set returned from query.")
-            }
-            if( transactionFound.transactionId == 0L ) {
-                transactionRepository.saveAndFlush(transaction)
-                LOGGER.info("transaction data inserted.")
-            } else {
-                LOGGER.info("duplicate found, no transaction data inserted.")
-            }
-        } else {
-            LOGGER.warn("guid issues, no transaction data inserted.")
+    fun insertTransaction(transaction: Transaction): Int {
+        val transactionOptional: Optional<Transaction> = transactionRepository.findByGuid(transaction.guid)
+        if( transactionOptional.isPresent ) {
+            LOGGER.info("duplicate found, no transaction data inserted.")
+            return 1
         }
+        transactionRepository.saveAndFlush(transaction)
+        return 0
     }
 
     fun findByTransactionId(transactionId : Long): Transaction {
@@ -100,17 +80,39 @@ open class TransactionService {
         return transaction
     }
 
+    fun getTotalsByAccountNameOwner( accountNameOwner: String) : Totals {
+        try {
+            val totalsCleared: Double = transactionRepository.getTotalsByAccountNameOwnerCleared(accountNameOwner)
+            val totals: Double = transactionRepository.getTotalsByAccountNameOwner(accountNameOwner)
+            var t: Totals = Totals()
+            t.totals = BigDecimal(totals).setScale(2, BigDecimal.ROUND_HALF_UP)
+            t.totalsCleared = BigDecimal(totalsCleared).setScale(2, BigDecimal.ROUND_HALF_UP)
+            LOGGER.info("totals=" + totals.toString())
+
+            return t
+            //return "{\"totals\": " + totals + ", \"totalsCleared\": " + totalsCleared + " }"
+        } catch (ex: EmptyResultDataAccessException) {
+            LOGGER.info(ex.message)
+        } catch (e:Exception) {
+            LOGGER.info(e.message)
+        }
+        return Totals()
+    }
+
+    //fun fetchAccoutTotals(accountNameOwner: String): Double {
+    //    return transactionRepository!!.fetchAccoutTotals(accountNameOwner)
+    //}
+
     fun findByAccountNameOwnerIgnoreCaseOrderByTransactionDate(accountNameOwner: String): List<Transaction> {
         val transactions: List<Transaction> = transactionRepository.findByAccountNameOwnerIgnoreCaseOrderByTransactionDateDesc(accountNameOwner)
         if( transactions.isEmpty() ) {
             LOGGER.error("an empty list of AccountNameOwner.")
-            //TODO: failure
+            //return something
         }
         return transactions;
-        //return transactionRepository.findByAccountNameOwnerIgnoreCaseOrderByTransactionDate(accountNameOwner)
     }
 
-    fun patchTransaction( transaction: Transaction) {
+    fun patchTransaction( transaction: Transaction ): Int {
         val optionalTransaction = transactionRepository.findByGuid(transaction.guid)
         if (optionalTransaction.isPresent()) {
             var updateFlag = false
@@ -132,7 +134,7 @@ open class TransactionService {
                 fromDb.category = transaction.category
                 updateFlag = true
             }
-            if( transaction.notes != "" && fromDb.notes != transaction.notes  ) {
+            if( transaction.notes != "" && fromDb.notes != transaction.notes && transaction.notes != "" ) {
                 fromDb.notes = transaction.notes
                 updateFlag = true
             }
@@ -140,7 +142,7 @@ open class TransactionService {
                 fromDb.cleared = transaction.cleared
                 updateFlag = true
             }
-            if( transaction.amount != fromDb.amount ) {
+            if( transaction.amount != fromDb.amount && transaction.amount != 0.0 ) {
                 fromDb.amount = transaction.amount
                 updateFlag = true
             }
@@ -152,11 +154,10 @@ open class TransactionService {
                 LOGGER.info("Saved transaction as the data has changed")
                 transactionRepository.save(fromDb)
             }
-            // bean utils will copy non null values from toBePatched to fromDb manager.
-            //beanUtils.copyProperties(fromDb, toBePatched)
-            //updateManager(fromDb)
+            return 0
         } else {
             LOGGER.warn("guid not found=" + transaction.guid)
+            return 1
         }
     }
 }

@@ -9,6 +9,7 @@ import java.sql.Timestamp
 import finance.utils.TransactionDeserializer
 import finance.utils.TransactionSerializer
 import java.sql.Date
+import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
 
@@ -55,12 +56,15 @@ class Transaction {
     @Size(min = 5, max = 6)
     var accountType: String? = null
     @NotNull
+    @NotBlank(message = "accountNameOwner cannnot be empty.")
     @Size(min = 1, max = 40)
     var accountNameOwner: String? = null
     var transactionDate: Date = Date(0)
     @NotNull
+    @NotBlank(message = "description cannnot be empty.")
     @Size(min = 1, max = 75)
     var description: String? = null
+    //var description: String by Required("The email cannot be blank")
     @Size(max = 50)
     var category: String? = null
     @NotNull
@@ -75,10 +79,6 @@ class Transaction {
     var dateAdded: Timestamp = Timestamp(0)
     @Size(max = 70)
     var sha256: String? = null
-
-//    override fun toString(): String {
-//        return mapper.writeValueAsString(this)
-//    }
 
     override fun toString(): String = mapper.writeValueAsString(this)
 
