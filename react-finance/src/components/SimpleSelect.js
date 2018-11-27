@@ -57,12 +57,12 @@ class SimpleSelect extends Component {
         options={this.state.options}
       />
     </div>
-    );
+    )
   }
 }
 
 const styles = theme => ({
-});
+})
 
 const mapDispatchToProps = {
   setAccount,

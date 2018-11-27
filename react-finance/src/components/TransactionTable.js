@@ -25,6 +25,7 @@ export class TransactionTable extends Component {
       super(props)
       this.state = {
         rows:[],
+        totals: 0.00,
         totals_cleared: 0.00,
         clickOpenDelete: false,
         columns: [ 'action', 'date', 'description', 'category', 'amount', 'cleared', 'notes' ],
@@ -110,20 +111,16 @@ export class TransactionTable extends Component {
       }
       })
       .then(response => {
-		  alert(response)
-        this.setState({ totals_cleared: response.data, })
+        this.setState({ totals_cleared: response.data.totalsCleared, totals: response.data.totals, })
       })
       .catch(error => {
         console.log(error);
         alert(error);
       })
-
-
     }
   }
 
   componentDidMount () {
-    //alert('accountNameOwner - componentDidMount=' + this.props.accountNameOwner)
     this.props.setAccount(true, []);
     this.props.setTransaction('none', [])
 
@@ -156,7 +153,8 @@ export class TransactionTable extends Component {
     <div className={this.props.classes.column}>
     <DialogFormAdd handler={this.handler} accountNameOwnerList={this.state.accountNameOwnerList} />
     </div>
-    <div className={this.props.classes.column}>{this.state.totals_cleared}</div>
+    <div className={this.props.classes.column}>Cleared: {this.state.totals_cleared}</div>
+    <div className={this.props.classes.column}>Total: {this.state.totals}</div>
     <LoadingData className="" type={this.props.loadingStatus} />
 
     {/* <div className={this.props.notificationIsShown === false ? this.props.classes.showTable: this.props.classes.hideTable}> */}
@@ -277,8 +275,8 @@ const styles = (theme) => ({
   },
   column: {
     float: 'left',
-    padding: '5px',
-	bottom: 0,
+    padding: '10px',
+    bottom: 0,
   },
 });
 

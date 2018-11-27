@@ -28,7 +28,6 @@ class DialogFormUpdate extends Component {
   }
 
   handleClose = (value) => {
-    //alert('Cancel Button')
     this.setState({ open: false })
   }
 
@@ -59,9 +58,6 @@ class DialogFormUpdate extends Component {
     let accountNameOwner = document.getElementById('accountNameOwner')
 
     obj['guid'] = this.props.transaction.guid
-
-    //alert(accountNameOwner.innerHTML)
-    //alert(accountNameOwner.textContent)
 
     if( this.toEochDate(transactionDate.value) !== this.props.transaction.transactionDate ) {
       obj['transactionDate'] = this.toEochDate(transactionDate.value)
@@ -96,6 +92,7 @@ class DialogFormUpdate extends Component {
     alert(payload);
 
     axios.patch(endpoint, payload, {
+    timeout: 0,
     headers: {
         'Content-Type': 'application/json-patch+json',
     }
@@ -104,7 +101,6 @@ class DialogFormUpdate extends Component {
       console.log(response)
 
       this.props.setUpdatedTransaction(this.props.transaction.guid)
-      //alert(JSON.stringify(response))
       this.props.handler()
     })
     .catch(error => {
@@ -118,15 +114,11 @@ class DialogFormUpdate extends Component {
 
   handleAccountNameOwnerChange = (selectedAccountNameOwner) => {
     if( selectedAccountNameOwner.value !== '' ) {
-      //alert(selectedAccountNameOwner)
-      //this.props.setAccount(false, selectedAccountNameOwner.value);
     }
   }
 
   handleClearedChange = (selectedCleared) => {
     if( selectedCleared.value !== '' ) {
-      //alert(selectedCleared)
-      //this.props.setAccount(false, selectedAccountNameOwner.value);
     }
   }
 
@@ -149,7 +141,6 @@ class DialogFormUpdate extends Component {
 
     this.setState({ accountNameOwnerOptions: accountNameOwnerJoinedList, clearedOptions: clearedJoinedList })
     let accountNameOwner = document.getElementById('accountNameOwner')
-    //accountNameOwner.textContent = this.props.transaction.accountNameOwner
   }
 
   render() {
@@ -157,7 +148,6 @@ class DialogFormUpdate extends Component {
 
     return (
       <div>
-      {/* <Button onClick={this.handleClickOpen}>Update</Button> */}
         <Button><img onClick={this.handleClickOpen} src={edit_logo} className="" alt="edit_logo" /></Button>
 
         <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
@@ -167,7 +157,6 @@ class DialogFormUpdate extends Component {
            <div>
             <Select label="Account Name Owner" id="accountNameOwner" key="accountNameOwner" defaultValue="" placeholder="account name owner..." onChange={this.handleAccountNameOwnerChange} options={this.state.accountNameOwnerOptions} />
             <TextField autoFocus label="Transaction Date" id="transactionDate" type="date" key="transactionDate" defaultValue={dateFormat(new Date(transaction.transactionDate * 1000), 'yyyy-mm-dd')} margin="dense" fullWidth />
-            {/* <TextField autoFocus label="Account Type" required id="accountType" type="text" defaultValue="" key="accountType" disabled={false} margin="dense" fullWidth /> */}
             <TextField autoFocus label="Description" required id="description" type="text" placeholder="transaction description..." defaultValue={transaction.description} onKeyDown={this.validateText} margin="dense" fullWidth />
             <TextField autoFocus label="Category" id="category" key="category" type="text" placeholder="transaction category..." defaultValue={transaction.category} margin="dense" fullWidth />
             <TextField autoFocus label="Amount" type="text" id="amount" key="amount" defaultValue={transaction.amount} autoComplete="on" margin="dense" />
@@ -196,5 +185,4 @@ const mapDispatchToProps = {
   setUpdatedTransaction,
 }
 
-//export default withStyles(styles)(DialogFormUpdate);
 export default withStyles(styles) (connect(null, mapDispatchToProps) (DialogFormUpdate));

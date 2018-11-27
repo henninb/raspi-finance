@@ -47,6 +47,7 @@ class DialogDeleteConfirm extends Component {
         let payload = ''
 
         axios.delete(endpoint, payload, {
+        timeout: 0,
         headers: {
             'Content-Type': 'application/json',
         }
