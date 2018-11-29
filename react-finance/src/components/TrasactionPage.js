@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react'
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -14,6 +14,8 @@ import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
 
+import Pagination from "react-js-pagination"
+
 const actionsStyles = theme => ({
   root: {
     flexShrink: 0,
@@ -25,15 +27,15 @@ const actionsStyles = theme => ({
 class TablePaginationActions extends React.Component {
   handleFirstPageButtonClick = event => {
     this.props.onChangePage(event, 0);
-  };
+  }
 
   handleBackButtonClick = event => {
     this.props.onChangePage(event, this.props.page - 1);
-  };
+  }
 
   handleNextButtonClick = event => {
     this.props.onChangePage(event, this.props.page + 1);
-  };
+  }
 
   handleLastPageButtonClick = event => {
     this.props.onChangePage(
@@ -46,7 +48,7 @@ class TablePaginationActions extends React.Component {
     const { classes, count, page, rowsPerPage, theme } = this.props;
 
     return (
-      <div className={classes.root}>
+      <div className={this.props.classes.root}>
         <IconButton
           onClick={this.handleFirstPageButtonClick}
           disabled={page === 0}
@@ -149,7 +151,7 @@ class CustomPaginationActionsTable extends React.Component {
     return (
       <Paper className={classes.root}>
         <div className={classes.tableWrapper}>
-          <Table className={classes.table}>
+          <Table className={this.props.classes.table}>
             <TableBody>
               {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(row => {
                 return (

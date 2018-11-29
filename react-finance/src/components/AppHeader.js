@@ -1,8 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import { withStyles } from '@material-ui/core/styles'
 
 class AppHeader extends Component {
-//            <h3>{this.props.accountNameOwner} test<h3>
 
   render() {
     return (
@@ -10,7 +9,7 @@ class AppHeader extends Component {
             <h2 style={Header}>Welcome to App Finance</h2>
 
       </div>
-    );
+    )
   }
 }
 

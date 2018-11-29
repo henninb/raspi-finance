@@ -17,6 +17,7 @@ import edit_logo from '../images/edit-24px.svg'
 import { setAccount, setTransaction, setTransactionLoadStatus } from '../store/account/actionCreator'
 //import MUIDataTable from 'mui-datatables'
 import DialogFormAdd from './DialogFormAdd'
+import Pagination from 'react-paginating'
 //import { FilterDrawer, filterSelectors, filterActions } from 'material-ui-filter'
 //https://stackoverflow.com/questions/35537229/how-to-update-parents-state-in-react
 
@@ -27,6 +28,10 @@ export class TransactionTable extends Component {
         rows:[],
         totals: 0.00,
         totals_cleared: 0.00,
+        limit: 2,
+        pageCount: 3,
+        total: 6,
+        currentPage: 1,
         clickOpenDelete: false,
         columns: [ 'action', 'date', 'description', 'category', 'amount', 'cleared', 'notes' ],
         guidToDelete: null,
@@ -42,7 +47,37 @@ export class TransactionTable extends Component {
     this.setState({
       clickOpenDelete: true,
       guidToDelete: guid,
-    });
+    })
+  }
+
+  handlePageChange = page => {
+    this.setState({
+      currentPage: page
+    })
+
+      //let endpoint = 'http://localhost:8080/get_page_by_account_name_owner/' + this.props.accountNameOwner
+      let endpoint = 'http://localhost:8080/findall?pageSize=5&pageNumber=' + (this.state.currentPage - 1)
+      let payload = ''
+
+      axios.get(endpoint, payload, {
+      timeout: 0,
+      headers: {
+          'Content-Type': 'application/json',
+      }
+      })
+      .then(response => {
+        //alert(JSON.stringify(response.data))
+        alert(JSON.stringify(response.data.content))
+        alert(JSON.stringify(response.data.pageable))
+        //this.props.setTransaction('none', response.data)
+        //this.setState({ rows: response.data, })
+      })
+      .catch(error => {
+        console.log(error);
+        alert(error);
+      })
+
+    //alert(this.state.currentPage)
   }
 
   handleClickUpdate = (guid) => {
@@ -154,7 +189,88 @@ export class TransactionTable extends Component {
     <DialogFormAdd handler={this.handler} accountNameOwnerList={this.state.accountNameOwnerList} />
     </div>
     <div className={this.props.classes.column}>Cleared: {this.state.totals_cleared}</div>
-    <div className={this.props.classes.column}>Total: {this.state.totals}</div>
+    <div className={this.props.classes.column}>Totals: {this.state.totals}</div>
+    <div className={this.props.classes.column}>
+
+        <Pagination
+          total={this.state.total}
+          limit={this.state.limit}
+          pageCount={this.state.pageCount}
+          currentPage={this.state.currentPage}
+        >
+          {({
+            pages,
+            currentPage,
+            hasNextPage,
+            hasPreviousPage,
+            previousPage,
+            nextPage,
+            totalPages,
+            getPageItemProps
+          }) => (
+            <div>
+              <button {...getPageItemProps({
+                  pageValue: 1,
+                  onPageChange: this.handlePageChange
+                })}
+              >
+                first
+              </button>
+
+              {hasPreviousPage && (
+                <button
+                  {...getPageItemProps({
+                    pageValue: previousPage,
+                    onPageChange: this.handlePageChange
+                  })}
+                >
+                  {'<'}
+                </button>
+              )}
+
+              {pages.map(page => {
+                let activePage = null;
+                if (currentPage === page) {
+                  activePage = { backgroundColor: '#fdce09' };
+                }
+                return (
+                  <button
+                    key={page}
+                    style={activePage}
+                    {...getPageItemProps({
+                      pageValue: page,
+                      onPageChange: this.handlePageChange
+                    })}
+                  >
+                    {page}
+                  </button>
+                );
+              })}
+
+              {hasNextPage && (
+                <button
+                  {...getPageItemProps({
+                    pageValue: nextPage,
+                    onPageChange: this.handlePageChange
+                  })}
+                >
+                  {'>'}
+                </button>
+              )}
+
+              <button
+                {...getPageItemProps({
+                  pageValue: totalPages,
+                  onPageChange: this.handlePageChange
+                })}
+              >
+                last
+              </button>
+            </div>
+          )}
+        </Pagination>
+
+    </div>
     <LoadingData className="" type={this.props.loadingStatus} />
 
     {/* <div className={this.props.notificationIsShown === false ? this.props.classes.showTable: this.props.classes.hideTable}> */}
