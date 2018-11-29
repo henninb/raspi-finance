@@ -211,10 +211,10 @@ dependencies {
 
     //h2 database
     compile("com.h2database:h2:${h2Version}")
-    //runtime("com.h2database:h2:1.4.196")
+    //runtime("com.h2database:h2:${h2Version}")
 
-    compile 'org.thymeleaf:thymeleaf:3.0.10.RELEASE'
-    compile 'org.thymeleaf:thymeleaf-spring4:3.0.10.RELEASE'
+    compile("org.thymeleaf:thymeleaf:3.0.10.RELEASE")
+    compile("org.thymeleaf:thymeleaf-spring4:3.0.10.RELEASE")
 
     //onetime
 

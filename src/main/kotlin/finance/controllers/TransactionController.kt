@@ -27,17 +27,49 @@ class TransactionController {
     @Autowired
     internal var transactionService: TransactionService? = null
 
-    //localhost:8080/findall?pageNumber=1&pageSize=20
+    //http://localhost:8080/findall
+    //http://localhost:8080/findall?pageNumber=0&pageSize=10
     @GetMapping(path = arrayOf("/findall"))
-    //@RequestMapping(value = "/users/get", method = arrayOf(RequestMethod.GET), produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
-    //@RequestMapping(method = RequestMethod.GET, path = "pageable",  produces = MediaType.APPLICATION_JSON_VALUE)
-    fun findAllTransactions(@RequestParam pageNumber: Int, @RequestParam pageSize: Int, pageable: Pageable): ResponseEntity<Page<Transaction>> {
-        //var  pageable1: Pageable = PageRequest.of(pageNumber, pageSize, Sort.Direction.DESC, "amount")
-        val  pageable1: Pageable = PageRequest.of(pageNumber, pageSize)
-        val transactions: Page<Transaction> = transactionService!!.findAllTransactions(pageable1)
+    fun findAllTransactions(@RequestParam("pageNumber") pageNumber: Optional<Int>, @RequestParam("pageSize") pageSize: Optional<Int>, pageable: Pageable): ResponseEntity<Page<Transaction>> {
+        var page = 0
+        var size = 10
+        if(pageNumber.isPresent ) {
+            page = pageNumber.get()
+        }
+
+        if( pageSize.isPresent ) {
+            size = pageSize.get()
+        }
+        var pageable1: Pageable = PageRequest.of(page, size)
+        var transactions: Page<Transaction> = transactionService!!.findAllTransactions(pageable1)
+        if( transactions.totalElements < size ) {
+            pageable1 = PageRequest.of(0, transactions.totalElements.toInt())
+            transactions = transactionService!!.findAllTransactions(pageable1)
+        }
         if(transactions.isEmpty) {
             ResponseEntity.notFound().build<List<Transaction>>()
         }
+        return ResponseEntity.ok(transactions)
+    }
+    //http://localhost:8080/get_page_by_account_name_owner/amex
+    //http://localhost:8080/get_page_by_account_name_owner/amex_brian?pageNumber=0&pageSize=5
+    @GetMapping(path = arrayOf("/get_page_by_account_name_owner/{accountNameOwner}"))
+    fun findByAccountNameOwnerPage(@PathVariable accountNameOwner: String, @RequestParam pageNumber: Optional<Int>, @RequestParam pageSize: Optional<Int>, pageable: Pageable): ResponseEntity<Page<Transaction>> {
+        var page = 0
+        var size = 5
+        if(pageNumber.isPresent ) {
+            page = pageNumber.get()
+        }
+
+        if( pageSize.isPresent ) {
+            size = pageSize.get()
+        }
+        val pageable1: Pageable = PageRequest.of(page, size)
+        val transactions: Page<Transaction> = transactionService!!.findTransactionsByAccountNameOwnerPageable(pageable1, accountNameOwner)
+        if( transactions.isEmpty) {
+            ResponseEntity.notFound().build<List<Transaction>>()
+        }
+
         return ResponseEntity.ok(transactions)
     }
 

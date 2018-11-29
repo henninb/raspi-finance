@@ -32,6 +32,7 @@ interface TransactionRepository<T : Transaction> : JpaRepository<T, Long> {
     fun findByAccountNameOwnerAndClearedOrderByTransactionDateAsc(accountNameOwner: String, cleared: Int) : List<Transaction>
     fun findByAccountNameOwnerIgnoreCaseOrderByTransactionDateDesc(accountNameOwner: String): List<Transaction>
     fun findByAccountNameOwnerIgnoreCaseOrderByTransactionDateAsc(accountNameOwner: String): List<Transaction>
+    fun findByAccountNameOwnerIgnoreCaseOrderByTransactionDate(pageable : Pageable, accountNameOwner: String) : Page<Transaction>
 
     //TODO: add LIMIT 1
     fun findByGuid(guid: String): Optional<Transaction>
