@@ -25,10 +25,15 @@ open class TransactionService {
     //internal var mongoTransactionRepository: MongoTransactionRepository? = null
 
     fun findAllTransactions(pageable: Pageable) : Page<Transaction> {
-        //val pageable :Pageable = PageRequest(pageNumber, pageSize, Sort.unsorted())
         val transactions : Page<Transaction> = transactionRepository.findAll(pageable)
-        return transactions
 
+        return transactions
+    }
+
+    fun findTransactionsByAccountNameOwnerPageable(pageable: Pageable, accountNameOwner: String) : Page<Transaction> {
+        val transactions : Page<Transaction> = transactionRepository.findByAccountNameOwnerIgnoreCaseOrderByTransactionDate(pageable, accountNameOwner)
+
+        return transactions
     }
 
     fun findAll(): List<Transaction> {
@@ -84,13 +89,12 @@ open class TransactionService {
         try {
             val totalsCleared: Double = transactionRepository.getTotalsByAccountNameOwnerCleared(accountNameOwner)
             val totals: Double = transactionRepository.getTotalsByAccountNameOwner(accountNameOwner)
-            var t: Totals = Totals()
-            t.totals = BigDecimal(totals).setScale(2, BigDecimal.ROUND_HALF_UP)
-            t.totalsCleared = BigDecimal(totalsCleared).setScale(2, BigDecimal.ROUND_HALF_UP)
-            LOGGER.info("totals=" + totals.toString())
+            val t: Totals = Totals()
+
+            t.totals = BigDecimal(totals)
+            t.totalsCleared = BigDecimal(totalsCleared)
 
             return t
-            //return "{\"totals\": " + totals + ", \"totalsCleared\": " + totalsCleared + " }"
         } catch (ex: EmptyResultDataAccessException) {
             LOGGER.info(ex.message)
         } catch (e:Exception) {
