@@ -55,6 +55,7 @@ fn datetime_to_epoch_large_date_test() {
 
 fn compute_date_doy( year: i32, month: u32, day: u32 ) -> u32 {
 //fn compute_date_doy( year: i32, month: u32, day: u32 ) -> Result<u32, u32> {
+//fn compute_date_doy( year: i32, month: u32, day: u32 ) -> Result<u32, String> {
     let n1 = 275 * month / 9;
     let n2 = (month + 9) / 12;
     let n3 = 1 + ((year - 4 * (year / 4) + 2) / 3);

@@ -14,13 +14,21 @@ extern crate regex;
 extern crate pancurses;
 extern crate finance;
 extern crate reqwest;
+extern crate libc;
+extern crate kernel32;
+extern {
+  pub fn getchar() -> libc::c_int;
+}
+//extern crate termios;
+
+//libc::STDIN_FILENO defined in the libc
 
 //use pancurses::{initscr, endwin};
-use regex::Regex;
+//use regex::Regex;
 use std::process;
 use std::env;
 use std::fs::File;
-use std::io::{self, Write, BufRead, BufReader};
+use std::io::{self, Write, BufRead, BufReader, Read};
 use hyper::Client;
 use hyper::rt::{self, Future, Stream};
 use hyper::header::HeaderValue;
@@ -29,6 +37,8 @@ use http::header::CONTENT_LENGTH;
 use uuid::Uuid;
 use chrono::prelude::*;
 use chrono::{DateTime};
+//use termios::{Termios, TCSANOW, ECHO, ICANON, tcsetattr};
+//use libc::STDIN_FILENO;
 //use std::time::{SystemTime, UNIX_EPOCH};
 //use std::path::Path;
 
@@ -44,9 +54,15 @@ struct Transaction {
   description: String,
   category: String,
   notes: String,
-  cleared: String,
+  cleared: i32,
   amount: String,
-  transactionDate: String,
+  transactionDate: u32,
+}
+
+#[allow(non_snake_case)]
+#[derive(Serialize, Deserialize)]
+struct Account {
+  accountNameOwner: String,
 }
 
 fn populate_transaction( transaction_vec:  Vec<&str> ) -> Transaction {
@@ -59,15 +75,16 @@ fn populate_transaction( transaction_vec:  Vec<&str> ) -> Transaction {
         description: transaction_vec[3].to_string(),
         category: transaction_vec[4].to_string(),
         notes: transaction_vec[7].to_string(),
-        cleared: transaction_vec[6].to_string(),
+        cleared: transaction_vec[6].parse::<i32>().unwrap(),
         amount: transaction_vec[5].to_string(),
-        transactionDate: finance::datetime_to_epoch(date_utc.unwrap()).to_string(),
+        //transactionDate: finance::datetime_to_epoch(date_utc.unwrap()).to_string(),
+        transactionDate: finance::datetime_to_epoch(date_utc.unwrap()),
     };
     transaction
 }
 
 fn file_read( ifname: String ) -> String {
-    let ifp = File::open(ifname).expect("Unable to open file");
+    let ifp = File::open(ifname).expect("Unable to open file.");
     let ifp = BufReader::new(ifp);
 
     for line in ifp.lines() {
@@ -76,7 +93,7 @@ fn file_read( ifname: String ) -> String {
         let server_port = "8080".to_owned();
 
         let elements: Vec<_> = line.split("\t").collect();
-        
+
         if elements.len() == 8 {
             if elements[0] == "n" {
                 let transaction = populate_transaction(elements);
@@ -133,6 +150,19 @@ fn main() {
         }
     };
 
+    loop {
+        let ch = unsafe{ getchar() };
+        println!("ANSI code: {}", ch);
+    }
+
+    //loop {
+    //    let mut character = [0];
+    //    println!("enter: ");
+    //    while let Ok(_) = io::stdin().read(&mut character) {
+    //        println!("CHAR {:?}", character[0] as char);
+    //    }
+    //}
+
     let server_name = "localhost".to_owned();
     let server_port = "8080".to_owned();
 
@@ -155,7 +185,8 @@ fn main() {
             }
         };
 
-        selectTransactionNew();
+        selectAccounts(server_name.clone(), server_port.clone());
+        selectTransactionNew(server_name.clone(), server_port.clone(), account_name_owner.clone());
 
         let get_url_str = format!("http://{}:{}/get_by_account_name_owner/{}", server_name, server_port, account_name_owner);
         let get_url = get_url_str.parse::<hyper::Uri>().unwrap();
@@ -174,21 +205,36 @@ fn main() {
     }
 }
 
+#[allow(non_snake_case)]
+// Result must be of type reqwest::Result
+//turbofish (::<>) on the enum variant
+fn selectAccounts(server_name: String, server_port: String) -> reqwest::Result<()> {
+    let request_url = format!("http://{}:{}/select_accounts", server_name, server_port);
+
+    let mut response = reqwest::get(&request_url)?;
+    let accounts: Vec<Account> = response.json()?;
+    println!("vector count = <{}>", accounts.len());
+    for account in &accounts {
+        println!("accountNameOwner = {}", account.accountNameOwner);
+    }
+    Ok(())
+}
+
 
 #[allow(non_snake_case)]
 // Result must be of type reqwest::Result
 //turbofish (::<>) on the enum variant
-fn selectTransactionNew() -> reqwest::Result<()> {
-    let request_url = format!("http://{}:{}/get_by_account_name_owner/{}", "localhost".to_string(), "8080".to_string(), "chase_brian".to_string());
+fn selectTransactionNew(server_name: String, server_port: String, account_name_owner: String) -> reqwest::Result<()> {
+    let request_url = format!("http://{}:{}/get_by_account_name_owner/{}", server_name, server_port, account_name_owner);
 
-    println!("{}", request_url);
     let mut response = reqwest::get(&request_url)?;
-
     let transactions: Vec<Transaction> = response.json()?;
-    //println!("{:?}", transactions);
+    println!("rec count {}", transactions.len());
+    for transaction in &transactions {
+        println!("{}", transaction.guid);
+    }
     Ok(())
 }
-
 
 #[allow(non_snake_case)]
 fn selectTransaction(url: hyper::Uri) -> impl Future<Item=(), Error=()> {
@@ -258,3 +304,8 @@ fn insertTransaction(url: hyper::Uri, transaction:  Transaction) -> impl Future<
             eprintln!("Error {}", err);
         })
 }
+
+//pub unsafe extern "system" fn SetConsoleMode(
+//    hConsoleHandle: HANDLE, 
+//    dwMode: DWORD
+//) -> BOOL
