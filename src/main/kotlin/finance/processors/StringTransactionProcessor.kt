@@ -6,7 +6,6 @@ import org.apache.camel.Processor
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
-
 @Component
 open class StringTransactionProcessor : Processor {
     private val LOGGER = LoggerFactory.getLogger(this.javaClass)

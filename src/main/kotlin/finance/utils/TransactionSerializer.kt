@@ -22,7 +22,6 @@ class TransactionSerializer @JvmOverloads constructor(t: Class<Transaction>? = n
         } else {
             jgen.writeStringField("guid", "")
             LOGGER.warn("transaction.guid is null.")
-
         }
         if( transaction.sha256 != null ) {
             jgen.writeStringField("sha256", transaction.sha256)

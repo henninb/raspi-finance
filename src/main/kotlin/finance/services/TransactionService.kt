@@ -19,7 +19,7 @@ open class TransactionService {
     private val LOGGER = LoggerFactory.getLogger(this.javaClass)
 
     @Autowired
-    lateinit private var transactionRepository: TransactionRepository<Transaction>
+    lateinit var transactionRepository: TransactionRepository<Transaction>
 
     //@Autowired(required=false)
     //internal var mongoTransactionRepository: MongoTransactionRepository? = null

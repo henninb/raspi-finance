@@ -17,7 +17,7 @@ open class InsertTransactionProcessor : Processor {
     private val LOGGER = LoggerFactory.getLogger(this.javaClass)
 
     @Autowired
-    private val transactionService: TransactionService? = null
+    lateinit var transactionService: TransactionService
 
     var transactionFailure: Transaction? = null
     val resultMessage = ResultMessage()
@@ -30,7 +30,7 @@ open class InsertTransactionProcessor : Processor {
             val transaction: Transaction = JsonTransactionProcessor.mapper.readValue(payload, Transaction::class.java)
 
             transactionFailure = transaction
-            transactionService!!.insertTransaction(transaction)
+            transactionService.insertTransaction(transaction)
             LOGGER.info("transaction inserted, guid=" + transaction.guid + " description=" + transaction.description)
 
             resultMessage.message = "Successfully processed add message."
