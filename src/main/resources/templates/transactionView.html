@@ -1,15 +1,20 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<!--
 <link rel="stylesheet" th:href="@{/css/style.css}" />
+-->
 <head>
 <meta charset="UTF-8">
 <title>Account Transactions</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
 
 <div>
     <ul>
-        <li><a href="#home">Home</a></li>
+        <li><a href="/">Home</a></li>
         <li><a href="#news">Payments</a></li>
         <li class="dropdown">
             <a href="javascript:void(0)" class="dropbtn">Accounts</a>
@@ -44,32 +49,39 @@
     </table>
 </div>
 
-    <div class="title3">
-        <table>
-            <thead>
-                <tr>
-                    <th align="left">id</th>
-                    <th align="left">date</th>
-                    <th align="left">description</th>
-                    <th align="left">category</th>
-                    <th align="left">amount</th>
-                    <th align="left">cleared</th>
-                    <th align="left">notes</th>
-                </tr>
-            </thead>
-            <tbody class="alternate">
-                <tr class="lalign" th:each="transaction : ${transactions}">
-                    <td th:text="${transaction.transactionId}"></td>
-                    <!--${#dates.format(sprint.releaseDate, 'dd-MMM-yyyy')}-->
-                    <td th:contenteditable="true" th:text="${transaction.transactionDate}"></td>
-                    <td th:contenteditable="true" th:text="${transaction.description}"></td>
-                    <td th:contenteditable="true" th:text="${transaction.category}"></td>
-                    <td th:contenteditable="true" th:align="right" th:text="${#numbers.formatDecimal(transaction.amount, 0, 'COMMA', 2, 'POINT')}"></td>
-                    <td th:contenteditable="true" th:align="center" th:text="${transaction.cleared}"></td>
-                    <td th:contenteditable="true" th:text="${transaction.notes}"></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+<div class="container">
+    <h2>Transactions</h2>
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th align="left">action</th>
+            <th align="left">date</th>
+            <th align="left">description</th>
+            <th align="left">category</th>
+            <th align="left">amount</th>
+            <th align="left">cleared</th>
+            <th align="left">notes</th>
+        </tr>
+        </thead>
+        <tbody>
+
+
+        <tr th:each="transaction : ${transactions}">
+            <td>
+                <a class="btn btn-warning" href="/edit">Edit</a>
+                <a class="btn btn-warning" href="/delete">Delete</a>
+            </td>
+            <td th:text="${transaction.transactionDate}"></td>
+            <td th:text="${transaction.description}"></td>
+            <td th:text="${transaction.category}"></td>
+            <td th:align="right" th:text="${#numbers.formatDecimal(transaction.amount, 0, 'COMMA', 2, 'POINT')}"></td>
+            <td th:align="center" th:text="${transaction.cleared}"></td>
+            <td th:text="${transaction.notes}"></td>
+        </tr>
+
+        </tbody>
+    </table>
+</div>
+
 </body>
 </html>
