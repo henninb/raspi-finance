@@ -4,8 +4,6 @@ import finance.services.AccountService
 import finance.services.TransactionService
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.RequestMapping
-//import sun.security.x509.OIDMap.addAttribute
-//import org.hibernate.cache.spi.support.AbstractReadWriteAccess.Item
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.ui.Model
@@ -19,10 +17,10 @@ class ThymeleafController {
     private val LOGGER = LoggerFactory.getLogger(this.javaClass)
 
     @Autowired
-    internal var transactionService: TransactionService? = null
+    lateinit var transactionService: TransactionService
 
     @Autowired
-    internal var accountService: AccountService? = null
+    lateinit var accountService: AccountService
 
     //localhost:8080/
     @RequestMapping("/")
@@ -31,25 +29,32 @@ class ThymeleafController {
         return "index"
     }
 
-    //localhost:8080/transactionCreate
+    //http://localhost:8080/transactionCreate
     @GetMapping(path = arrayOf("/transactionCreate"))
     fun transactionCreate(): String {
         return "transactionCreate"
     }
 
+    //ResponseEntity - not sure
+    //http://localhost:8080/transactionView
     @GetMapping(path = arrayOf("/transactionView"))
     fun transactionView(model: Model): String {
-        val accounts = accountService!!.findAllAcitveAccounts()
+        val accounts = accountService.findAllAcitveAccounts()
         model.addAttribute("accounts", accounts)
         return "transactionView"
     }
+
+//    @RequestMapping(value = "/submitQuery", method = arrayOf(RequestMethod.POST))
+//    fun processQuery(@ModelAttribute form: ClientForm, model: Model): String {
+//        System.out.println(form.getClientList())
+//    }
 
     //http://localhost:8080/transactionView/amex_brian
     //TODO: ResponseEntity code fix
     @GetMapping(path = arrayOf("/transactionView/{accountNameOwner}"))
     fun transactionView(@PathVariable accountNameOwner: String, model: Model): String {
-        val accounts = accountService!!.findAllAcitveAccounts()
-        val transactions = transactionService!!.findByAccountNameOwnerIgnoreCaseOrderByTransactionDate(accountNameOwner)
+        val accounts = accountService.findAllAcitveAccounts()
+        val transactions = transactionService.findByAccountNameOwnerIgnoreCaseOrderByTransactionDate(accountNameOwner)
         model.addAttribute("transactions", transactions)
         model.addAttribute("accounts", accounts)
         return "transactionView"

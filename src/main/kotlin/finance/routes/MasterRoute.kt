@@ -4,7 +4,6 @@ import finance.models.Transaction
 import finance.processors.InsertTransactionProcessor
 import finance.processors.JsonTransactionProcessor
 import finance.processors.StringTransactionProcessor
-import org.apache.camel.Exchange
 import org.apache.camel.builder.RouteBuilder
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,7 +11,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.io.File
 import org.apache.camel.LoggingLevel
-import org.apache.camel.Processor
 
 @Component
 class MasterRoute : RouteBuilder() {
@@ -21,13 +19,13 @@ class MasterRoute : RouteBuilder() {
     private val jsonFilesInputPath: String? = null
 
     @Autowired
-    var stringTransactionProcessor: StringTransactionProcessor? = null
+    lateinit var stringTransactionProcessor: StringTransactionProcessor
 
     @Autowired
-    var jsonTransactionProcessor: JsonTransactionProcessor? = null
+    lateinit var jsonTransactionProcessor: JsonTransactionProcessor
 
     @Autowired
-    var insertTransactionProcessor: InsertTransactionProcessor? = null
+    lateinit var insertTransactionProcessor: InsertTransactionProcessor
 
     @Throws(Exception::class)
     override fun configure() {

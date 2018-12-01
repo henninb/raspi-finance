@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException
 import finance.models.Transaction
 import org.apache.camel.Exchange
 import org.apache.camel.Processor
-//import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.io.IOException
@@ -33,7 +32,6 @@ open class JsonTransactionProcessor : Processor {
             LOGGER.info("UnrecognizedPropertyException")
             e.printStackTrace()
         }
-
     }
 
     companion object {

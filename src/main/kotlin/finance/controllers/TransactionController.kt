@@ -25,7 +25,7 @@ class TransactionController {
     private val LOGGER = LoggerFactory.getLogger(this.javaClass)
 
     @Autowired
-    internal var transactionService: TransactionService? = null
+    lateinit var transactionService: TransactionService
 
     //http://localhost:8080/findall
     //http://localhost:8080/findall?pageNumber=0&pageSize=10
@@ -41,10 +41,10 @@ class TransactionController {
             size = pageSize.get()
         }
         var pageable1: Pageable = PageRequest.of(page, size)
-        var transactions: Page<Transaction> = transactionService!!.findAllTransactions(pageable1)
+        var transactions: Page<Transaction> = transactionService.findAllTransactions(pageable1)
         if( transactions.totalElements < size ) {
             pageable1 = PageRequest.of(0, transactions.totalElements.toInt())
-            transactions = transactionService!!.findAllTransactions(pageable1)
+            transactions = transactionService.findAllTransactions(pageable1)
         }
         if(transactions.isEmpty) {
             ResponseEntity.notFound().build<List<Transaction>>()
@@ -65,7 +65,7 @@ class TransactionController {
             size = pageSize.get()
         }
         val pageable1: Pageable = PageRequest.of(page, size)
-        val transactions: Page<Transaction> = transactionService!!.findTransactionsByAccountNameOwnerPageable(pageable1, accountNameOwner)
+        val transactions: Page<Transaction> = transactionService.findTransactionsByAccountNameOwnerPageable(pageable1, accountNameOwner)
         if( transactions.isEmpty) {
             ResponseEntity.notFound().build<List<Transaction>>()
         }
@@ -76,7 +76,7 @@ class TransactionController {
     //http://localhost:8080/get_by_account_name_owner/amazon.gift_brian
     @GetMapping(path = arrayOf("/get_by_account_name_owner/{accountNameOwner}"))
     fun findByAccountNameOwner(@PathVariable accountNameOwner: String): ResponseEntity<List<Transaction>> {
-        val transactions: List<Transaction> = transactionService!!.findByAccountNameOwnerIgnoreCaseOrderByTransactionDate(accountNameOwner)
+        val transactions: List<Transaction> = transactionService.findByAccountNameOwnerIgnoreCaseOrderByTransactionDate(accountNameOwner)
         if( transactions.isEmpty() ) {
             ResponseEntity.notFound().build<List<Transaction>>()
         }
@@ -86,7 +86,7 @@ class TransactionController {
     //http://localhost:8080/get_totals_cleared/chase_brian
     @GetMapping(path = arrayOf("/get_totals_cleared/{accountNameOwner}"))
     fun totalsCleared(@PathVariable accountNameOwner: String): ResponseEntity<String> {
-        val totals: Totals = transactionService!!.getTotalsByAccountNameOwner(accountNameOwner)
+        val totals: Totals = transactionService.getTotalsByAccountNameOwner(accountNameOwner)
 
         return ResponseEntity.ok(mapper.writeValueAsString(totals))
     }
@@ -94,7 +94,7 @@ class TransactionController {
     //http://localhost:8080/select/340c315d-39ad-4a02-a294-84a74c1c7ddc
     @GetMapping(path = arrayOf("/select/{guid}"))
     fun findtTransaction(@PathVariable guid: String): ResponseEntity<Transaction> {
-        val transactionOption: Optional<Transaction> = transactionService!!.findByGuid(guid)
+        val transactionOption: Optional<Transaction> = transactionService.findByGuid(guid)
         if( transactionOption.isPresent ) {
             val transaction: Transaction = transactionOption.get()
             return ResponseEntity.ok(transaction)
@@ -107,7 +107,7 @@ class TransactionController {
     @PatchMapping(path = arrayOf("/update/{guid}"), consumes = arrayOf("application/json-patch+json"), produces = arrayOf("application/json"))
     fun updateTransaction(@RequestBody transaction: Map<String, String>): ResponseEntity<String> {
         val toBePatchedTransaction = mapper.convertValue(transaction, Transaction::class.java)
-        val rc: Int = transactionService!!.patchTransaction(toBePatchedTransaction)
+        val rc: Int = transactionService.patchTransaction(toBePatchedTransaction)
         if( rc == 0) {
             return ResponseEntity.ok("resource updated")
         }
@@ -115,19 +115,18 @@ class TransactionController {
     }
 
     //http://localhost:8080/insert
-    //TODO: ResponseEntity code fix
     @PostMapping(path = arrayOf("/insert"), consumes = arrayOf("application/json"), produces = arrayOf("application/json"))
     fun insertTransaction(@RequestBody transaction: Transaction) : ResponseEntity<String> {
-        transactionService?.insertTransaction(transaction)
+        transactionService.insertTransaction(transaction)
         return ResponseEntity.ok("resource inserted")
     }
 
     //http://localhost:8080/delete/38739c5b-e2c6-41cc-82c2-d41f39a33f9a
     @DeleteMapping(path = arrayOf("/delete/{guid}"))
     fun deleteTransaction(@PathVariable guid: String): ResponseEntity<String> {
-        val transactionOption: Optional<Transaction> = transactionService!!.findByGuid(guid)
+        val transactionOption: Optional<Transaction> = transactionService.findByGuid(guid)
         if(transactionOption.isPresent ) {
-            transactionService!!.deleteByGuid(guid)
+            transactionService.deleteByGuid(guid)
             return ResponseEntity.ok("resource deleted")
         }
         return ResponseEntity.notFound().build() //404

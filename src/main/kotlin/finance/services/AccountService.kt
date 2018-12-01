@@ -5,8 +5,7 @@ import finance.repositories.AccountRepository
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import java.util.ArrayList
-import java.util.function.Consumer
+import java.util.*
 
 @Service
 open class AccountService {
@@ -31,16 +30,21 @@ open class AccountService {
     }
 
     fun findByAccountNameOwner(accountNameOwner: String): Account {
-        return accountRepository.findByAccountNameOwner(accountNameOwner)
+        val optionalAccunt: Optional<Account> = accountRepository.findByAccountNameOwner(accountNameOwner)
+        if( optionalAccunt.isPresent ) {
+            return optionalAccunt.get()
+        }
+        return Account()
     }
 
     //fun findByAccountNameOwnerOrderBy(accountNameOwner: String): Account {
     //    return accountRepository!!.findByAccountNameOwner(accountNameOwner)
     //}
 
-    fun insertAccount(account: Account) {
+    fun insertAccount(account: Account) : Boolean {
         //TODO: Should saveAndFlush be in a try catch block?
-        val result = accountRepository.saveAndFlush(account)
-            LOGGER.info("INFO: transactionRepository.saveAndFlush success.")
+        accountRepository.saveAndFlush(account)
+        LOGGER.info("INFO: transactionRepository.saveAndFlush success.")
+        return true
     }
 }
