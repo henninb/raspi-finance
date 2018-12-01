@@ -1,22 +1,18 @@
 buildscript {
-    ext.someVariable = '1.0'
     ext {
         springBootVersion = '2.1.0.RELEASE'
-        //version update
         apacheCamelVersion = '2.22.2'
-        //version upgrade
         kotlinVersion = '1.3.10'
         qualityPluginVersion='3.0.0'
         codenarcPluginVersion='0.20.0'
         activemqVersion='5.15.7'
         jolokiaVersion='1.6.0'
         postgresqlVersion='42.2.5'
-        //version update
         kafkaVersion='2.1.0'
-        //version update
         hibernateVersion='5.3.7.Final'
         h2Version='1.4.197'
         clojureVersion='1.10.0-RC2'
+        gradleVersion='4.10.2'
     }
     repositories {
         mavenLocal()
@@ -95,7 +91,7 @@ compileKotlin {
 }
 
 wrapper {
-    gradleVersion="4.10.2"
+    gradleVersion="${gradleVersion}"
 }
 
 configurations.all {
@@ -174,19 +170,22 @@ dependencies {
     //rabbitmq
     //compile("com.rabbitmq:amqp-client:3.6.6")
 
+    compile("org.webjars:bootstrap:4.1.3")
+    compile("org.webjars:jquery:3.3.1-1")
+    //compile("org.webjars:bootstrap-datepicker:1.0.1")
+
     //IBM MQ
+    //compile("com.ibm.mq:mq:7.0.1.9")
+    //compile("com.ibm.mq:mqjms:7.0.1.9")
+    //compile("com.ibm.mq.jms:jms-client:7.0.1.9")
+    //compile("com.ibm.mq:jmqi:7.0.1.9")
     //compile("com.ibm.mq:dhbcore:7.0.1.9")
-    //compile("com.ibm:com.ibm.mq:7.0.1")
-    //compile("com.ibm:com.ibm.mqjms:7.0.1")
-    //compile("com.ibm:com.ibm.mq.jmqi:7.0.1")
-    ////compile("javax.jms:javax.jms:1.1")
-    //compile("javax.jms:javax.jms-api:2.0.1")
-    //compile("javax:javaee-api:7.0")
+    //compile("com.ibm.mq:headers:7.0.1.9")
+    //compile("com.ibm.mq:commonservices:7.0.1.9")
+    //compile("javax:javaee-api:8.0")
 
     //Spring
-    //needs to be upgraded to 5.1.0.RELEASE
     compile("org.springframework:spring-jms:5.1.2.RELEASE")
-    //compile("org.springframework:spring-jms:5.0.1.RELEASE")
     //compile("org.springframework.batch:spring-batch-core:3.0.8.RELEASE")
     //compile("org.springframework.data:spring-data-rest-core:2.0.0.RELEASE")
     //compile("org.springframework:spring-oxm:5.0.5.RELEASE")
@@ -226,8 +225,8 @@ dependencies {
     //compile("com.google.guava:guava:23.0")
     //compile("javax.persistence:persistence-api:1.0")
     //testCompile("junit:junit:4.12")
-    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.3.1'
-    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.23.0'
+    testCompile("org.junit.jupiter:junit-jupiter-api:5.3.1")
+    testCompile("org.mockito:mockito-core:2.23.0")
 
     //compile("org.jsoup:jsoup:1.10.3")
     //runtime("org.apache.tomcat:tomcat-jdbc:9.0.1")
