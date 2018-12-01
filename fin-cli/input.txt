@@ -1,5 +1,9 @@
-n	amex_brian	10/1	brian test	one	0.1	1	notes
-n	amex_brian	10/2	matthew test	two	0.2	1	notes
-u	amex_brian	10/2	matthew test	three	0.3	0	notes
-u	amex_brian	10/15	my test		-20.35	0	my notes
-n	amex_brian	10/16	my test		
+f	amex_brian	2/30	failure	failure	0.00	1	toys dummy
+n	amex_brian	12/1	target.com	online	0.00	1	toys dummy
+n	chase_brian	12/2	aliexpress.com	online	0.00	1	electronic parts dummy
+n	discover_brian	12/2	My Restaurant	restaurant	0.00	1	eating dummy
+n	amex_brian	12/15	McDonalds	restaurant	0.00	1	with friends dummy
+n	discover_brian	12/16	aliexpress.com	online	0.00	1	for Christmas dummy
+n	amex_brian	12/16	Whole Foods	groceries	0.00	1	dummy
+n	amex_brian	12/13	Some Foods	groceries	0.00	1	dummy
+n	discover_brian	12/13	Dollar Tree	misc	0.00	1	misc stuff dummy

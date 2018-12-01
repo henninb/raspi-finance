@@ -5,6 +5,7 @@ use chrono::prelude::*;
 use chrono::{DateTime};
 use regex::Regex;
 use std::io::Read;
+use std::panic;
 
 #[test]
 fn compute_date_doy_test() {
@@ -53,12 +54,14 @@ fn datetime_to_epoch_large_date_test() {
 }
 
 fn compute_date_doy( year: i32, month: u32, day: u32 ) -> u32 {
+//fn compute_date_doy( year: i32, month: u32, day: u32 ) -> Result<u32, u32> {
     let n1 = 275 * month / 9;
     let n2 = (month + 9) / 12;
     let n3 = 1 + ((year - 4 * (year / 4) + 2) / 3);
     let n = n1 - (n2 * n3 as u32) + day - 30;
 
     return n;
+    //Ok(n)
 }
 
 pub fn datetime_to_epoch( utc: DateTime<Utc> ) -> u32 {
@@ -78,7 +81,9 @@ pub fn datetime_to_epoch( utc: DateTime<Utc> ) -> u32 {
     return total_secs;
 }
 
-pub fn date_string_to_date( date_string: &str ) -> DateTime<Utc> {
+//pub fn date_string_to_date( date_string: &str ) -> DateTime<Utc> {
+//pub fn date_string_to_date( date_string: &str ) -> Result<DateTime<Utc>, i32> {
+pub fn date_string_to_date( date_string: &str ) -> Result<DateTime<Utc>, String> {
     let re1 = Regex::new(r"^(?P<month>\d{2})-(?P<day>\d{2})$").unwrap();
     let re2 = Regex::new(r"^(?P<month>\d{2})-(?P<day>\d{1})$").unwrap();
     let re3 = Regex::new(r"^(?P<month>\d{1})-(?P<day>\d{1})$").unwrap();
@@ -120,13 +125,44 @@ pub fn date_string_to_date( date_string: &str ) -> DateTime<Utc> {
     //        process::exit(105);
     //    }
     //};
-    let year = yy.parse::<i32>().unwrap();
-    let month = mm.parse::<u32>().unwrap();
-    let day = dd.parse::<u32>().unwrap();
+    //let year = yy.parse::<i32>().unwrap();
 
-    let utc_datetime = Utc.ymd(year, month, day).and_hms(0, 0, 0);
+    let year = match yy.parse::<i32>() {
+      Ok(n) => n,
+      Err(err) => panic!("bad year parse"),
+    };
 
-    return utc_datetime;
+    //let month = mm.parse::<u32>().unwrap();
+    let month = match mm.parse::<u32>() {
+      Ok(n) => n,
+      Err(err) => {
+        panic!("bad month parse");
+      }
+    };
+
+    //let day = dd.parse::<u32>().unwrap();
+    let day = match dd.parse::<u32>() {
+      Ok(n) => n,
+      Err(err) => {
+        panic!("bad day parse");
+      }
+    };
+
+    let utc_datetime = Utc.ymd(year, month, day).and_hms(0, 0, 0); 
+    //let utc_datetime = match Utc.ymd(year, month, day).and_hms(0, 0, 0) {
+    //  Ok(n) => n,
+    //  Err(err) => {
+    //    panic!("bad utc_datetime");
+    //  }
+    //};
+
+    //let utc_datetime = panic::catch_unwind(|| {
+    //  panic!("oh no!");
+    //});
+
+    //Ok(utc_datetime.unwrap())
+    Ok(utc_datetime)
+    //return utc_datetime;
 }
 
 pub fn read_single_char() {
