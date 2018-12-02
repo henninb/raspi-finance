@@ -116,7 +116,7 @@ open class TransactionService {
         return transactions;
     }
 
-    fun patchTransaction( transaction: Transaction ): Int {
+    fun patchTransaction( transaction: Transaction ): Boolean {
         val optionalTransaction = transactionRepository.findByGuid(transaction.guid)
         if (optionalTransaction.isPresent()) {
             var updateFlag = false
@@ -158,10 +158,10 @@ open class TransactionService {
                 LOGGER.info("Saved transaction as the data has changed")
                 transactionRepository.save(fromDb)
             }
-            return 0
+            return true
         } else {
             LOGGER.warn("guid not found=" + transaction.guid)
-            return 1
+            return false
         }
     }
 }
