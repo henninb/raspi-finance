@@ -1,8 +1,7 @@
 //requires nightly build
 //#![feature(core_intrinsics)]
-#[macro_use]
-//#![deny(warnings)]
-extern crate serde_derive;
+#[macro_use] extern crate serde_derive;
+#[macro_use] extern crate text_io;
 extern crate serde;
 extern crate serde_json;
 extern crate hyper;
@@ -16,27 +15,27 @@ extern crate finance;
 extern crate reqwest;
 extern crate libc;
 extern crate kernel32;
-extern {
-  pub fn getchar() -> libc::c_int;
-}
 //extern crate termios;
+extern {
+  pub fn getchar() -> libc::c_int;  
+}
+
 
 //libc::STDIN_FILENO defined in the libc
 
-//use pancurses::{initscr, endwin};
-//use regex::Regex;
+use pancurses::{initscr, endwin, Window, Input, noecho, resize_term};
 use std::process;
 use std::env;
 use std::fs::File;
-use std::io::{self, Write, BufRead, BufReader, Read};
+use std::io::{self, Write, BufRead, BufReader};
 use hyper::Client;
 use hyper::rt::{self, Future, Stream};
 use hyper::header::HeaderValue;
 use hyper::{Request, Body};
 use http::header::CONTENT_LENGTH;
 use uuid::Uuid;
-use chrono::prelude::*;
 use chrono::{DateTime};
+use std::collections::HashMap;
 //use termios::{Termios, TCSANOW, ECHO, ICANON, tcsetattr};
 //use libc::STDIN_FILENO;
 //use std::time::{SystemTime, UNIX_EPOCH};
@@ -137,6 +136,11 @@ fn insert_post(server_name: String, server_port: String, transaction: Transactio
     rt::run(insertTransaction(post_url, transaction));
 }
 
+fn select_window(main_window: &Window) {
+  //main_window.printw("select was pressed (select_window)\n");
+  selectAccountsNew(main_window, "localhost".to_string(), "8080".to_string());
+}
+
 fn main() {
     pretty_env_logger::init();
 
@@ -150,10 +154,62 @@ fn main() {
         }
     };
 
-    loop {
-        let ch = unsafe{ getchar() };
-        println!("ANSI code: {}", ch);
+    //https://stackoverflow.com/questions/10004895/c-reading-from-stdin-as-characters-are-typed
+    //println!("press a key");
+
+    //let std_input_handle: u32 = 10;
+    //let mut mode: *mut u32;
+    //let mut mode: u32 = 0;
+    //scanf(" %c", &choice);
+    //let ch = unsafe{ getchar() };
+    //unsafe {
+      //let hConsole = kernel32::GetStdHandle(std_input_handle);
+      //kernel32::GetConsoleMode(hConsole, mode);
+      //mode &= ~ (ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
+      //kernel32::SetConsoleMode(hConsole, mode);
+      //let hConsole()
+    //}
+
+    let mut done = false;
+    let window: Window = initscr();
+    let mut ch = Input::Character(' ');
+    noecho();
+    //resize_term(0, 0);
+
+    while !done {
+      window.printw("(s) - select transactions by accountNameOwner\n");
+      window.printw("(d) - delete transaction by accountNameOwner\n");
+      window.printw("(u) - update transaction by accountNameOwner\n");
+      window.printw("(i) - insert transaction into accountNameOwner\n");
+      window.printw("Please select an command: ");
+      window.refresh();
+
+      ch = match window.getch() {
+        Some(n) => n,
+        None => {
+          pancurses::Input::Character(' ')
+        },
+      };
+      window.printw("\n");
+
+      if ch == Input::Character('s') {
+        //window.printw("select was pressed\n");
+        window.clear();
+        select_window(&window)
+      } else if ch == Input::Character('\t') {
+        window.printw("tab was pressed\n");
+        window.clear();
+      } else if ch == Input::Character('q') {
+        done = true;
+        endwin();
+      } else {
+        window.printw("*** invalid key was pressed.\n");
+        window.clear();
+      }
     }
+
+    //let word: String = read!();
+    //println!("ANSI code: {}", word);
 
     //loop {
     //    let mut character = [0];
@@ -220,6 +276,25 @@ fn selectAccounts(server_name: String, server_port: String) -> reqwest::Result<(
     Ok(())
 }
 
+#[allow(non_snake_case)]
+// Result must be of type reqwest::Result
+//turbofish (::<>) on the enum variant
+fn selectAccountsNew(main_window: &Window, server_name: String, server_port: String) -> reqwest::Result<()> {
+    let request_url = format!("http://{}:{}/select_accounts", server_name, server_port);
+    let idx = 1;
+    let mut account_list = HashMap::new();
+
+    let mut response = reqwest::get(&request_url)?;
+    let accounts: Vec<Account> = response.json()?;
+    //println!("vector count = <{}>", accounts.len());
+    for account in &accounts {
+        main_window.printw(account.accountNameOwner.clone());
+        main_window.printw("\n");
+        account_list.insert(account.accountNameOwner.clone(), "1");
+    }
+    Ok(())
+}
+
 
 #[allow(non_snake_case)]
 // Result must be of type reqwest::Result
@@ -272,11 +347,7 @@ fn insertTransaction(url: hyper::Uri, transaction:  Transaction) -> impl Future<
     //    Err(error) => eprintln!("error.")
     //};
 
-    //let window = initscr();
-    //window.printw("Hello Rust");
-    //window.refresh();
-    //window.getch();
-    //endwin();
+
 
     let fname = format!("{}.json", &transaction.guid);
     println!("fname={}", fname);
