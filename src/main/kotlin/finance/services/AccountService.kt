@@ -29,12 +29,9 @@ open class AccountService {
         return accounts
     }
 
-    fun findByAccountNameOwner(accountNameOwner: String): Account {
+    fun findByAccountNameOwner(accountNameOwner: String): Optional<Account> {
         val optionalAccunt: Optional<Account> = accountRepository.findByAccountNameOwner(accountNameOwner)
-        if( optionalAccunt.isPresent ) {
-            return optionalAccunt.get()
-        }
-        return Account()
+        return optionalAccunt
     }
 
     //fun findByAccountNameOwnerOrderBy(accountNameOwner: String): Account {
@@ -46,5 +43,13 @@ open class AccountService {
         accountRepository.saveAndFlush(account)
         LOGGER.info("INFO: transactionRepository.saveAndFlush success.")
         return true
+    }
+
+    fun deleteByAccountNameOwner(accountNameOwner: String) {
+        accountRepository.deleteByAccountNameOwner(accountNameOwner)
+    }
+
+    fun patchAccount(account: Account) : Boolean {
+        return false
     }
 }

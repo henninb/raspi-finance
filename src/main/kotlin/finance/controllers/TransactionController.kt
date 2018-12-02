@@ -107,9 +107,9 @@ class TransactionController {
     @PatchMapping(path = arrayOf("/update/{guid}"), consumes = arrayOf("application/json-patch+json"), produces = arrayOf("application/json"))
     fun updateTransaction(@RequestBody transaction: Map<String, String>): ResponseEntity<String> {
         val toBePatchedTransaction = mapper.convertValue(transaction, Transaction::class.java)
-        val rc: Int = transactionService.patchTransaction(toBePatchedTransaction)
-        if( rc == 0) {
-            return ResponseEntity.ok("resource updated")
+        val updateStatus: Boolean = transactionService.patchTransaction(toBePatchedTransaction)
+        if( updateStatus == true) {
+            return ResponseEntity.ok("transaction updated")
         }
         return ResponseEntity.notFound().build()
     }
@@ -118,14 +118,14 @@ class TransactionController {
     @PostMapping(path = arrayOf("/insert"), consumes = arrayOf("application/json"), produces = arrayOf("application/json"))
     fun insertTransaction(@RequestBody transaction: Transaction) : ResponseEntity<String> {
         transactionService.insertTransaction(transaction)
-        return ResponseEntity.ok("resource inserted")
+        return ResponseEntity.ok("transaction inserted")
     }
 
     //http://localhost:8080/delete/38739c5b-e2c6-41cc-82c2-d41f39a33f9a
     @DeleteMapping(path = arrayOf("/delete/{guid}"))
     fun deleteTransaction(@PathVariable guid: String): ResponseEntity<String> {
         val transactionOption: Optional<Transaction> = transactionService.findByGuid(guid)
-        if(transactionOption.isPresent ) {
+        if( transactionOption.isPresent ) {
             transactionService.deleteByGuid(guid)
             return ResponseEntity.ok("resource deleted")
         }
