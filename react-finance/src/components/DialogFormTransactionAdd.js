@@ -13,7 +13,7 @@ import axios from 'axios'
 
 const dateFormat = require('dateformat');
 
-export default class DialogFormAdd extends Component {
+export default class DialogFormTransactionAdd extends Component {
   state = {
     open: false,
     clearedOptions: [],
