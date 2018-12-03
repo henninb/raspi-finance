@@ -16,7 +16,8 @@ import delete_logo from '../images/delete-24px.svg'
 import edit_logo from '../images/edit-24px.svg'
 import { setAccount, setTransaction, setTransactionLoadStatus } from '../store/account/actionCreator'
 //import MUIDataTable from 'mui-datatables'
-import DialogFormAdd from './DialogFormAdd'
+import DialogFormTransactionAdd from './DialogFormTransactionAdd'
+import DialogFormAccountAdd from './DialogFormAccountAdd'
 import Pagination from 'react-paginating'
 //import { FilterDrawer, filterSelectors, filterActions } from 'material-ui-filter'
 //https://stackoverflow.com/questions/35537229/how-to-update-parents-state-in-react
@@ -186,7 +187,10 @@ export class TransactionTable extends Component {
     {/* <LoadingData className=""  type={this.state.toggleView} */}
 
     <div className={this.props.classes.column}>
-    <DialogFormAdd handler={this.handler} accountNameOwnerList={this.state.accountNameOwnerList} />
+    <DialogFormTransactionAdd handler={this.handler} accountNameOwnerList={this.state.accountNameOwnerList} />
+    </div>
+    <div className={this.props.classes.column}>
+    <DialogFormAccountAdd handler={this.handler} />
     </div>
     <div className={this.props.classes.column}>Cleared: {this.state.totals_cleared}</div>
     <div className={this.props.classes.column}>Totals: {this.state.totals}</div>
