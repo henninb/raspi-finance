@@ -49,6 +49,7 @@ class AccountController {
         return ResponseEntity.notFound().build()
     }
 
+    //curl --header "Content-Type: application/json" --request POST --data '{"accountNameOwner":"test_brian", "accountType": "credit", "activeStatus": "Y","moniker": "0000", "totals": 0.00, "totalsBalanced": 0.00, "dateClosed": 0, "dateUpdated": 0, "dateAdded": 0}' http://localhost:8080/insert_account
     //http://localhost:8080/insert_account
     @PostMapping(path = arrayOf("/insert_account"), consumes = arrayOf("application/json"), produces = arrayOf("application/json"))
     fun insert_account(@RequestBody account: Account) : ResponseEntity<String> {
@@ -57,6 +58,7 @@ class AccountController {
     }
 
     //http://localhost:8080/delete_account/amex_brian
+    //curl --header "Content-Type: application/json" --request DELETE http://localhost:8080/delete_account/test_brian
     @DeleteMapping(path = arrayOf("/delete_account/{accountNameOwner}"))
     fun delete_account(@PathVariable accountNameOwner: String): ResponseEntity<String> {
         val accountOptional: Optional<Account> = accountService.findByAccountNameOwner(accountNameOwner)
@@ -67,7 +69,6 @@ class AccountController {
         }
         return ResponseEntity.notFound().build() //404
     }
-
 
     @PatchMapping(path = arrayOf("/update_account/{accountNameOwner}"), consumes = arrayOf("application/json-patch+json"), produces = arrayOf("application/json"))
     fun updateTransaction(@RequestBody account: Map<String, String>): ResponseEntity<String> {

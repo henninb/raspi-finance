@@ -18,6 +18,25 @@ class TransactionDeserializer @JvmOverloads constructor(vc: Class<*>? = null) : 
     private val LOGGER = LoggerFactory.getLogger(this.javaClass)
     private val ASCII = StandardCharsets.US_ASCII.newEncoder()
 
+    fun deserializeString(node: JsonNode?, name: String) : String {
+        var str = ""
+        try {
+            str = node!!.get(name).asText()
+            if( !ASCII.canEncode(str) ) {
+                LOGGER.warn("invalid chars in " + name)
+            }
+            str = Normalizer.normalize(str, Normalizer.Form.NFD)
+                    .replace("[^\\p{ASCII}]".toRegex(), "")
+                    .replace("^\\s+".toRegex(), "")
+                    .replace("\\s+$".toRegex(), "")
+                    .replace("\\s{2}+".toRegex(), " ")
+        }
+        catch(ex: Exception) {
+            LOGGER.warn(name + " was null.")
+        }
+        return str
+    }
+
     @Throws(IOException::class)
     override fun deserialize(jsonParser: JsonParser, ctxt: DeserializationContext): Transaction {
         //var node : JsonNode = ObjectCodec().createObjectNode();
@@ -28,32 +47,13 @@ class TransactionDeserializer @JvmOverloads constructor(vc: Class<*>? = null) : 
             LOGGER.warn("node is null")
         }
 
-        fun deserializeString(name: String) : String {
-            var str = ""
-            try {
-                str = node!!.get(name).asText()
-                if( !ASCII.canEncode(str) ) {
-                    LOGGER.warn("invalid chars in " + name)
-                }
-                str = Normalizer.normalize(str, Normalizer.Form.NFD)
-                        .replace("[^\\p{ASCII}]".toRegex(), "")
-                        .replace("^\\s+".toRegex(), "")
-                        .replace("\\s+$".toRegex(), "")
-                        .replace("\\s{2}+".toRegex(), " ")
-            }
-            catch(ex: Exception) {
-                LOGGER.warn(name + " was null.")
-            }
-            return str
-        }
-
-        val guid = deserializeString("guid")
-        val sha256 = deserializeString("sha256")
-        val accountType = deserializeString("accountType")
-        val accountNameOwner = deserializeString("accountNameOwner")
-        val description = deserializeString("description")
-        val category = deserializeString("category")
-        val notes = deserializeString("notes")
+        val guid = deserializeString(node,"guid")
+        val sha256 = deserializeString(node,"sha256")
+        val accountType = deserializeString(node,"accountType")
+        val accountNameOwner = deserializeString(node,"accountNameOwner")
+        val description = deserializeString(node,"description")
+        val category = deserializeString(node,"category")
+        val notes = deserializeString(node,"notes")
 
         var amount = 0.00
         try {
