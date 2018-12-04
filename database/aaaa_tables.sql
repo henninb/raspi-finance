@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS t_account(
   account_owner CHAR(20), -- NULL for now
   account_type CHAR(10) NOT NULL,
   active_status CHAR(1) NOT NULL,
-  moniker CHAR(5),
+  moniker CHAR(4),
   totals DECIMAL(12,2) DEFAULT 0.0,
   totals_balanced DECIMAL(12,2) DEFAULT 0.0,
   date_closed TIMESTAMP DEFAULT TO_TIMESTAMP(0),
@@ -84,6 +84,14 @@ CREATE TABLE IF NOT EXISTS t_summary (
   totals_balanced DECIMAL(12,2) NOT NULL,
   date_updated TIMESTAMP,
   date_added TIMESTAMP
+);
+
+CREATE SEQUENCE t_categories_categories_id_seq start with 1001;
+
+DROP TABLE IF EXISTS t_categories;
+CREATE TABLE IF NOT EXISTS t_categories(
+  transaction_id INTEGER DEFAULT nextval('t_categories_categories_id_seq') NOT NULL,
+  category VARCHAR(50)
 );
 
 --Actually nextval will advance sequence and return the new value
