@@ -1,8 +1,9 @@
 package finance.services
 
-
+import finance.models.Account
 import finance.models.Transaction
 import finance.pojos.Totals
+import finance.repositories.AccountRepository
 import finance.repositories.TransactionRepository
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,6 +21,9 @@ open class TransactionService {
 
     @Autowired
     lateinit var transactionRepository: TransactionRepository<Transaction>
+
+    @Autowired
+    lateinit var accountRepository: AccountRepository<Account>
 
     //@Autowired(required=false)
     //internal var mongoTransactionRepository: MongoTransactionRepository? = null
@@ -65,6 +69,15 @@ open class TransactionService {
             LOGGER.info("duplicate found, no transaction data inserted.")
             return 1
         }
+        val accountOptional: Optional<Account> = accountRepository.findByAccountNameOwner(transaction.accountNameOwner.toString())
+        if (accountOptional.isPresent) {
+            val account = accountOptional.get()
+            transaction.accountId = account.accountId
+        } else {
+            LOGGER.info("cannot find the accountNameOwner record " + transaction.accountNameOwner.toString())
+            return 1
+        }
+
         transactionRepository.saveAndFlush(transaction)
         return 0
     }
@@ -124,6 +137,12 @@ open class TransactionService {
 
             if( fromDb.accountNameOwner != transaction.accountNameOwner && transaction.accountNameOwner != "" ) {
                 fromDb.accountNameOwner = transaction.accountNameOwner
+                val accountOptional: Optional<Account> = accountRepository.findByAccountNameOwner(transaction.accountNameOwner.toString())
+                if (accountOptional.isPresent) {
+                    val account = accountOptional.get()
+                    LOGGER.info("updates work with the new code")
+                    fromDb.accountId = account.accountId
+                }
                 updateFlag = true
             }
             if( fromDb.accountType != transaction.accountType && transaction.accountType != "" ) {

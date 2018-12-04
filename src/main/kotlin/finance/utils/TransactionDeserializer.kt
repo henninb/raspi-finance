@@ -14,7 +14,6 @@ import java.text.DecimalFormat
 import java.text.Normalizer
 
 class TransactionDeserializer @JvmOverloads constructor(vc: Class<*>? = null) : StdDeserializer<Transaction>(vc) {
-
     private val LOGGER = LoggerFactory.getLogger(this.javaClass)
     private val ASCII = StandardCharsets.US_ASCII.newEncoder()
 

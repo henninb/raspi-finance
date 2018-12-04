@@ -12,6 +12,7 @@ import java.sql.Date
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
+import org.hibernate.FetchMode.LAZY
 
 @Entity(name = "TransactionEntity")
 @Table(name = "t_transaction")
@@ -79,6 +80,11 @@ class Transaction {
     var dateAdded: Timestamp = Timestamp(0)
     @Size(max = 70)
     var sha256: String? = null
+
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "accountId", nullable = true, insertable = false, updatable = false)
+    @JsonIgnore
+    private var account: Account? = null
 
     override fun toString(): String = mapper.writeValueAsString(this)
 
