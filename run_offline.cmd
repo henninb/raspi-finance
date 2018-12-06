@@ -23,6 +23,7 @@ set ACTIVEMQ_SSL_BEANS_ENABLED=true
 set ACTIVEMQ_NONSSL_BEANS_ENABLED=false
 set DATABASE_PLATFORM=h2
 set HIBERNATE_DDL=create-drop
+set ACTIVEMQ_SSL_ENABLE=true
 
 java -jar build\libs\raspi_finance.jar --spring.config.location=src\main\resources\application.properties
 

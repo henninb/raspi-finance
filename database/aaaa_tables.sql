@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS t_account(
   account_name_owner CHAR(40) NOT NULL,
   account_name CHAR(20), -- NULL for now
   account_owner CHAR(20), -- NULL for now
-  account_type CHAR(10) NOT NULL,
+  account_type CHAR(6) NOT NULL,
   active_status CHAR(1) NOT NULL,
   moniker CHAR(4),
   totals DECIMAL(12,2) DEFAULT 0.0,
@@ -90,9 +90,16 @@ CREATE SEQUENCE t_categories_categories_id_seq start with 1001;
 
 DROP TABLE IF EXISTS t_categories;
 CREATE TABLE IF NOT EXISTS t_categories(
-  transaction_id INTEGER DEFAULT nextval('t_categories_categories_id_seq') NOT NULL,
+  category_id INTEGER DEFAULT nextval('t_categories_categories_id_seq') NOT NULL,
   category VARCHAR(50)
 );
+
+DROP TABLE IF EXISTS t_transaction_categories;
+CREATE TABLE IF NOT EXISTS t_transaction_categories(
+  category_id INTEGER NOT NULL,
+  transaction_id INTEGER NOT NULL
+);
+
 
 --Actually nextval will advance sequence and return the new value
 --SELECT NEXTVAL('t_summary_summary_id_seq');
@@ -108,10 +115,10 @@ CREATE SEQUENCE t_transaction_transaction_id_seq start with 1001;
 DROP TABLE IF EXISTS t_transaction;
 CREATE TABLE IF NOT EXISTS t_transaction (
   account_id INTEGER,
-  account_type CHAR(10),
+  account_type CHAR(6),
   account_name_owner CHAR(40) NOT NULL,
   transaction_id INTEGER DEFAULT nextval('t_transaction_transaction_id_seq') NOT NULL,
-  guid CHAR(70) NOT NULL,
+  guid CHAR(36) NOT NULL,
   sha256 CHAR(70),
   transaction_date DATE NOT NULL,
   description VARCHAR(75) NOT NULL,
@@ -166,9 +173,9 @@ CREATE TRIGGER tr_upd_ts_transactions BEFORE UPDATE ON t_transaction FOR EACH RO
 
 --CREATE TABLE IF NOT EXISTS t_transaction_reoccur (
 --  account_id INTEGER,
---  account_type CHAR(10),
+--  account_type CHAR(6),
 --  account_name_owner CHAR(40) NOT NULL,
---  guid CHAR(70) NOT NULL,
+--  guid CHAR(36) NOT NULL,
 --  sha256 CHAR(70),
 --  transaction_date TIMESTAMP NOT NULL,
 --  description VARCHAR(75) NOT NULL,

@@ -1,5 +1,6 @@
 package finance.routes
 
+import finance.configs.KafkaProperties
 import finance.models.Transaction
 import finance.processors.InsertTransactionProcessor
 import finance.processors.JsonTransactionProcessor
@@ -17,6 +18,9 @@ class MasterRoute : RouteBuilder() {
 
     @Value("\${project.json-files-input-path}")
     private val jsonFilesInputPath: String? = null
+
+    @Autowired
+    lateinit var kafkaProperties: KafkaProperties
 
     @Autowired
     lateinit var stringTransactionProcessor: StringTransactionProcessor
@@ -95,7 +99,21 @@ class MasterRoute : RouteBuilder() {
                 .convertBodyTo(String::class.java)
                 .removeHeaders("*")
                 .to("activemq:queue:" + "finance_drop_complete")
+                .to("direct:publishToKafkaRoute")
         .end()
+
+        from("direct:publishToKafkaRoute")
+                .log("INFO: to publish to topic: " + kafkaProperties.topic)
+                //.process { exchange -> exchange.`in`.setHeader(KafkaConstants.PARTITION_KEY, 0) }
+                //.process { exchange -> exchange.`in`.setHeader(KafkaConstants.KEY, "1") }
+                .to("kafka:" + kafkaProperties.serverNamePort + "?topic=" + kafkaProperties.topic
+                        + "&serializerClass=org.apache.kafka.common.serialization.StringSerializer&keySerializerClass=org.apache.kafka.common.serialization.StringSerializer"
+                        + "&partitioner=org.apache.kafka.clients.producer.internals.DefaultPartitioner&sslKeymanagerAlgorithm=PKIX"
+                        + "&brokers=" + kafkaProperties.serverNamePort
+                        //                    +"&securityProtocol=SSL" + "&sslKeystoreLocation="+kafkaProperties.getSslKeystoreLocation()+"&sslKeystorePassword="+ kafkaProperties.getSslKeystorePassword() +"&sslTruststoreLocation="+kafkaProperties.getSslTruststoreLocation()+"&sslTruststorePassword=" +kafkaProperties.getSslTruststorePassword()
+                )
+                .end()
+
     }
 
     companion object {

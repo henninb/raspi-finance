@@ -1,14 +1,4 @@
-Capabilites
-*Insert Transaction
-Delete Transaction
-Update Transaction
-Select Transaction
-Insert Account
-Delete Account
-Update Account
-Select Account
-
-*ActiveMQ SSL
+Capabilites TODO
 Tomcat SSL
 
 home
@@ -35,6 +25,7 @@ ACTIVEMQ_SSL_BEANS_ENABLED=true
 ACTIVEMQ_NONSSL_BEANS_ENABLED=false
 DATABASE_PLATFORM=h2
 HIBERNATE_DDL=none
+ACTIVEMQ_SSL_ENABLE=true
 
 offline
 SPRING_PROFILES_ACTIVE=offline
@@ -60,6 +51,7 @@ ACTIVEMQ_SSL_BEANS_ENABLED=true
 ACTIVEMQ_NONSSL_BEANS_ENABLED=false
 DATABASE_PLATFORM=postgres
 HIBERNATE_DDL=create-drop
+ACTIVEMQ_SSL_ENABLE=true
 
 export SPRING_PROFILES_ACTIVE=offline
 export DATASOURCE=jdbc:postgresql://192.168.100.25:5432/finance_db
@@ -84,6 +76,7 @@ export ACTIVEMQ_SSL_BEANS_ENABLED=true
 export ACTIVEMQ_NONSSL_BEANS_ENABLED=false
 export DATABASE_PLATFORM=postgres
 export HIBERNATE_DDL=none
+export ACTIVEMQ_SSL_ENABLE=true
 
 gradle bootRun
 java -jar build/libs/raspi_finance*.jar --spring.config.location=src/main/resources/application.properties

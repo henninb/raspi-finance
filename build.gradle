@@ -129,7 +129,7 @@ dependencies {
     compile("org.apache.camel:camel-spring-boot-starter:${apacheCamelVersion}")
     compile("org.apache.camel:camel-core:${apacheCamelVersion}")
     //compile("org.apache.camel:camel-sql:${apacheCamelVersion}")
-    //compile("org.apache.camel:camel-kafka:${apacheCamelVersion}")
+    compile("org.apache.camel:camel-kafka:${apacheCamelVersion}")
     //compile("org.apache.camel:camel-spring-boot:${apacheCamelVersion}")
     //compile("org.apache.camel:camel-ssh:${apacheCamelVersion}")
     //compile("org.apache.camel:camel-jdbc:${apacheCamelVersion}")
