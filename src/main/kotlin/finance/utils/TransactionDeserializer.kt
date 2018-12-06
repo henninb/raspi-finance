@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import finance.models.Transaction
+import finance.pojos.AccountType
 import org.slf4j.LoggerFactory
 import java.io.IOException
 import java.nio.charset.StandardCharsets
@@ -49,6 +50,10 @@ class TransactionDeserializer @JvmOverloads constructor(vc: Class<*>? = null) : 
         val guid = deserializeString(node,"guid")
         val sha256 = deserializeString(node,"sha256")
         val accountType = deserializeString(node,"accountType")
+
+        val accountTypeEnum: AccountType = AccountType.valueOf(accountType)
+        LOGGER.info(accountTypeEnum.name)
+
         val accountNameOwner = deserializeString(node,"accountNameOwner")
         val description = deserializeString(node,"description")
         val category = deserializeString(node,"category")

@@ -16,14 +16,7 @@ import org.hibernate.FetchMode.LAZY
 
 @Entity(name = "TransactionEntity")
 @Table(name = "t_transaction")
-//@Table(
-//        name = "t_transaction",
-//        uniqueConstraints = {
-//            @UniqueConstraint(columnNames = "mask"),
-//            @UniqueConstraint(columnNames = "group")
-//        }
-//)
-//ALTER TABLE t_transaction ADD CONSTRAINT transaction_constraint UNIQUE (account_name_owner, transaction_date, description, category, amount, notes);
+
 @JsonDeserialize(using = TransactionDeserializer::class)
 @JsonSerialize(using = TransactionSerializer::class)
 class Transaction {
@@ -65,7 +58,6 @@ class Transaction {
     @NotBlank(message = "description cannnot be empty.")
     @Size(min = 1, max = 75)
     var description: String? = null
-    //var description: String by Required("The email cannot be blank")
     @Size(max = 50)
     var category: String? = null
     @NotNull
@@ -84,7 +76,17 @@ class Transaction {
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "accountId", nullable = true, insertable = false, updatable = false)
     @JsonIgnore
-    private var account: Account? = null
+    var account: Account? = null
+
+    //https://stackoverflow.com/questions/51868093/kotlin-data-class-as-jpa-hibernate-embeddable-with-many-to-many-relationship
+    //@ManyToMany(cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+    @ManyToMany(cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
+
+    @JoinTable(name = "ach",
+            joinColumns = [JoinColumn(name = "transactionId", referencedColumnName = "transactionId")],
+            inverseJoinColumns = [JoinColumn(name = "categoryId", referencedColumnName = "categoryId")])
+    @JsonIgnore
+    val transactionCategories = mutableListOf<TransactionCategories>()
 
     override fun toString(): String = mapper.writeValueAsString(this)
 

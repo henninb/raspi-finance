@@ -3,7 +3,7 @@ package finance.models
 import javax.persistence.*
 import javax.validation.constraints.Size
 
-@Entity(name = "CategoryEntity")
+@Entity(name = "CategoriesEntity")
 @Table(name = "t_categories")
 class Categories {
     @Id

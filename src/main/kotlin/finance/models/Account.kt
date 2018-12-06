@@ -16,10 +16,6 @@ import javax.validation.constraints.Size
 @JsonDeserialize(using = AccountDeserializer::class)
 @JsonSerialize(using = AccountSerializer::class)
 class Account {
-
-    //@JsonIgnore
-    //val LOGGER = LoggerFactory.getLogger(this.javaClass)
-
     constructor()
 
     constructor(accountNameOwner: String, accountType: String, activeStatus: String, moniker: String, totals: Double, totalsBalanced: Double, dateClosed: Timestamp, dateUpdated: Timestamp, dateAdded: Timestamp) {
