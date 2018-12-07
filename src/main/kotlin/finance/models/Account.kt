@@ -34,6 +34,7 @@ class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var accountId: Long = 0L
     var accountNameOwner: String? = null
+    //TODO: change to ennum
     //@Enumerated(EnumType.STRING)
     @Size(min = 5, max = 6)
     var accountType: String? = null
@@ -46,11 +47,8 @@ class Account {
     var dateAdded: Timestamp = Timestamp(0)
 
     override fun toString(): String {
-        System.out.println("this.accountid: " + this.accountId)
         return mapper.writeValueAsString(this)
     }
-
-    //override fun toString(): String = mapper.writeValueAsString(this)
 
     companion object {
         @JsonIgnore

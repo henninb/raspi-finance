@@ -12,7 +12,7 @@ import kotlin.system.exitProcess
 
 @Configuration
 @EnableTransactionManagement
-open class ActivemqSslJmsConfig {
+open class ActivemqConfig {
     @Value("\${spring.activemq.broker-url}")
     private val amqBrokerUrl: String? = null
 
