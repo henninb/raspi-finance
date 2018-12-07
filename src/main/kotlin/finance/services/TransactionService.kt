@@ -63,11 +63,11 @@ open class TransactionService {
         return 1
     }
 
-    fun insertTransaction(transaction: Transaction): Int {
+    fun insertTransaction(transaction: Transaction): Boolean {
         val transactionOptional: Optional<Transaction> = transactionRepository.findByGuid(transaction.guid)
         if( transactionOptional.isPresent ) {
             LOGGER.info("duplicate found, no transaction data inserted.")
-            return 1
+            return false
         }
         val accountOptional: Optional<Account> = accountRepository.findByAccountNameOwner(transaction.accountNameOwner.toString())
         if (accountOptional.isPresent) {
@@ -75,11 +75,11 @@ open class TransactionService {
             transaction.accountId = account.accountId
         } else {
             LOGGER.info("cannot find the accountNameOwner record " + transaction.accountNameOwner.toString())
-            return 1
+            return false
         }
 
         transactionRepository.saveAndFlush(transaction)
-        return 0
+        return true
     }
 
     fun findByTransactionId(transactionId : Long): Transaction {

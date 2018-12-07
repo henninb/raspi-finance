@@ -117,8 +117,11 @@ class TransactionController {
     //http://localhost:8080/insert
     @PostMapping(path = arrayOf("/insert"), consumes = arrayOf("application/json"), produces = arrayOf("application/json"))
     fun insertTransaction(@RequestBody transaction: Transaction) : ResponseEntity<String> {
-        transactionService.insertTransaction(transaction)
-        return ResponseEntity.ok("transaction inserted")
+        if (transactionService.insertTransaction(transaction) ) {
+            return ResponseEntity.ok("transaction inserted")
+        } else {
+            return ResponseEntity.notFound().build()
+        }
     }
 
     //http://localhost:8080/delete/38739c5b-e2c6-41cc-82c2-d41f39a33f9a

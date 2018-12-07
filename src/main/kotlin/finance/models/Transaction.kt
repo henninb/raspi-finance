@@ -13,6 +13,9 @@ import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
 import org.hibernate.FetchMode.LAZY
+import java.util.ArrayList
+
+
 
 @Entity(name = "TransactionEntity")
 @Table(name = "t_transaction")
@@ -79,13 +82,21 @@ class Transaction {
     var account: Account? = null
 
     //https://stackoverflow.com/questions/51868093/kotlin-data-class-as-jpa-hibernate-embeddable-with-many-to-many-relationship
-    //@ManyToMany(cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
-    @ManyToMany(cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
 
-    @JoinTable(name = "ach",
-            joinColumns = [JoinColumn(name = "transactionId", referencedColumnName = "transactionId")],
-            inverseJoinColumns = [JoinColumn(name = "categoryId", referencedColumnName = "categoryId")])
+//    @ManyToMany(cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
+//    @JoinTable(name = "transaction_category",
+//            joinColumns = [JoinColumn(name = "transactionId", referencedColumnName = "transactionId")],
+//            inverseJoinColumns = [JoinColumn(name = "categoryId", referencedColumnName = "categoryId")])
+//    @JsonIgnore
+//    val transactionCategories = mutableListOf<TransactionCategories>()
+
+    //https://www.baeldung.com/hibernate-many-to-many
+    @ManyToMany(cascade = [ CascadeType.PERSIST, CascadeType.MERGE ])
+    @JoinTable(name = "t_transaction_categories",
+            joinColumns = [JoinColumn(name = "transactionId")],
+            inverseJoinColumns = [JoinColumn(name = "categoryId")])
     @JsonIgnore
+    //var categories = mutableListOf<Category>()
     val transactionCategories = mutableListOf<TransactionCategories>()
 
     override fun toString(): String = mapper.writeValueAsString(this)

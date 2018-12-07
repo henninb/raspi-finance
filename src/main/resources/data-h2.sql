@@ -4,9 +4,9 @@ insert into t_account(account_name_owner, account_type, active_status, moniker, 
 insert into t_account(account_name_owner, account_type, active_status, moniker, totals, totals_balanced) VALUES('discover_brian', 'credit', 'Y', '0000', 0.0, 0.0);
 insert into t_account(account_name_owner, account_type, active_status, moniker, totals, totals_balanced) VALUES('rcard_brian', 'credit', 'Y', '0000', 0.0, 0.0);
 
-insert into t_categories(category) values('online');
-insert into t_categories(category) values('fuel');
-insert into t_categories(category) values('payment');
+insert into t_category(category) values('online');
+insert into t_category(category) values('fuel');
+insert into t_category(category) values('payment');
 
 update t_account set date_added = CURRENT_TIMESTAMP, date_updated = CURRENT_TIMESTAMP, date_closed = CURRENT_TIMESTAMP;
 
