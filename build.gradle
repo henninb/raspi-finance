@@ -2,7 +2,7 @@ buildscript {
     ext {
         springBootVersion = '2.1.0.RELEASE'
         apacheCamelVersion = '2.22.2'
-        kotlinVersion = '1.3.10'
+        kotlinVersion = '1.3.11'
         qualityPluginVersion='3.0.0'
         codenarcPluginVersion='0.20.0'
         activemqVersion='5.15.7'
@@ -13,6 +13,7 @@ buildscript {
         h2Version='1.4.197'
         clojureVersion='1.10.0-RC2'
         gradleVersion='4.10.2'
+        mongoVersion='3.9.1'
     }
     repositories {
         mavenLocal()
@@ -164,8 +165,8 @@ dependencies {
     compile ("org.clojure:clojure:${clojureVersion}")
 
     //mongodb
-    //compile("org.mongodb:mongodb-driver:3.8.2")
-    //compile("org.mongodb:mongo-java-driver:3.8.2")
+    compile("org.mongodb:mongodb-driver:${mongoVersion}")
+    //compile("org.mongodb:mongo-java-driver:${mongoVersion}")
 
     //rabbitmq
     //compile("com.rabbitmq:amqp-client:3.6.6")
