@@ -86,11 +86,11 @@ CREATE TABLE IF NOT EXISTS t_summary (
   date_added TIMESTAMP
 );
 
-CREATE SEQUENCE t_categories_categories_id_seq start with 1001;
+CREATE SEQUENCE t_category_category_id_seq start with 1001;
 
-DROP TABLE IF EXISTS t_categories;
-CREATE TABLE IF NOT EXISTS t_categories(
-  category_id INTEGER DEFAULT nextval('t_categories_categories_id_seq') NOT NULL,
+DROP TABLE IF EXISTS t_category;
+CREATE TABLE IF NOT EXISTS t_category(
+  category_id INTEGER DEFAULT nextval('t_category_category_id_seq') NOT NULL,
   category VARCHAR(50)
 );
 
@@ -99,7 +99,6 @@ CREATE TABLE IF NOT EXISTS t_transaction_categories(
   category_id INTEGER NOT NULL,
   transaction_id INTEGER NOT NULL
 );
-
 
 --Actually nextval will advance sequence and return the new value
 --SELECT NEXTVAL('t_summary_summary_id_seq');
@@ -186,3 +185,85 @@ CREATE TRIGGER tr_upd_ts_transactions BEFORE UPDATE ON t_transaction FOR EACH RO
 --);
 
 select conrelid::regclass AS table_from, conname, pg_get_constraintdef(c.oid) from pg_constraint c join pg_namespace n ON n.oid = c.connamespace where  contype in ('f', 'p','c','u') order by contype;
+
+
+INSERT INTO t_category(category) VALUES('adjustment');
+INSERT INTO t_category(category) VALUES('allina');
+INSERT INTO t_category(category) VALUES('assessment');
+INSERT INTO t_category(category) VALUES('atm');
+INSERT INTO t_category(category) VALUES('automotive');
+INSERT INTO t_category(category) VALUES('automotive_tabs');
+INSERT INTO t_category(category) VALUES('bill_pay');
+INSERT INTO t_category(category) VALUES('bonus');
+INSERT INTO t_category(category) VALUES('brokerage');
+INSERT INTO t_category(category) VALUES('canceled');
+INSERT INTO t_category(category) VALUES('cash');
+INSERT INTO t_category(category) VALUES('chargeback');
+INSERT INTO t_category(category) VALUES('check');
+INSERT INTO t_category(category) VALUES('checking');
+INSERT INTO t_category(category) VALUES('checks');
+INSERT INTO t_category(category) VALUES('church');
+INSERT INTO t_category(category) VALUES('communication');
+INSERT INTO t_category(category) VALUES('credit');
+INSERT INTO t_category(category) VALUES('deposit');
+INSERT INTO t_category(category) VALUES('direct_deposit');
+INSERT INTO t_category(category) VALUES('discoverbank');
+INSERT INTO t_category(category) VALUES('dividend');
+INSERT INTO t_category(category) VALUES('donation');
+INSERT INTO t_category(category) VALUES('drivers_license');
+INSERT INTO t_category(category) VALUES('electronics');
+INSERT INTO t_category(category) VALUES('entertainment');
+INSERT INTO t_category(category) VALUES('federal_tax_refund');
+INSERT INTO t_category(category) VALUES('fishing_license');
+INSERT INTO t_category(category) VALUES('fuel');
+INSERT INTO t_category(category) VALUES('garbage');
+INSERT INTO t_category(category) VALUES('general_merchandise');
+INSERT INTO t_category(category) VALUES('groceries');
+INSERT INTO t_category(category) VALUES('home_improvement');
+INSERT INTO t_category(category) VALUES('house_payment');
+INSERT INTO t_category(category) VALUES('house_repairs');
+INSERT INTO t_category(category) VALUES('ingdirect');
+INSERT INTO t_category(category) VALUES('insulation');
+INSERT INTO t_category(category) VALUES('insurance');
+INSERT INTO t_category(category) VALUES('insurance_auto');
+INSERT INTO t_category(category) VALUES('insurance_home');
+INSERT INTO t_category(category) VALUES('interest');
+INSERT INTO t_category(category) VALUES('ira');
+INSERT INTO t_category(category) VALUES('irs');
+INSERT INTO t_category(category) VALUES('license');
+INSERT INTO t_category(category) VALUES('liquor');
+INSERT INTO t_category(category) VALUES('lodging');
+INSERT INTO t_category(category) VALUES('maintenance');
+INSERT INTO t_category(category) VALUES('meat');
+INSERT INTO t_category(category) VALUES('medical');
+INSERT INTO t_category(category) VALUES('mn_tax_return');
+INSERT INTO t_category(category) VALUES('none');
+INSERT INTO t_category(category) VALUES('nurse_license');
+INSERT INTO t_category(category) VALUES('oil_change');
+INSERT INTO t_category(category) VALUES('online');
+INSERT INTO t_category(category) VALUES('orthodontist');
+INSERT INTO t_category(category) VALUES('paycheck');
+INSERT INTO t_category(category) VALUES('payment');
+INSERT INTO t_category(category) VALUES('paypal');
+INSERT INTO t_category(category) VALUES('phone');
+INSERT INTO t_category(category) VALUES('pictures');
+INSERT INTO t_category(category) VALUES('plumbing');
+INSERT INTO t_category(category) VALUES('postage');
+INSERT INTO t_category(category) VALUES('property_taxes');
+INSERT INTO t_category(category) VALUES('rebate');
+INSERT INTO t_category(category) VALUES('redeemed');
+INSERT INTO t_category(category) VALUES('refund');
+INSERT INTO t_category(category) VALUES('restaurant');
+INSERT INTO t_category(category) VALUES('return');
+INSERT INTO t_category(category) VALUES('reversal');
+INSERT INTO t_category(category) VALUES('rewards');
+INSERT INTO t_category(category) VALUES('savings');
+INSERT INTO t_category(category) VALUES('school');
+INSERT INTO t_category(category) VALUES('small_balance_payment');
+INSERT INTO t_category(category) VALUES('state_tax_refund');
+INSERT INTO t_category(category) VALUES('taxes');
+INSERT INTO t_category(category) VALUES('utilities');
+INSERT INTO t_category(category) VALUES('vacation');
+INSERT INTO t_category(category) VALUES('vehicle');
+INSERT INTO t_category(category) VALUES('withdrawal');
+INSERT INTO t_category(category) VALUES('work_expense');
