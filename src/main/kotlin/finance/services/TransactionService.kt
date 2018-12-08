@@ -6,6 +6,7 @@ import finance.models.Transaction
 import finance.pojos.Totals
 import finance.repositories.AccountRepository
 import finance.repositories.CategoryRepository
+import finance.repositories.MongoTransactionRepository
 import finance.repositories.TransactionRepository
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -29,8 +30,6 @@ open class TransactionService {
 
     @Autowired
     lateinit var categoryRepository: CategoryRepository<Category>
-    //@Autowired(required=false)
-    //internal var mongoTransactionRepository: MongoTransactionRepository? = null
 
     fun findAllTransactions(pageable: Pageable) : Page<Transaction> {
         val transactions : Page<Transaction> = transactionRepository.findAll(pageable)
@@ -89,6 +88,7 @@ open class TransactionService {
         }
 
         transactionRepository.saveAndFlush(transaction)
+        //mongoTransactionRepository!!.save(transaction)
         return true
     }
 
