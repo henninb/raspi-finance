@@ -15,7 +15,7 @@ interface TransactionRepository<T : Transaction> : JpaRepository<T, Long> {
 //interface TransactionRepository : JpaRepository<Transaction, Long> {
 
     //function name must match name on database table
-    fun findByDescriptionIgnoreCase(description: String): Transaction
+    fun findByDescriptionIgnoreCase(description: String): Optional<Transaction>
 
     override fun findAll(pageable: Pageable): Page<T>
 

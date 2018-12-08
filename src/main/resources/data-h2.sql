@@ -7,6 +7,7 @@ insert into t_account(account_name_owner, account_type, active_status, moniker, 
 insert into t_category(category) values('online');
 insert into t_category(category) values('fuel');
 insert into t_category(category) values('payment');
+insert into t_category(category) values('restaurant');
 
 update t_account set date_added = CURRENT_TIMESTAMP, date_updated = CURRENT_TIMESTAMP, date_closed = CURRENT_TIMESTAMP;
 
@@ -23,4 +24,9 @@ insert into t_transaction(guid, account_type, account_name_owner, transaction_da
 insert into t_transaction(guid, account_type, account_name_owner, transaction_date, description, category, amount, cleared, notes, date_updated, date_added, reoccurring, account_id) VALUES(random_uuid(), 'credit', 'discover_brian', DATEADD('DAY',-4, CURRENT_DATE), 'ebay.com', 'online', '14.57', 1, 'misc', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false, select account_id from t_account WHERE account_name_owner='discover_brian');
 insert into t_transaction(guid, account_type, account_name_owner, transaction_date, description, category, amount, cleared, notes, date_updated, date_added, reoccurring, account_id) VALUES(random_uuid(), 'credit', 'amex_brian', DATEADD('DAY',-2, CURRENT_DATE), 'aliexpress.com', 'online', '10.29', 1, 'boards', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false, select account_id from t_account WHERE account_name_owner='amex_brian');
 insert into t_transaction(guid, account_type, account_name_owner, transaction_date, description, category, amount, cleared, notes, date_updated, date_added, reoccurring, account_id) VALUES(random_uuid(), 'credit', 'amex_brian', DATEADD('DAY',-7, CURRENT_DATE), 'aliexpress.com', 'online', '2.55', 1, 'esp32', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false, select account_id from t_account WHERE account_name_owner='amex_brian');
-insert into t_transaction(guid, account_type, account_name_owner, transaction_date, description, category, amount, cleared, notes, date_updated, date_added, reoccurring, account_id) VALUES(random_uuid(), 'credit', 'amex_brian', DATEADD('DAY',-9, CURRENT_DATE), 'Batteries Plus', 'vehicle', '100.29', 1, '', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false, select account_id from t_account WHERE account_name_owner='amex_brian');
+insert into t_transaction(guid, account_type, account_name_owner, transaction_date, description, category, amount, cleared, notes, date_updated, date_added, reoccurring, account_id) VALUES(random_uuid(), 'credit', 'amex_brian', DATEADD('DAY',-9, CURRENT_DATE), 'Batteries Plus', 'automotive', '100.29', 1, '', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false, select account_id from t_account WHERE account_name_owner='amex_brian');
+
+--CREATE INDEX secondary_index ON t_transaction_categories(transaction_id, category_id);
+--ALTER TABLE t_transaction_categories ADD CONSTRAINT transaction_categories_constraint UNIQUE(transaction_id, category_id);
+
+insert into t_transaction_categories(transaction_id, category_id) select transaction_id, category_id from t_transaction t, t_category c where t.category = c.category;

@@ -49,7 +49,7 @@ open class AccountService {
         accountRepository.deleteByAccountNameOwner(accountNameOwner)
     }
 
-    fun patchAccount(account: Account) : Boolean {
-        return false
-    }
+//    fun patchAccount(account: Account) : Boolean {
+//        return false
+//    }
 }

@@ -13,7 +13,8 @@ import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
 import org.hibernate.FetchMode.LAZY
-import java.util.ArrayList
+import java.io.Serializable
+import java.util.HashSet
 
 
 
@@ -23,6 +24,7 @@ import java.util.ArrayList
 @JsonDeserialize(using = TransactionDeserializer::class)
 @JsonSerialize(using = TransactionSerializer::class)
 class Transaction {
+//class Transaction : Serializable {
 
     constructor()
 
@@ -91,13 +93,15 @@ class Transaction {
 //    val transactionCategories = mutableListOf<TransactionCategories>()
 
     //https://www.baeldung.com/hibernate-many-to-many
-    @ManyToMany(cascade = [ CascadeType.PERSIST, CascadeType.MERGE ])
+    //@ManyToMany(cascade = [ CascadeType.PERSIST, CascadeType.MERGE ])
+    @ManyToMany(cascade = [ CascadeType.ALL ])
     @JoinTable(name = "t_transaction_categories",
             joinColumns = [JoinColumn(name = "transactionId")],
             inverseJoinColumns = [JoinColumn(name = "categoryId")])
     @JsonIgnore
-    //var categories = mutableListOf<Category>()
-    val transactionCategories = mutableListOf<TransactionCategories>()
+//    //var categories = mutableListOf<Category>()
+//    //val transactionCategories = mutableListOf<TransactionCategories>()
+   var categries = mutableListOf<Category>()
 
     override fun toString(): String = mapper.writeValueAsString(this)
 
