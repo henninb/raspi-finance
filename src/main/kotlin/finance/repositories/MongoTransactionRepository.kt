@@ -1,7 +1,7 @@
 package finance.repositories
 
-import finance.models.Transaction
-import org.springframework.data.mongodb.repository.MongoRepository
+//import finance.models.Transaction
+//import org.springframework.data.mongodb.repository.MongoRepository
 
 
 //interface MongoTransactionRepository : MongoRepository<Transaction, String> {

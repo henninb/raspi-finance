@@ -1,9 +1,11 @@
 package finance.services
 
 import finance.models.Account
+import finance.models.Category
 import finance.models.Transaction
 import finance.pojos.Totals
 import finance.repositories.AccountRepository
+import finance.repositories.CategoryRepository
 import finance.repositories.TransactionRepository
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -25,6 +27,8 @@ open class TransactionService {
     @Autowired
     lateinit var accountRepository: AccountRepository<Account>
 
+    @Autowired
+    lateinit var categoryRepository: CategoryRepository<Category>
     //@Autowired(required=false)
     //internal var mongoTransactionRepository: MongoTransactionRepository? = null
 
@@ -73,6 +77,12 @@ open class TransactionService {
         if (accountOptional.isPresent) {
             val account = accountOptional.get()
             transaction.accountId = account.accountId
+            LOGGER.info("accountOptional isPresent.")
+            val optionalCategory: Optional<Category> = categoryRepository.findByCategory(transaction.category.toString())
+            if (optionalCategory.isPresent) {
+                val category = optionalCategory.get()
+                transaction.categries.add(category)
+            }
         } else {
             LOGGER.info("cannot find the accountNameOwner record " + transaction.accountNameOwner.toString())
             return false
