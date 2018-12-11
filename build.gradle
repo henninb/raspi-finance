@@ -14,6 +14,7 @@ buildscript {
         clojureVersion='1.10.0-RC2'
         gradleVersion='4.10.2'
         mongoVersion='3.9.1'
+        wmqVersion='7.0.1.9'
     }
     repositories {
         mavenLocal()
@@ -175,14 +176,17 @@ dependencies {
     compile("org.webjars:jquery:3.3.1-1")
     //compile("org.webjars:bootstrap-datepicker:1.0.1")
 
+    compile("io.springfox:springfox-swagger2:2.9.2")
+    compile("io.springfox:springfox-swagger-ui2:2.9.2")
+
     //IBM MQ
-    //compile("com.ibm.mq:mq:7.0.1.9")
-    //compile("com.ibm.mq:mqjms:7.0.1.9")
-    //compile("com.ibm.mq.jms:jms-client:7.0.1.9")
-    //compile("com.ibm.mq:jmqi:7.0.1.9")
-    //compile("com.ibm.mq:dhbcore:7.0.1.9")
-    //compile("com.ibm.mq:headers:7.0.1.9")
-    //compile("com.ibm.mq:commonservices:7.0.1.9")
+    //compile("com.ibm.mq:mq:${wmqVersion}")
+    //compile("com.ibm.mq:mqjms:${wmqVersion}")
+    //compile("com.ibm.mq.jms:jms-client:${wmqVersion}")
+    //compile("com.ibm.mq:jmqi:${wmqVersion}")
+    //compile("com.ibm.mq:dhbcore:${wmqVersion}")
+    //compile("com.ibm.mq:headers:${wmqVersion}")
+    //compile("com.ibm.mq:commonservices:${wmqVersion}")
     //compile("javax:javaee-api:8.0")
 
     //Spring

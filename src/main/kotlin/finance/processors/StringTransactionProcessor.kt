@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component
 open class StringTransactionProcessor : Processor {
     private val LOGGER = LoggerFactory.getLogger(this.javaClass)
 
-    @Throws(Exception::class)
-    override fun process(exchange: Exchange) {
+
+    @Throws(Exception::class)   override fun process(exchange: Exchange) {
         val transaction = exchange.`in`.getBody(Transaction::class.java)
         exchange.setProperty("guid", transaction.guid)
         exchange.`in`.body = transaction.toString()
