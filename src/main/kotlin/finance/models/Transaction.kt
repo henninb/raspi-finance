@@ -16,14 +16,12 @@ import org.hibernate.FetchMode.LAZY
 import java.io.Serializable
 import java.util.HashSet
 
-
-
 @Entity(name = "TransactionEntity")
 @Table(name = "t_transaction")
 
 @JsonDeserialize(using = TransactionDeserializer::class)
 @JsonSerialize(using = TransactionSerializer::class)
-class Transaction {
+open class Transaction {
 //class Transaction : Serializable {
 
     constructor()

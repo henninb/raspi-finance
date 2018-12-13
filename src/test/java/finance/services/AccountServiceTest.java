@@ -1,7 +1,5 @@
 package finance.services;
 
-import finance.models.Account;
-import finance.repositories.AccountRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,11 +13,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class AccountServiceTest {
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
-    @Mock
-    AccountRepository accountsRepository;
+    //@Mock
+    //AccountRepository accountsRepository;
 
-    @InjectMocks
-    AccountService accountService;
+    //@InjectMocks
+    //AccountService accountService;
 
     @Before
     public void setUp() {

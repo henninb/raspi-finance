@@ -1,7 +1,7 @@
 package finance.services;
 
-import finance.models.Transaction;
-import finance.repositories.TransactionRepository;
+//import finance.models.Transaction;
+//import finance.repositories.TransactionRepository;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,11 +16,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class TransactionServiceTest {
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
-    @Mock
-    TransactionRepository transactionRepository;
+    //@Mock
+    //TransactionRepository transactionRepository;
 
-    @InjectMocks
-    TransactionService transactionService;
+    //@InjectMocks
+    //TransactionService transactionService;
 
     @Before
     public void setUp() {
