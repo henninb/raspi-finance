@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query
 import java.util.*
 import javax.transaction.Transactional
 
-interface AccountRepository<T : Account> : JpaRepository<T, Long> {
+open interface AccountRepository<T : Account> : JpaRepository<T, Long> {
     fun findByAccountId(transactionId: Long?): Account
     fun findByAccountNameOwner(accountNameOwner: String): Optional<Account>
     fun findByActiveStatusOrderByAccountNameOwner(activeStatus: String): List<Account>

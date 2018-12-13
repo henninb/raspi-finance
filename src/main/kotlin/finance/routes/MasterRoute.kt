@@ -81,14 +81,12 @@ class MasterRoute : RouteBuilder() {
           //.log("headers - \${headers}")
           .convertBodyTo(String::class.java)
 
-//                .process(Processor {
-//                    override fun process(exchange: Exchange) {
-//                        exchange.setProperty("myparm", "test")
-//                    }
-//                })
-//                .log("myparm = \${property.myparm}")
+          .process(Processor { exchange ->
+            exchange.setProperty("myparm", "test")
+          })
+          .log("myparm = \${property.myparm}")
 
-                    //.to("file:" + jsonFilesInputPath + File.separator + ".processed?fileName=\${id}.json&autoCreate=true")
+          //.to("file:" + jsonFilesInputPath + File.separator + ".processed?fileName=\${id}.json&autoCreate=true")
           .log(LoggingLevel.INFO, "guid = \${property.guid}")
           .to("file:" + jsonFilesInputPath + File.separator + ".processed?fileName=\${property.guid}.json&autoCreate=true")
           .removeHeaders("*", "CamelFileLength", "CamelFileNameProduced")

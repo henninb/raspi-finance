@@ -23,7 +23,7 @@ MONGO_PORT=27017
 MONGO_URI=mongodb://192.168.100.25/finance_db
 ACTIVEMQ_SSL_BEANS_ENABLED=true
 ACTIVEMQ_NONSSL_BEANS_ENABLED=false
-DATABASE_PLATFORM=h2
+DATABASE_PLATFORM=postgresql
 HIBERNATE_DDL=none
 ACTIVEMQ_SSL_ENABLE=true
 
@@ -33,7 +33,7 @@ DATASOURCE=jdbc:h2:mem:finance_db;DB_CLOSE_DELAY\=-1
 DATASOURCE_USERNAME=henninb
 DATASOURCE_PASSWORD=monday1
 DATASOURCE_DRIVER=org.h2.Driver
-JSON_FILES_INPUT_PATH=c:\usr\finance_data\json_in
+JSON_FILES_INPUT_PATH=json_in
 SERVER_PORT=8080
 AMQ_BROKER_URL=ssl://hornsup:61617
 AMQ_USER=
@@ -49,8 +49,8 @@ MONGO_PORT=27017
 MONGO_URI=mongodb://192.168.100.25/finance_db
 ACTIVEMQ_SSL_BEANS_ENABLED=true
 ACTIVEMQ_NONSSL_BEANS_ENABLED=false
-DATABASE_PLATFORM=postgres
-HIBERNATE_DDL=create-drop
+DATABASE_PLATFORM=h2
+HIBERNATE_DDL=update
 ACTIVEMQ_SSL_ENABLE=true
 
 export SPRING_PROFILES_ACTIVE=offline
@@ -74,7 +74,7 @@ export MONGO_PORT=27017
 export MONGO_URI=mongodb://192.168.100.218/finance_db
 export ACTIVEMQ_SSL_BEANS_ENABLED=true
 export ACTIVEMQ_NONSSL_BEANS_ENABLED=false
-export DATABASE_PLATFORM=postgres
+export DATABASE_PLATFORM=h2
 export HIBERNATE_DDL=none
 export ACTIVEMQ_SSL_ENABLE=true
 
@@ -124,3 +124,17 @@ https://medium.com/@salisuwy/building-a-spring-boot-rest-api-part-iii-integratin
 
 git@github.com:vijjayy81/spring-boot-jpa-rest-demo-filter-paging-sorting.git
 git@github.com:sharmagaurav03/spring-data-jpa-with-pagination_POC.git
+
+An embedded database system can be either an in-memory database or persistent database (i.e. disk-based database).
+
+An in-memory database system can be an embedded database system, or it can be a client/server database system.
+
+A client/server database system can be an in-memory database system, or it can be a persistent database system.
+
+As you can see, all the lines cross. You can have
+
+client/server in-memory
+client/server persistent
+embedded in-memory
+embedded persistent
+And, you have have hybrids of all the above.

@@ -1,9 +1,5 @@
 package finance.routes;
 
-import finance.models.Transaction;
-import finance.processors.InsertTransactionProcessor;
-import finance.processors.JsonTransactionProcessor;
-import finance.processors.StringTransactionProcessor;
 import org.apache.camel.EndpointInject;
 import org.apache.camel.Produce;
 import org.apache.camel.ProducerTemplate;
@@ -37,16 +33,16 @@ public class MasterRouteTest extends CamelTestSupport {
     @EndpointInject(uri = "mock:result")
     protected MockEndpoint resultEndpoint;
 
-    @MockBean
-    StringTransactionProcessor stringTransactionProcessor;
+    //@MockBean
+    //StringTransactionProcessor stringTransactionProcessor;
 
-    @MockBean
-    JsonTransactionProcessor jsonTransactionProcessor;
+    //@MockBean
+    //JsonTransactionProcessor jsonTransactionProcessor;
 
-    @MockBean
-    InsertTransactionProcessor insertTransactionProcessor;
+    //@MockBean
+    //InsertTransactionProcessor insertTransactionProcessor;
 
-    private Transaction transactionDummy;
+    //private Transaction transactionDummy;
     String json_string;
 
     @Override
@@ -55,7 +51,7 @@ public class MasterRouteTest extends CamelTestSupport {
             public void configure() {
                 from("direct:start")
                         .autoStartup(true)
-                        .process(jsonTransactionProcessor)
+                        //.process(jsonTransactionProcessor)
                         .to("mock:result");
             }
         };
