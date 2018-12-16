@@ -3,6 +3,7 @@ package finance.controllers
 import com.fasterxml.jackson.databind.ObjectMapper
 import finance.models.Transaction
 import finance.pojos.Totals
+import finance.repositories.TransactionJdbcTemplateRepository
 import finance.services.TransactionService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -75,7 +76,7 @@ class TransactionController {
 
     //http://localhost:8080/get_by_account_name_owner/amazon.gift_brian
     @GetMapping(path = arrayOf("/get_by_account_name_owner/{accountNameOwner}"))
-    fun findByAccountNameOwner(@PathVariable accountNameOwner: String): ResponseEntity<List<Transaction>> {
+    fun selectByAccountNameOwner(@PathVariable accountNameOwner: String): ResponseEntity<List<Transaction>> {
         val transactions: List<Transaction> = transactionService.findByAccountNameOwnerIgnoreCaseOrderByTransactionDate(accountNameOwner)
         if( transactions.isEmpty() ) {
             ResponseEntity.notFound().build<List<Transaction>>()
@@ -85,7 +86,7 @@ class TransactionController {
 
     //http://localhost:8080/get_totals_cleared/chase_brian
     @GetMapping(path = arrayOf("/get_totals_cleared/{accountNameOwner}"))
-    fun totalsCleared(@PathVariable accountNameOwner: String): ResponseEntity<String> {
+    fun selectTotalsCleared(@PathVariable accountNameOwner: String): ResponseEntity<String> {
         val totals: Totals = transactionService.getTotalsByAccountNameOwner(accountNameOwner)
 
         return ResponseEntity.ok(mapper.writeValueAsString(totals))
