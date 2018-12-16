@@ -6,7 +6,7 @@ import finance.models.Transaction
 import finance.pojos.Totals
 import finance.repositories.AccountRepository
 import finance.repositories.CategoryRepository
-import finance.repositories.MongoTransactionRepository
+import finance.repositories.TransactionJdbcTemplateRepository
 import finance.repositories.TransactionRepository
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,8 +15,8 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
-import java.util.function.Consumer
 import java.util.*
+import java.util.function.Consumer
 
 @Service
 open class TransactionService {
@@ -30,6 +30,9 @@ open class TransactionService {
 
     @Autowired
     lateinit var categoryRepository: CategoryRepository<Category>
+
+    @Autowired
+    lateinit var transactionJdbcTemplateRepository: TransactionJdbcTemplateRepository;
 
     fun findAllTransactions(pageable: Pageable) : Page<Transaction> {
         val transactions : Page<Transaction> = transactionRepository.findAll(pageable)
@@ -46,15 +49,27 @@ open class TransactionService {
     fun findAll(): List<Transaction> {
         val transactions = ArrayList<Transaction>()
 
-        this.transactionRepository.findAll().forEach(Consumer<Transaction> { transactions.add(it) })
+        this.transactionRepository.findAll().forEach(
+            Consumer<Transaction> {
+            transactions.add(it)
+            }
+        )
         if (transactions.isEmpty() == true ) {
-            //TODO: failure
+            //TODO: this failure should already be handled.
         }
         return transactions
     }
 
     fun findByAccountNameOwnerAndCleared( accountNameOwner: String, cleared: Int) : List<Transaction> {
-        return this.transactionRepository.findByAccountNameOwnerAndClearedOrderByTransactionDateDesc(accountNameOwner, cleared)
+        val transactions = ArrayList<Transaction>()
+
+        this.transactionRepository.findByAccountNameOwnerAndClearedOrderByTransactionDateDesc(accountNameOwner, cleared).forEach {
+            Consumer<Transaction> {
+                transactions.add(it)
+            }
+        }
+        return transactions;
+        //return this.transactionRepository.findByAccountNameOwnerAndClearedOrderByTransactionDateDesc(accountNameOwner, cleared)
     }
 
     fun deleteByGuid(guid: String): Int {
@@ -88,24 +103,16 @@ open class TransactionService {
         }
 
         transactionRepository.saveAndFlush(transaction)
-        //mongoTransactionRepository!!.save(transaction)
         return true
-    }
-
-    fun findByTransactionId(transactionId : Long): Transaction {
-        val transaction: Transaction = transactionRepository.findByTransactionId(transactionId)
-        if( transaction.transactionId == 0L ) {
-            //TODO: failure
-        }
-        return transaction
     }
 
     fun findByGuid(guid: String): Optional<Transaction> {
         val transaction: Optional<Transaction> = transactionRepository.findByGuid(guid)
         if( transaction.isPresent ) {
-            //TODO: failure
+            return transaction
+        } else {
+            return Optional.empty()
         }
-        return transaction
     }
 
     fun getTotalsByAccountNameOwner( accountNameOwner: String) : Totals {
@@ -193,4 +200,6 @@ open class TransactionService {
             return false
         }
     }
+
+
 }
