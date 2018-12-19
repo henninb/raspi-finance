@@ -10,7 +10,7 @@ import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver
 
 //@Profile("donotuse")
 //@Configuration
-//open class ThymeleafConfiguration {
+open class ThymeleafConfiguration {
 //
 //    @Bean
 //    @Description("Thymeleaf template resolver serving HTML 5 transactions")
@@ -23,4 +23,4 @@ import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver
 //        emailTemplateResolver.order = 1
 //        return emailTemplateResolver
 //    }
-//}
+}

@@ -3,7 +3,6 @@ package finance.controllers
 import com.fasterxml.jackson.databind.ObjectMapper
 import finance.models.Transaction
 import finance.pojos.Totals
-import finance.repositories.TransactionJdbcTemplateRepository
 import finance.services.TransactionService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -125,13 +124,17 @@ class TransactionController {
         }
     }
 
+    //curl --header "Content-Type: application/json" --request DELETE http://localhost:8080/delete/38739c5b-e2c6-41cc-82c2-d41f39a33f9a
     //http://localhost:8080/delete/38739c5b-e2c6-41cc-82c2-d41f39a33f9a
     @DeleteMapping(path = arrayOf("/delete/{guid}"))
     fun deleteTransaction(@PathVariable guid: String): ResponseEntity<String> {
         val transactionOption: Optional<Transaction> = transactionService.findByGuid(guid)
         if( transactionOption.isPresent ) {
-            transactionService.deleteByGuid(guid)
-            return ResponseEntity.ok("resource deleted")
+            if( transactionService.deleteByGuid(guid) ) {
+                return ResponseEntity.ok("resource deleted")
+            } else {
+                return ResponseEntity.noContent().build()
+            }
         }
         return ResponseEntity.notFound().build() //404
     }

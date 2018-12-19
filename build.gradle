@@ -130,6 +130,7 @@ dependencies {
     //compile("org.springframework.boot:spring-boot-starter-security:${springBootVersion}")
     //compile("org.springframework.boot:spring-boot-starter-activemq:${springBootVersion}")
     //compile("org.springframework.boot:spring-boot-starter-data-redis:${springBootVersion}")
+    compileOnly("org.springframework.boot:spring-boot-configuration-processor:${springBootVersion}")
     //testCompile("org.springframework.boot:spring-security-test:${springBootVersion}")
     testCompile("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
 
@@ -213,7 +214,7 @@ dependencies {
 
     //hibernate
     compile("org.hibernate:hibernate-core:${hibernateVersion}")
-    compile("org.hibernate:hibernate-entitymanager:${hibernateVersion}")
+    //compile("org.hibernate:hibernate-entitymanager:${hibernateVersion}")
     compile("org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final")
 
     //flyway

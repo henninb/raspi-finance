@@ -1,12 +1,12 @@
 package finance.services
 
+import finance.dao.TransactionDAO
 import finance.models.Account
 import finance.models.Category
 import finance.models.Transaction
 import finance.pojos.Totals
 import finance.repositories.AccountRepository
 import finance.repositories.CategoryRepository
-import finance.repositories.TransactionJdbcTemplateRepository
 import finance.repositories.TransactionRepository
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,7 +32,7 @@ open class TransactionService {
     lateinit var categoryRepository: CategoryRepository<Category>
 
     @Autowired
-    lateinit var transactionJdbcTemplateRepository: TransactionJdbcTemplateRepository;
+    lateinit var transactionDAO: TransactionDAO;
 
     fun findAllTransactions(pageable: Pageable) : Page<Transaction> {
         val transactions : Page<Transaction> = transactionRepository.findAll(pageable)
@@ -72,13 +72,16 @@ open class TransactionService {
         //return this.transactionRepository.findByAccountNameOwnerAndClearedOrderByTransactionDateDesc(accountNameOwner, cleared)
     }
 
-    fun deleteByGuid(guid: String): Int {
+    fun deleteByGuid(guid: String): Boolean {
         val transactionOptional: Optional<Transaction> = transactionRepository.findByGuid(guid)
         if( transactionOptional.isPresent) {
-            transactionRepository.deleteByGuid(guid)
-            return 0
+            if( transactionDAO.deleteTransactionByGuid(guid) == true ) {
+                return true;
+            }
+            //transactionRepository.deleteByGuid(guid)
+            //return true
         }
-        return 1
+        return false
     }
 
     fun insertTransaction(transaction: Transaction): Boolean {
