@@ -18,7 +18,6 @@ import java.util.HashSet
 
 @Entity(name = "TransactionEntity")
 @Table(name = "t_transaction")
-
 @JsonDeserialize(using = TransactionDeserializer::class)
 @JsonSerialize(using = TransactionSerializer::class)
 open class Transaction {
@@ -48,48 +47,40 @@ open class Transaction {
     @Column(unique=true)
     @NotNull
     @Size(min = 36, max = 36)
-    var guid: String = ""
-    var accountId: Long = 0
+    open var guid: String = ""
+    open var accountId: Long = 0
     @Size(min = 5, max = 6)
-    var accountType: String? = null
+    open var accountType: String? = null
     @NotNull
     @NotBlank(message = "accountNameOwner cannnot be empty.")
     @Size(min = 1, max = 40)
-    var accountNameOwner: String? = null
-    var transactionDate: Date = Date(0)
+    open var accountNameOwner: String? = null
+    open var transactionDate: Date = Date(0)
     @NotNull
     @NotBlank(message = "description cannnot be empty.")
     @Size(min = 1, max = 75)
-    var description: String? = null
+    open var description: String? = null
     @Size(max = 50)
-    var category: String? = null
+    open var category: String? = null
     @NotNull
-    var amount: Double = 0.0
+    open var amount: Double = 0.0
     @NotNull
     @Column(name = "cleared")
-    var cleared: Int = 0
-    var reoccurring: Boolean = true;
+    open var cleared: Int = 0
+    open var reoccurring: Boolean = true;
     @Size(max = 100)
-    var notes: String? = null
-    var dateUpdated: Timestamp = Timestamp(0)
-    var dateAdded: Timestamp = Timestamp(0)
+    open var notes: String? = null
+    open var dateUpdated: Timestamp = Timestamp(0)
+    open var dateAdded: Timestamp = Timestamp(0)
     @Size(max = 70)
-    var sha256: String? = null
+    open var sha256: String? = null
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "accountId", nullable = true, insertable = false, updatable = false)
     @JsonIgnore
-    var account: Account? = null
+    open var account: Account? = null
 
     //https://stackoverflow.com/questions/51868093/kotlin-data-class-as-jpa-hibernate-embeddable-with-many-to-many-relationship
-
-//    @ManyToMany(cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
-//    @JoinTable(name = "transaction_category",
-//            joinColumns = [JoinColumn(name = "transactionId", referencedColumnName = "transactionId")],
-//            inverseJoinColumns = [JoinColumn(name = "categoryId", referencedColumnName = "categoryId")])
-//    @JsonIgnore
-//    val transactionCategories = mutableListOf<TransactionCategories>()
-
     //https://www.baeldung.com/hibernate-many-to-many
     //@ManyToMany(cascade = [ CascadeType.PERSIST, CascadeType.MERGE ])
     @ManyToMany(cascade = [ CascadeType.ALL ])
@@ -97,9 +88,7 @@ open class Transaction {
             joinColumns = [JoinColumn(name = "transactionId")],
             inverseJoinColumns = [JoinColumn(name = "categoryId")])
     @JsonIgnore
-//    //var categories = mutableListOf<Category>()
-//    //val transactionCategories = mutableListOf<TransactionCategories>()
-   var categries = mutableListOf<Category>()
+    open var categries = mutableListOf<Category>()
 
     override fun toString(): String = mapper.writeValueAsString(this)
 

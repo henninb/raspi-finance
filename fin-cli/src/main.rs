@@ -181,7 +181,7 @@ fn main() {
       window.printw("(d) - delete transaction by accountNameOwner\n");
       window.printw("(u) - update transaction by accountNameOwner\n");
       window.printw("(i) - insert transaction into accountNameOwner\n");
-      window.printw("Please select an command: ");
+      window.printw("Please select a command: ");
       window.refresh();
 
       ch = match window.getch() {

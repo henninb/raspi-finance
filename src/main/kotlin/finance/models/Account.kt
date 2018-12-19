@@ -12,10 +12,11 @@ import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
 
 @Entity(name = "AccountEntity")
+//@AccessType("field")
 @Table(name = "t_account")
 @JsonDeserialize(using = AccountDeserializer::class)
 @JsonSerialize(using = AccountSerializer::class)
-class Account {
+open class Account {
     constructor()
 
     constructor(accountNameOwner: String, accountType: String, activeStatus: String, moniker: String, totals: Double, totalsBalanced: Double, dateClosed: Timestamp, dateUpdated: Timestamp, dateAdded: Timestamp) {
@@ -33,18 +34,18 @@ class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var accountId: Long = 0L
-    var accountNameOwner: String? = null
+    open var accountNameOwner: String? = null
     //TODO: change to ennum
     //@Enumerated(EnumType.STRING)
     @Size(min = 5, max = 6)
-    var accountType: String? = null
-    var activeStatus: String? = null
-    var moniker: String? = null
-    var totals: Double = 0.0
-    var totalsBalanced: Double = 0.0
-    var dateClosed: Timestamp = Timestamp(0)
-    var dateUpdated: Timestamp = Timestamp(0)
-    var dateAdded: Timestamp = Timestamp(0)
+    open var accountType: String? = null
+    open var activeStatus: String? = null
+    open var moniker: String? = null
+    open var totals: Double = 0.0
+    open var totalsBalanced: Double = 0.0
+    open var dateClosed: Timestamp = Timestamp(0)
+    open var dateUpdated: Timestamp = Timestamp(0)
+    open var dateAdded: Timestamp = Timestamp(0)
 
     override fun toString(): String {
         return mapper.writeValueAsString(this)
