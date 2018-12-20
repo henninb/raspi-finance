@@ -13,15 +13,7 @@ import javax.sql.DataSource
 import org.springframework.boot.web.servlet.ServletRegistrationBean
 import org.springframework.context.annotation.PropertySource
 import org.springframework.core.env.Environment
-import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils
-import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator
-import org.springframework.jdbc.datasource.init.DatabasePopulator
-import org.springframework.core.io.ClassPathResource
 import org.springframework.jdbc.core.JdbcTemplate
-import org.springframework.boot.jdbc.DataSourceBuilder
-import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories
-
 
 @Configuration
 @EnableTransactionManagement
@@ -45,7 +37,7 @@ open class H2Config {
 //    open fun createUserServiceDataSource(): DataSource {
 //        return DataSourceBuilder.create().build()
 //    }
-//
+
 //    @Autowired
 //    open fun createJdbcTemplate_UserService(@Qualifier("dbuserservice") userServiceDS: DataSource): JdbcTemplate {
 //        return JdbcTemplate(userServiceDS)
@@ -83,14 +75,7 @@ open class H2Config {
 
     @Bean
     open fun jdbcTemplate(dataSource: DataSource): JdbcTemplate {
-        LOGGER.info("JdbcTemplate is called.")
-        return JdbcTemplate(dataSource)
-    }
 
-    //should not be needed
-    @Bean("jdbcTemplate1")
-    open fun jdbcTemplate1(dataSource: DataSource): JdbcTemplate {
-        LOGGER.info("JdbcTemplate is called.")
         return JdbcTemplate(dataSource)
     }
 }
