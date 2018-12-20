@@ -1,12 +1,10 @@
 package finance.dao
 
-import finance.models.TransactionMapper
+import io.micrometer.core.annotation.Timed
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Component
-import javax.transaction.Transaction
-import javax.transaction.Transactional
-
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 
 @Component
 class TransactionDAO {
@@ -14,36 +12,33 @@ class TransactionDAO {
     @Autowired
     lateinit var jdbcTemplate: JdbcTemplate;
 
-    private val SQL_FIND_TRANSACTION = "select * from t_transaction where transaction_id = ?"
+    private val SQL_FIND_TRANSACTION = "SELECT * FROM t_transaction WHERE transaction_id = ?"
     private val SQL_FIND_TRANSACTION_BY_ACCOUNT_NAME_OWNER = "SELECT * FROM t_transaction WHERE account_name_owner = ?"
+    private val SQL_UPDATE_UPDATE_TS = "UPDATE t_transaction set date_u=''"
+    private val SQL_DELETE_ALL_TRANSACTIONS = "DELETE FROM t_transaction"
+    private val SQL_DELETE_TRANSACTION_BY_GUID = "DELETE FROM t_transaction WHERE guid = ?"
+    private val SQL_CREATE_TABLE = "CREATE TABLE t_category_test(category_id INTEGER NOT NULL, category VARCHAR(50))"
 
-    //fun getTraansactionById(transaction_id: Long?): Transaction {
-        //val transaction: Transaction? = jdbcTemplate.queryForObject(SQL_FIND_TRANSACTION, arrayOf<Any>(transaction_id), TransactionMapper());
+    //https://hackernoon.com/spring-5-jdbc-support-for-kotlin-7cc31f4db4a5
 
-        //jdbcTemplate.
-        //return Transaction()
-    //}
+//    fun getTransactionByAccountNameOwner(accountNameOwner: String): List<Transaction> {
+//        return jdbcTemplate.query(SQL_FIND_TRANSACTION_BY_ACCOUNT_NAME_OWNER, arrayOf<Any>(accountNameOwner), TransactionMapper())
+//    }
 
-    //fun getTransactionByAccountNameOwner(accountNameOwner: String): List<Transaction> {
-        //return jdbcTemplate.query(SQL_FIND_TRANSACTION_BY_ACCOUNT_NAME_OWNER, arrayOf<Any>(accountNameOwner), TransactionMapper())
-    //}
+    @Timed
+    fun deleteTransactionByGuid(guid: String): Int {
+        val params = MapSqlParameterSource().addValue("guid", guid)
 
-    fun deleteTransactionByGuid(guid: String): Boolean? {
-        //jdbcTemplate.query(SQL_DELETE_TRANSACTION);
-
-        return true
+        return jdbcTemplate.update(this.SQL_DELETE_TRANSACTION_BY_GUID, arrayOf<Any>(params))
     }
 
-//https://hackernoon.com/spring-5-jdbc-support-for-kotlin-7cc31f4db4a5
+    @Timed
+    fun deleteAll(): Int {
+        return jdbcTemplate.update("delete from t_transaction")
+    }
 
-    val splitUpNames = listOf("John Woo", "Jeff Dean", "Josh Block", "Josh Long")
-            .map { name -> name.split(" ") }
-            .map { split -> split[0] to split[1] }
-
-
-
-    //@Transactional
-    //fun findAll(): List<Transaction> {
-        //return jdbcTemplate.query("select * from t_transaction", TransactionMapper())
-    //}
+    @Timed
+    fun createCategoryTestTable() {
+        jdbcTemplate.execute(this.SQL_CREATE_TABLE)
+    }
 }

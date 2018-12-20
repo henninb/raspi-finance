@@ -47,38 +47,38 @@ open class Transaction {
     @Column(unique=true)
     @NotNull
     @Size(min = 36, max = 36)
-    open var guid: String = ""
-    open var accountId: Long = 0
+    internal var guid: String = ""
+    internal var accountId: Long = 0
     @Size(min = 5, max = 6)
-    open var accountType: String? = null
+    internal var accountType: String? = null
     @NotNull
     @NotBlank(message = "accountNameOwner cannnot be empty.")
     @Size(min = 1, max = 40)
-    open var accountNameOwner: String? = null
-    open var transactionDate: Date = Date(0)
+    internal var accountNameOwner: String? = null
+    internal var transactionDate: Date = Date(0)
     @NotNull
     @NotBlank(message = "description cannnot be empty.")
     @Size(min = 1, max = 75)
-    open var description: String? = null
+    internal var description: String? = null
     @Size(max = 50)
-    open var category: String? = null
+    internal var category: String? = null
     @NotNull
-    open var amount: Double = 0.0
+    internal var amount: Double = 0.0
     @NotNull
     @Column(name = "cleared")
-    open var cleared: Int = 0
-    open var reoccurring: Boolean = true;
+    internal var cleared: Int = 0
+    internal var reoccurring: Boolean = true;
     @Size(max = 100)
-    open var notes: String? = null
-    open var dateUpdated: Timestamp = Timestamp(0)
-    open var dateAdded: Timestamp = Timestamp(0)
+    internal var notes: String? = null
+    internal var dateUpdated: Timestamp = Timestamp(0)
+    internal var dateAdded: Timestamp = Timestamp(0)
     @Size(max = 70)
-    open var sha256: String? = null
+    internal var sha256: String? = null
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "accountId", nullable = true, insertable = false, updatable = false)
     @JsonIgnore
-    open var account: Account? = null
+    internal var account: Account? = null
 
     //https://stackoverflow.com/questions/51868093/kotlin-data-class-as-jpa-hibernate-embeddable-with-many-to-many-relationship
     //https://www.baeldung.com/hibernate-many-to-many
@@ -88,7 +88,7 @@ open class Transaction {
             joinColumns = [JoinColumn(name = "transactionId")],
             inverseJoinColumns = [JoinColumn(name = "categoryId")])
     @JsonIgnore
-    open var categries = mutableListOf<Category>()
+    internal var categries = mutableListOf<Category>()
 
     override fun toString(): String = mapper.writeValueAsString(this)
 

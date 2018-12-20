@@ -38,14 +38,14 @@ open class Account {
     //TODO: change to ennum
     //@Enumerated(EnumType.STRING)
     @Size(min = 5, max = 6)
-    open var accountType: String? = null
-    open var activeStatus: String? = null
-    open var moniker: String? = null
-    open var totals: Double = 0.0
-    open var totalsBalanced: Double = 0.0
-    open var dateClosed: Timestamp = Timestamp(0)
-    open var dateUpdated: Timestamp = Timestamp(0)
-    open var dateAdded: Timestamp = Timestamp(0)
+    internal var accountType: String? = null
+    internal var activeStatus: String? = null
+    internal var moniker: String? = null
+    internal var totals: Double = 0.0
+    internal var totalsBalanced: Double = 0.0
+    internal var dateClosed: Timestamp = Timestamp(0)
+    internal var dateUpdated: Timestamp = Timestamp(0)
+    internal var dateAdded: Timestamp = Timestamp(0)
 
     override fun toString(): String {
         return mapper.writeValueAsString(this)

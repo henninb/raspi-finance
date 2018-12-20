@@ -75,7 +75,7 @@ open class TransactionService {
     fun deleteByGuid(guid: String): Boolean {
         val transactionOptional: Optional<Transaction> = transactionRepository.findByGuid(guid)
         if( transactionOptional.isPresent) {
-            if( transactionDAO.deleteTransactionByGuid(guid) == true ) {
+            if( transactionDAO.deleteTransactionByGuid(guid) == 1 ) {
                 return true;
             }
             //transactionRepository.deleteByGuid(guid)
