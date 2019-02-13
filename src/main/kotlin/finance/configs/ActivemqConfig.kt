@@ -4,41 +4,49 @@ import org.apache.activemq.ActiveMQConnectionFactory
 import org.apache.activemq.ActiveMQSslConnectionFactory
 import org.apache.camel.component.jms.JmsComponent
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.EnableTransactionManagement
 import kotlin.system.exitProcess
 
+//@Component
 @Configuration
 @EnableTransactionManagement
 open class ActivemqConfig {
+
+    //@Autowired
+    var activemqProperties: ActivemqProperties = ActivemqProperties();
+
     @Value("\${spring.activemq.broker-url}")
     private val amqBrokerUrl: String? = null
 
-    @Value("\${project.queue.receive-timeout}")
-    private val receiveTimeout: Long = 0
+    @Value("\${project.activemq.receiveTimeout}")
+    private val receiveTimeout: Long = activemqProperties.receiveTimeout
 
-    @Value("\${spring.activemq.user}")
-    private val amqUsername: String? = null
+    @Value("\${project.activemq.username}")
+    private val amqUsername: String = activemqProperties.username
 
-    @Value("\${spring.activemq.password}")
-    private val amqPassword: String? = null
+    @Value("\${project.activemq.password}")
+    private val amqPassword: String = activemqProperties.password
 
-    @Value("\${project.ssl.truststore}")
-    private val sslTruststore: String? = null
+    @Value("\${project.activemq.truststore}")
+    private val sslTruststore: String = activemqProperties.truststore
 
-    @Value("\${project.ssl.truststore-password}")
-    private val sslTruststorePassword: String? = null
+    @Value("\${project.activemq.truststorePassword}")
+    private val sslTruststorePassword: String = activemqProperties.truststorePassword
 
-    @Value("\${project.ssl.keystore}")
-    private val sslKeystore: String? = null
+    @Value("\${project.activemq.keystore}")
+    private val sslKeystore: String = activemqProperties.keystore
 
-    @Value("\${project.ssl.keystore-password}")
-    private val sslKeystorePassword: String? = null
+    @Value("\${project.activemq.keystorePassword}")
+    private val sslKeystorePassword: String = activemqProperties.keystorePassword
 
-    @Value("\${project.ssl.enabled}")
-    private val sslEnabled: Boolean? = null
+    @Value("\${project.activemq.scheme}")
+    //private val sslEnabled: Boolean? = null
+    private val scheme: String = activemqProperties.scheme
 
     private val LOGGER = LoggerFactory.getLogger(this.javaClass)
 
@@ -46,16 +54,16 @@ open class ActivemqConfig {
     @Bean(name = arrayOf("activemq"))
     open fun activeMQSslJmsComponent(): JmsComponent {
         val jmsComponent = JmsComponent()
-        if( sslEnabled == true ) {
+        if( scheme == "ssl" ) {
             jmsComponent.setConnectionFactory(this.activeMQSslConnectionFactory())
             jmsComponent.setTransacted(true)
             jmsComponent.setReceiveTimeout(receiveTimeout)
-        } else if (sslEnabled == false ) {
+        } else if ( scheme == "tcp" ) {
             jmsComponent.setConnectionFactory(this.activeMQConnectionFactory())
             jmsComponent.setTransacted(true)
             jmsComponent.setReceiveTimeout(receiveTimeout)
         } else {
-            LOGGER.info("sslEnabled needs to be set to true or false: " + sslEnabled)
+            LOGGER.info("scheme needs to be set to 'ssl' or 'tcp': " + scheme)
             exitProcess(255)
         }
         return jmsComponent
