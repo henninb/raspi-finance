@@ -4,14 +4,21 @@ import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Component
 
-//@Component
-//@ConfigurationProperties(prefix = "project.ssl", ignoreUnknownFields = false)
+@Component
+@ConfigurationProperties(prefix = "project.activemq", ignoreUnknownFields = false)
 class ActivemqProperties {
-//    private val LOGGER = LoggerFactory.getLogger(this.javaClass)
-//
-//    val truststore: String? = null
-//    val truststorePassword: String? = null
-//    val keystore: String? = null
-//    val keystorePassword: String? = null
-//    val enabled: Boolean? = null
+    private val LOGGER = LoggerFactory.getLogger(this.javaClass)
+
+    var username: String = ""
+    var password: String = ""
+    var scheme: String = ""
+    var hostname: String = ""
+    var truststore: String = ""
+    var truststorePassword: String = ""
+    var keystore: String = ""
+    var keystorePassword: String = ""
+    var port: Int = 0
+    var receiveTimeout: Long = 0
+    var inMemory: Boolean = false
+    var pooled: Boolean = true
 }

@@ -26,10 +26,10 @@ open class H2Config {
     @Autowired
     lateinit var environment: Environment
 
-    private val URL = "url"
-    private val USERNAME = "dbuser"
-    private val DRIVER = "driver"
-    private val PASSWORD = "dbpassword"
+    val URL = "url"
+    val USERNAME = "dbuser"
+    val DRIVER = "driver"
+    val PASSWORD = "dbpassword"
 
 //https://www.tutorialspoint.com/spring_boot/spring_boot_database_handling.htm
 //    @Bean(name = arrayOf("dbuserservice"))

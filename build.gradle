@@ -1,22 +1,23 @@
 buildscript {
     ext {
-        springBootVersion = '2.1.1.RELEASE'
-        apacheCamelVersion = '2.23.0'
-        kotlinVersion = '1.3.11'
-        groovyVersion = '2.5.4'
+        springBootVersion = '2.1.2.RELEASE'
+        apacheCamelVersion = '2.23.1'
+        kotlinVersion = '1.3.21'
+        groovyVersion = '2.5.6'
         qualityPluginVersion='3.0.0'
         codenarcPluginVersion='0.20.0'
         activemqVersion='5.15.8'
         jolokiaVersion='1.6.0'
         postgresqlVersion='42.2.5'
         kafkaVersion='2.1.0'
-        hibernateVersion='5.3.7.Final'
+        hibernateVersion='5.4.1.Final'
         h2Version='1.4.197'
-        clojureVersion='1.10.0-RC4'
+        clojureVersion='1.10.0'
         gradleVersion='4.10.3'
-        mongoVersion='3.9.1'
+        mongoVersion='3.10.0'
         wmqVersion='7.0.1.9'
         swaggerVersion='2.9.2'
+        cucumberVersion='4.2.3'
     }
     repositories {
         mavenLocal()
@@ -186,6 +187,12 @@ dependencies {
     //swagger
     compile("io.springfox:springfox-swagger2:${swaggerVersion}")
 
+    //ssh client
+    //compile("com.jcraft:jsch:0.1.55")
+
+    //graphql
+    compile("com.graphql-java:graphql-java:2019-01-04T03-07-40-a61f4ee")
+
     //IBM MQ
     //compile("com.ibm.mq:mq:${wmqVersion}")
     //compile("com.ibm.mq:mqjms:${wmqVersion}")
@@ -246,6 +253,10 @@ dependencies {
     //testCompile("junit:junit:4.12")
     testCompile("org.junit.jupiter:junit-jupiter-api:5.3.1")
     testCompile("org.mockito:mockito-core:2.23.0")
+
+    //testCompile ("io.cucumber:cucumber-junit:${cucumberVersion}")
+    //testCompile ("io.cucumber:cucumber-java:${cucumberVersion}")
+    //testCompile ("io.cucumber:cucumber-spring:${cucumberVersion}")
 
     //compile("org.jsoup:jsoup:1.10.3")
     //runtime("org.apache.tomcat:tomcat-jdbc:9.0.1")
