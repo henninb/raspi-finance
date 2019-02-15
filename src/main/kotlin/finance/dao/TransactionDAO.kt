@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 
 @Component
-class TransactionDAO {
+open class TransactionDAO {
 
     @Autowired
     lateinit var jdbcTemplate: JdbcTemplate;
