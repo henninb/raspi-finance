@@ -75,11 +75,11 @@ open class TransactionService {
     fun deleteByGuid(guid: String): Boolean {
         val transactionOptional: Optional<Transaction> = transactionRepository.findByGuid(guid)
         if( transactionOptional.isPresent) {
-            if( transactionDAO.deleteTransactionByGuid(guid) == 1 ) {
-                return true;
-            }
-            //transactionRepository.deleteByGuid(guid)
-            //return true
+            //if( transactionDAO.deleteTransactionByGuid(guid) == 1 ) {
+            //    return true;
+            //}
+            transactionRepository.deleteByGuid(guid)
+            return true
         }
         return false
     }
@@ -110,9 +110,9 @@ open class TransactionService {
     }
 
     fun findByGuid(guid: String): Optional<Transaction> {
-        val transaction: Optional<Transaction> = transactionRepository.findByGuid(guid)
-        if( transaction.isPresent ) {
-            return transaction
+        val transactionOptinoal: Optional<Transaction> = transactionRepository.findByGuid(guid)
+        if( transactionOptinoal.isPresent ) {
+            return transactionOptinoal
         } else {
             return Optional.empty()
         }
