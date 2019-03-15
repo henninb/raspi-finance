@@ -23,7 +23,7 @@ class MongoTransactionService {
     @Autowired
     lateinit var mongoCategoryRepository: MongoCategoryRepository<Category>
 
-    private val LOGGER = LoggerFactory.getLogger(this.javaClass)
+    private val logger = LoggerFactory.getLogger(this.javaClass)
 
     fun findByAccountNameOwnerAndCleared( accountNameOwner: String, cleared: Int) : List<Transaction> {
         return this.mongoTransactionRepository.findByAccountNameOwnerAndClearedOrderByTransactionDateDesc(accountNameOwner, cleared)
@@ -32,21 +32,21 @@ class MongoTransactionService {
     fun insertTransaction(transaction: Transaction): Boolean {
         val transactionOptional: Optional<Transaction> = mongoTransactionRepository.findByGuid(transaction.guid)
         if( transactionOptional.isPresent ) {
-            LOGGER.info("duplicate found, no transaction data inserted.")
+            logger.info("duplicate found, no transaction data inserted.")
             return false
         }
         val accountOptional: Optional<Account> = mongoAccountRepository.findByAccountNameOwner(transaction.accountNameOwner.toString())
         if (accountOptional.isPresent) {
             val account = accountOptional.get()
             transaction.accountId = account.accountId
-            LOGGER.info("accountOptional isPresent.")
+            logger.info("accountOptional isPresent.")
             val optionalCategory: Optional<Category> = mongoCategoryRepository.findByCategory(transaction.category.toString())
             if (optionalCategory.isPresent) {
                 val category = optionalCategory.get()
                 transaction.categries.add(category)
             }
         } else {
-            LOGGER.info("cannot find the accountNameOwner record " + transaction.accountNameOwner.toString())
+            logger.info("cannot find the accountNameOwner record " + transaction.accountNameOwner.toString())
             return false
         }
 

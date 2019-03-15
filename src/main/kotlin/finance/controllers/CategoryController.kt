@@ -11,15 +11,16 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class CategoryController {
-    private val LOGGER = LoggerFactory.getLogger(this.javaClass)
+    private val logger = LoggerFactory.getLogger(this.javaClass)
 
     @Autowired
     lateinit var categoryService: CategoryService
 
     //curl --header "Content-Type: application/json" --request POST --data '{"category":"test"}' http://localhost:8080/insert_category
-    @PostMapping(path = arrayOf("/insert_category"), consumes = arrayOf("application/json"), produces = arrayOf("application/json"))
+    @PostMapping(path = [("/insert_category")], consumes = [("application/json")], produces = [("application/json")])
     fun insert_category(@RequestBody category: Category) : ResponseEntity<String> {
         categoryService.insertCategory(category)
+        logger.info("insert_category")
         return ResponseEntity.ok("category inserted")
     }
 }

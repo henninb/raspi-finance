@@ -15,32 +15,32 @@ import java.util.*
 @RestController
 //@RequestMapping("/account")
 class AccountController {
-    private val LOGGER = LoggerFactory.getLogger(this.javaClass)
+    private val logger = LoggerFactory.getLogger(this.javaClass)
 
     @Autowired
     lateinit var accountService: AccountService
 
-    @GetMapping(path = arrayOf("/select_accounts"))
+    @GetMapping(path = [("/select_accounts")])
     fun selectAllActiveAccounts(): ResponseEntity<List<Account>> {
         val accounts : List<Account> = accountService.findAllAcitveAccounts()
         if( accounts.isEmpty() ) {
-            LOGGER.info("no accounts found.")
+            logger.info("no accounts found.")
             return ResponseEntity.notFound().build()
         }
         return ResponseEntity.ok(accounts)
     }
 
-    @GetMapping(path = arrayOf("/select_all"))
+    @GetMapping(path = [("/select_all")])
     fun select_all_accounts(): ResponseEntity<List<Account>> {
         val accounts : List<Account> = accountService.findAllOrderByAccountNameOwner()
         if( accounts.isEmpty() ) {
-            LOGGER.info("no accounts found.")
+            logger.info("no accounts found.")
             return ResponseEntity.notFound().build()
         }
         return ResponseEntity.ok(accounts)
     }
 
-    @GetMapping(path = arrayOf("/select_account/{accountNameOwner}"))
+    @GetMapping(path = [("/select_account/{accountNameOwner}")])
     fun select_account(@PathVariable accountNameOwner: String): ResponseEntity<Account> {
         val accountOptional: Optional<Account> = accountService.findByAccountNameOwner(accountNameOwner)
         if( accountOptional.isPresent) {
@@ -51,7 +51,7 @@ class AccountController {
 
     //curl --header "Content-Type: application/json" --request POST --data '{"accountNameOwner":"test_brian", "accountType": "credit", "activeStatus": "Y","moniker": "0000", "totals": 0.00, "totalsBalanced": 0.00, "dateClosed": 0, "dateUpdated": 0, "dateAdded": 0}' http://localhost:8080/insert_account
     //http://localhost:8080/insert_account
-    @PostMapping(path = arrayOf("/insert_account"), consumes = arrayOf("application/json"), produces = arrayOf("application/json"))
+    @PostMapping(path = [("/insert_account")], consumes = [("application/json")], produces = [("application/json")])
     fun insert_account(@RequestBody account: Account) : ResponseEntity<String> {
         accountService.insertAccount(account)
         return ResponseEntity.ok("account inserted")
@@ -59,7 +59,7 @@ class AccountController {
 
     //http://localhost:8080/delete_account/amex_brian
     //curl --header "Content-Type: application/json" --request DELETE http://localhost:8080/delete_account/test_brian
-    @DeleteMapping(path = arrayOf("/delete_account/{accountNameOwner}"))
+    @DeleteMapping(path = [("/delete_account/{accountNameOwner}")])
     fun delete_account(@PathVariable accountNameOwner: String): ResponseEntity<String> {
         val accountOptional: Optional<Account> = accountService.findByAccountNameOwner(accountNameOwner)
 
@@ -70,11 +70,11 @@ class AccountController {
         return ResponseEntity.notFound().build() //404
     }
 
-    @PatchMapping(path = arrayOf("/update_account/{accountNameOwner}"), consumes = arrayOf("application/json-patch+json"), produces = arrayOf("application/json"))
+    @PatchMapping(path = [("/update_account/{accountNameOwner}")], consumes = [("application/json-patch+json")], produces = [("application/json")])
     fun updateTransaction(@RequestBody account: Map<String, String>): ResponseEntity<String> {
         val toBePatchedTransaction = mapper.convertValue(account, Account::class.java)
         val updateStatus: Boolean = accountService.patchAccount(toBePatchedTransaction)
-        if( updateStatus == true ) {
+        if( updateStatus ) {
             return ResponseEntity.ok("account updated")
         }
         return ResponseEntity.notFound().build()

@@ -12,10 +12,9 @@ import java.nio.charset.StandardCharsets
 import java.sql.Timestamp
 import java.text.DecimalFormat
 import java.text.Normalizer
-import java.util.*
 
 class AccountDeserializer @JvmOverloads constructor(vc: Class<*>? = null) : StdDeserializer<Account>(vc) {
-    private val LOGGER = LoggerFactory.getLogger(this.javaClass)
+    private val logger = LoggerFactory.getLogger(this.javaClass)
     private val ASCII = StandardCharsets.US_ASCII.newEncoder()
 
     fun deserializeString(node: JsonNode?, name: String) : String {
@@ -23,7 +22,7 @@ class AccountDeserializer @JvmOverloads constructor(vc: Class<*>? = null) : StdD
         try {
             str = node!!.get(name).asText()
             if( !ASCII.canEncode(str) ) {
-                LOGGER.warn("invalid chars in " + name)
+                logger.warn("invalid chars in " + name)
             }
             str = Normalizer.normalize(str, Normalizer.Form.NFD)
                     .replace("[^\\p{ASCII}]".toRegex(), "")
@@ -32,7 +31,7 @@ class AccountDeserializer @JvmOverloads constructor(vc: Class<*>? = null) : StdD
                     .replace("\\s{2}+".toRegex(), " ")
         }
         catch(ex: Exception) {
-            LOGGER.warn(name + " was null.")
+            logger.warn(name + " was null.")
         }
         return str
     }
@@ -43,7 +42,7 @@ class AccountDeserializer @JvmOverloads constructor(vc: Class<*>? = null) : StdD
         try {
             node = jsonParser.codec.readTree<JsonNode>(jsonParser)
         } catch(e :Exception) {
-            LOGGER.warn("node is null")
+            logger.warn("node is null")
         }
 
         //val node = jsonParser.codec.readTree<JsonNode>(jsonParser)
@@ -56,35 +55,35 @@ class AccountDeserializer @JvmOverloads constructor(vc: Class<*>? = null) : StdD
         try {
             totals = (DecimalFormat("#.##").format(node!!.get("totals").asDouble())).toDouble()
         } catch (ex: Exception) {
-            LOGGER.warn("totals was null.")
+            logger.warn("totals was null.")
         }
 
         var totalsBalanced = 0.00
         try {
             totalsBalanced = (DecimalFormat("#.##").format(node!!.get("totalsBalanced").asDouble())).toDouble()
         } catch (ex: Exception) {
-            LOGGER.warn("totalsBalanced was null.")
+            logger.warn("totalsBalanced was null.")
         }
 
         var dateClosed = Timestamp(0)
         try {
             dateClosed = Timestamp(node!!.get("dateClosed").asLong() * 1000)
         } catch( e: Exception) {
-            LOGGER.warn("dateClosed is null and is now set to Timestamp(0).")
+            logger.warn("dateClosed is null and is now set to Timestamp(0).")
         }
 
         var dateUpdated = Timestamp(0)
         try {
             dateUpdated = Timestamp(node!!.get("dateUpdated").asLong() * 1000)
         } catch( e: Exception) {
-            LOGGER.warn("dateUpdated is null and is now set to Timestamp(0).")
+            logger.warn("dateUpdated is null and is now set to Timestamp(0).")
         }
 
         var dateAdded = Timestamp(0)
         try {
             dateAdded = Timestamp(node!!.get("dateAdded").asLong() * 1000)
         } catch( e: Exception) {
-            LOGGER.warn("dateAdded is null and is now set to Timestamp(0).")
+            logger.warn("dateAdded is null and is now set to Timestamp(0).")
         }
         return Account(accountNameOwner, accountType, activeStatus, moniker, totals, totalsBalanced, dateClosed, dateUpdated, dateAdded)
     }
