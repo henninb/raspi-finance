@@ -1,6 +1,5 @@
 package finance.services
 
-import finance.dao.TransactionDAO
 import finance.models.Account
 import finance.models.Category
 import finance.models.Transaction
@@ -20,7 +19,7 @@ import java.util.function.Consumer
 
 @Service
 open class TransactionService {
-    private val LOGGER = LoggerFactory.getLogger(this.javaClass)
+    private val logger = LoggerFactory.getLogger(this.javaClass)
 
     @Autowired
     lateinit var transactionRepository: TransactionRepository<Transaction>
@@ -31,19 +30,12 @@ open class TransactionService {
     @Autowired
     lateinit var categoryRepository: CategoryRepository<Category>
 
-    @Autowired
-    lateinit var transactionDAO: TransactionDAO;
-
     fun findAllTransactions(pageable: Pageable) : Page<Transaction> {
-        val transactions : Page<Transaction> = transactionRepository.findAll(pageable)
-
-        return transactions
+        return transactionRepository.findAll(pageable)
     }
 
     fun findTransactionsByAccountNameOwnerPageable(pageable: Pageable, accountNameOwner: String) : Page<Transaction> {
-        val transactions : Page<Transaction> = transactionRepository.findByAccountNameOwnerIgnoreCaseOrderByTransactionDate(pageable, accountNameOwner)
-
-        return transactions
+        return transactionRepository.findByAccountNameOwnerIgnoreCaseOrderByTransactionDate(pageable, accountNameOwner)
     }
 
     fun findAll(): List<Transaction> {
@@ -54,7 +46,7 @@ open class TransactionService {
             transactions.add(it)
             }
         )
-        if (transactions.isEmpty() == true ) {
+        if (transactions.isEmpty() ) {
             //TODO: this failure should already be handled.
         }
         return transactions
@@ -68,7 +60,7 @@ open class TransactionService {
                 transactions.add(it)
             }
         }
-        return transactions;
+        return transactions
         //return this.transactionRepository.findByAccountNameOwnerAndClearedOrderByTransactionDateDesc(accountNameOwner, cleared)
     }
 
@@ -76,7 +68,7 @@ open class TransactionService {
         val transactionOptional: Optional<Transaction> = transactionRepository.findByGuid(guid)
         if( transactionOptional.isPresent) {
             //if( transactionDAO.deleteTransactionByGuid(guid) == 1 ) {
-            //    return true;
+            //    return true
             //}
             transactionRepository.deleteByGuid(guid)
             return true
@@ -87,21 +79,21 @@ open class TransactionService {
     fun insertTransaction(transaction: Transaction): Boolean {
         val transactionOptional: Optional<Transaction> = transactionRepository.findByGuid(transaction.guid)
         if( transactionOptional.isPresent ) {
-            LOGGER.info("duplicate found, no transaction data inserted.")
+            logger.info("duplicate found, no transaction data inserted.")
             return false
         }
         val accountOptional: Optional<Account> = accountRepository.findByAccountNameOwner(transaction.accountNameOwner.toString())
         if (accountOptional.isPresent) {
             val account = accountOptional.get()
             transaction.accountId = account.accountId
-            LOGGER.info("accountOptional isPresent.")
+            logger.info("accountOptional isPresent.")
             val optionalCategory: Optional<Category> = categoryRepository.findByCategory(transaction.category.toString())
             if (optionalCategory.isPresent) {
                 val category = optionalCategory.get()
                 transaction.categries.add(category)
             }
         } else {
-            LOGGER.info("cannot find the accountNameOwner record " + transaction.accountNameOwner.toString())
+            logger.info("cannot find the accountNameOwner record " + transaction.accountNameOwner.toString())
             return false
         }
 
@@ -113,25 +105,24 @@ open class TransactionService {
         val transactionOptinoal: Optional<Transaction> = transactionRepository.findByGuid(guid)
         if( transactionOptinoal.isPresent ) {
             return transactionOptinoal
-        } else {
-            return Optional.empty()
         }
+        return Optional.empty()
     }
 
     fun getTotalsByAccountNameOwner( accountNameOwner: String) : Totals {
         try {
             val totalsCleared: Double = transactionRepository.getTotalsByAccountNameOwnerCleared(accountNameOwner)
             val totals: Double = transactionRepository.getTotalsByAccountNameOwner(accountNameOwner)
-            val t: Totals = Totals()
+            val t = Totals()
 
             t.totals = BigDecimal(totals)
             t.totalsCleared = BigDecimal(totalsCleared)
 
             return t
         } catch (ex: EmptyResultDataAccessException) {
-            LOGGER.info(ex.message)
+            logger.info(ex.message)
         } catch (e:Exception) {
-            LOGGER.info(e.message)
+            logger.info(e.message)
         }
         return Totals()
     }
@@ -143,15 +134,15 @@ open class TransactionService {
     fun findByAccountNameOwnerIgnoreCaseOrderByTransactionDate(accountNameOwner: String): List<Transaction> {
         val transactions: List<Transaction> = transactionRepository.findByAccountNameOwnerIgnoreCaseOrderByTransactionDateDesc(accountNameOwner)
         if( transactions.isEmpty() ) {
-            LOGGER.error("an empty list of AccountNameOwner.")
+            logger.error("an empty list of AccountNameOwner.")
             //return something
         }
-        return transactions;
+        return transactions
     }
 
     fun patchTransaction( transaction: Transaction ): Boolean {
         val optionalTransaction = transactionRepository.findByGuid(transaction.guid)
-        if (optionalTransaction.isPresent()) {
+        if ( optionalTransaction.isPresent) {
             var updateFlag = false
             val fromDb = optionalTransaction.get()
 
@@ -160,7 +151,7 @@ open class TransactionService {
                 val accountOptional: Optional<Account> = accountRepository.findByAccountNameOwner(transaction.accountNameOwner.toString())
                 if (accountOptional.isPresent) {
                     val account = accountOptional.get()
-                    LOGGER.info("updates work with the new code")
+                    logger.info("updates work with the new code")
                     fromDb.accountId = account.accountId
                 }
                 updateFlag = true
@@ -170,7 +161,7 @@ open class TransactionService {
                 updateFlag = true
             }
             if( fromDb.description != transaction.description && transaction.description != "" ) {
-                fromDb.description = transaction.description;
+                fromDb.description = transaction.description
                 updateFlag = true
             }
             if( fromDb.category != transaction.category && transaction.category != "" ) {
@@ -194,12 +185,12 @@ open class TransactionService {
                 updateFlag = true
             }
             if( updateFlag ) {
-                LOGGER.info("Saved transaction as the data has changed")
+                logger.info("Saved transaction as the data has changed")
                 transactionRepository.save(fromDb)
             }
             return true
         } else {
-            LOGGER.warn("guid not found=" + transaction.guid)
+            logger.warn("guid not found=" + transaction.guid)
             return false
         }
     }

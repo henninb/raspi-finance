@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class CategoryService {
-    private val LOGGER = LoggerFactory.getLogger(this.javaClass)
+    //private val logger = LoggerFactory.getLogger(this.javaClass)
 
     @Autowired
     lateinit private var categoryRepository: CategoryRepository<Category>

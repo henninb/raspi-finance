@@ -9,39 +9,33 @@ import java.util.*
 
 @Service
 open class AccountService {
-    private val LOGGER = LoggerFactory.getLogger(this.javaClass)
+    private val logger = LoggerFactory.getLogger(this.javaClass)
 
     @Autowired
-    lateinit private var accountRepository: AccountRepository<Account>
+    private lateinit var accountRepository: AccountRepository<Account>
 
     fun findAllOrderByAccountNameOwner(): List<Account> {
-        val accounts = accountRepository.findAll()
-        return accounts
+        return accountRepository.findAll()
     }
 
     fun findAllAcitveAccounts(): List<Account> {
         val accounts = accountRepository.findByActiveStatusOrderByAccountNameOwner("Y")
         if( accounts.isEmpty()) {
-            LOGGER.warn("findAllAcitveAccounts() problem.")
+            logger.warn("findAllAcitveAccounts() problem.")
         } else {
-            LOGGER.info("findAllAcitveAccounts()")
+            logger.info("findAllAcitveAccounts()")
         }
         return accounts
     }
 
     fun findByAccountNameOwner(accountNameOwner: String): Optional<Account> {
-        val optionalAccunt: Optional<Account> = accountRepository.findByAccountNameOwner(accountNameOwner)
-        return optionalAccunt
+        return accountRepository.findByAccountNameOwner(accountNameOwner)
     }
-
-    //fun findByAccountNameOwnerOrderBy(accountNameOwner: String): Account {
-    //    return accountRepository!!.findByAccountNameOwner(accountNameOwner)
-    //}
 
     fun insertAccount(account: Account) : Boolean {
         //TODO: Should saveAndFlush be in a try catch block?
         accountRepository.saveAndFlush(account)
-        LOGGER.info("INFO: transactionRepository.saveAndFlush success.")
+        logger.info("INFO: transactionRepository.saveAndFlush success.")
         return true
     }
 
@@ -52,7 +46,7 @@ open class AccountService {
     //TODO: Complete the function
     fun patchAccount(account: Account) : Boolean {
         val optionalAccount = accountRepository.findByAccountNameOwner(account.accountNameOwner.toString())
-        if (optionalAccount.isPresent()) {
+        if ( optionalAccount.isPresent ) {
             var updateFlag = false
             val fromDb = optionalAccount.get()
         }

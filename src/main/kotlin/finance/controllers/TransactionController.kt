@@ -22,14 +22,15 @@ import java.util.*
 @RestController
 //@RequestMapping("/transaction")
 class TransactionController {
-    private val LOGGER = LoggerFactory.getLogger(this.javaClass)
+    private val logger = LoggerFactory.getLogger(this.javaClass)
 
     @Autowired
     lateinit var transactionService: TransactionService
 
     //http://localhost:8080/findall
     //http://localhost:8080/findall?pageNumber=0&pageSize=10
-    @GetMapping(path = arrayOf("/findall"))
+    @SuppressWarnings("unused")
+    @GetMapping(path = [("/findall")])
     fun findAllTransactions(@RequestParam("pageNumber") pageNumber: Optional<Int>, @RequestParam("pageSize") pageSize: Optional<Int>, pageable: Pageable): ResponseEntity<Page<Transaction>> {
         var page = 0
         var size = 10
@@ -48,12 +49,14 @@ class TransactionController {
         }
         if(transactions.isEmpty) {
             ResponseEntity.notFound().build<List<Transaction>>()
+            logger.info("isEmpty")
         }
         return ResponseEntity.ok(transactions)
     }
     //http://localhost:8080/get_page_by_account_name_owner/amex
     //http://localhost:8080/get_page_by_account_name_owner/amex_brian?pageNumber=0&pageSize=5
-    @GetMapping(path = arrayOf("/get_page_by_account_name_owner/{accountNameOwner}"))
+    @SuppressWarnings("unused")
+    @GetMapping(path = [("/get_page_by_account_name_owner/{accountNameOwner}")])
     fun findByAccountNameOwnerPage(@PathVariable accountNameOwner: String, @RequestParam pageNumber: Optional<Int>, @RequestParam pageSize: Optional<Int>, pageable: Pageable): ResponseEntity<Page<Transaction>> {
         var page = 0
         var size = 5
@@ -74,7 +77,8 @@ class TransactionController {
     }
 
     //http://localhost:8080/get_by_account_name_owner/amazon.gift_brian
-    @GetMapping(path = arrayOf("/get_by_account_name_owner/{accountNameOwner}"))
+    @SuppressWarnings("unused")
+    @GetMapping(path = [("/get_by_account_name_owner/{accountNameOwner}")])
     fun selectByAccountNameOwner(@PathVariable accountNameOwner: String): ResponseEntity<List<Transaction>> {
         val transactions: List<Transaction> = transactionService.findByAccountNameOwnerIgnoreCaseOrderByTransactionDate(accountNameOwner)
         if( transactions.isEmpty() ) {
@@ -84,7 +88,8 @@ class TransactionController {
     }
 
     //http://localhost:8080/get_totals_cleared/chase_brian
-    @GetMapping(path = arrayOf("/get_totals_cleared/{accountNameOwner}"))
+    @SuppressWarnings("unused")
+    @GetMapping(path = [("/get_totals_cleared/{accountNameOwner}")])
     fun selectTotalsCleared(@PathVariable accountNameOwner: String): ResponseEntity<String> {
         val totals: Totals = transactionService.getTotalsByAccountNameOwner(accountNameOwner)
 
@@ -92,7 +97,8 @@ class TransactionController {
     }
 
     //http://localhost:8080/select/340c315d-39ad-4a02-a294-84a74c1c7ddc
-    @GetMapping(path = arrayOf("/select/{guid}"))
+    @SuppressWarnings("unused")
+    @GetMapping(path = [("/select/{guid}")])
     fun findtTransaction(@PathVariable guid: String): ResponseEntity<Transaction> {
         val transactionOption: Optional<Transaction> = transactionService.findByGuid(guid)
         if( transactionOption.isPresent ) {
@@ -104,37 +110,44 @@ class TransactionController {
 
     //curl --header "Content-Type: application/json-patch+json" --request PATCH --data '{"guid":"a064b942-1e78-4913-adb3-b992fc1b4dd3","sha256":"","accountType":"credit","accountNameOwner":"discover_brian","description":"Last Updated","category":"","notes":"","cleared":0,"reoccurring":false,"amount":"0.00","transactionDate":1512730594,"dateUpdated":1487332021,"dateAdded":1487332021}' http://localhost:8080/update/a064b942-1e78-4913-adb3-b992fc1b4dd3
     //http://localhost:8080/update/340c315d-39ad-4a02-a294-84a74c1c7ddc
-    @PatchMapping(path = arrayOf("/update/{guid}"), consumes = arrayOf("application/json-patch+json"), produces = arrayOf("application/json"))
+    //@PublishedApi
+    @PatchMapping(path = [("/update/{guid}")], consumes = [("application/json-patch+json")], produces = [("application/json")])
     fun updateTransaction(@RequestBody transaction: Map<String, String>): ResponseEntity<String> {
         val toBePatchedTransaction = mapper.convertValue(transaction, Transaction::class.java)
         val updateStatus: Boolean = transactionService.patchTransaction(toBePatchedTransaction)
-        if( updateStatus == true) {
+        if( updateStatus ) {
             return ResponseEntity.ok("transaction updated")
         }
         return ResponseEntity.notFound().build()
     }
 
+    //@Component(modules = [(AndroidSupportInjectionModule::class),
+    //(AppModule::class),
+    //(NetModule::class),
+    //(co.uk.me.manage.presentation.main.module.Module::class),
+    //(co.uk.me.manage.presentation.comic.module.Module::class)])
+
     //http://localhost:8080/insert
-    @PostMapping(path = arrayOf("/insert"), consumes = arrayOf("application/json"), produces = arrayOf("application/json"))
+    @SuppressWarnings("unused")
+    @PostMapping(path = [("/insert")], consumes = [("application/json")], produces = [("application/json")])
     fun insertTransaction(@RequestBody transaction: Transaction) : ResponseEntity<String> {
         if (transactionService.insertTransaction(transaction) ) {
             return ResponseEntity.ok("transaction inserted")
-        } else {
-            return ResponseEntity.notFound().build()
         }
+        return ResponseEntity.notFound().build()
     }
 
     //curl --header "Content-Type: application/json" --request DELETE http://localhost:8080/delete/38739c5b-e2c6-41cc-82c2-d41f39a33f9a
     //http://localhost:8080/delete/38739c5b-e2c6-41cc-82c2-d41f39a33f9a
-    @DeleteMapping(path = arrayOf("/delete/{guid}"))
+    @SuppressWarnings("unused")
+    @DeleteMapping(path = [("/delete/{guid}")])
     fun deleteTransaction(@PathVariable guid: String): ResponseEntity<String> {
         val transactionOption: Optional<Transaction> = transactionService.findByGuid(guid)
         if( transactionOption.isPresent ) {
             if( transactionService.deleteByGuid(guid) ) {
                 return ResponseEntity.ok("resource deleted")
-            } else {
-                return ResponseEntity.noContent().build()
             }
+            return ResponseEntity.noContent().build()
         }
         return ResponseEntity.notFound().build() //404
     }
