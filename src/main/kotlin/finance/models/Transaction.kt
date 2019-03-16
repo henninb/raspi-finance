@@ -12,9 +12,6 @@ import java.sql.Date
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
-import org.hibernate.FetchMode.LAZY
-import java.io.Serializable
-import java.util.HashSet
 
 @Entity(name = "TransactionEntity")
 @Table(name = "t_transaction")
@@ -67,7 +64,7 @@ open class Transaction {
     @NotNull
     @Column(name = "cleared")
     internal var cleared: Int = 0
-    internal var reoccurring: Boolean = true;
+    internal var reoccurring: Boolean = true
     @Size(max = 100)
     internal var notes: String? = null
     internal var dateUpdated: Timestamp = Timestamp(0)

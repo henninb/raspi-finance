@@ -8,7 +8,6 @@ import finance.utils.AccountDeserializer
 import finance.utils.AccountSerializer
 import javax.persistence.*
 import java.sql.Timestamp
-import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
 
 @Entity(name = "AccountEntity")

@@ -11,7 +11,7 @@ import java.io.IOException
 
 @Component
 open class JsonTransactionProcessor : Processor {
-    private val LOGGER = LoggerFactory.getLogger(this.javaClass)
+    private val logger = LoggerFactory.getLogger(this.javaClass)
 
     @Throws(Exception::class)
     override fun process(exchange: Exchange) {
@@ -22,14 +22,14 @@ open class JsonTransactionProcessor : Processor {
             transactions = mapper.readValue(payload, Array<Transaction>::class.java)
             exchange.`in`.body = transactions
         } catch (upe: UnrecognizedPropertyException) {
-            LOGGER.info("UnrecognizedPropertyException")
+            logger.info("UnrecognizedPropertyException")
             upe.printStackTrace()
             throw upe
         } catch (ioe: IOException) {
-            LOGGER.info("IOException")
+            logger.info("IOException")
             ioe.printStackTrace()
         } catch (e: Exception) {
-            LOGGER.info("UnrecognizedPropertyException")
+            logger.info("UnrecognizedPropertyException")
             e.printStackTrace()
         }
     }

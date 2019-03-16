@@ -10,7 +10,7 @@ import java.io.IOException
 
 class AccountSerializer @JvmOverloads constructor(t: Class<Account>? = null) : StdSerializer<Account>(t) {
 
-    private val LOGGER = LoggerFactory.getLogger(this.javaClass)
+    private val logger = LoggerFactory.getLogger(this.javaClass)
 
     @Throws(IOException::class, JsonProcessingException::class)
     override fun serialize(account: Account, jgen: JsonGenerator, provider: SerializerProvider) {
@@ -21,26 +21,26 @@ class AccountSerializer @JvmOverloads constructor(t: Class<Account>? = null) : S
             jgen.writeStringField("accountNameOwner", account.accountNameOwner)
         } else {
             jgen.writeStringField("accountNameOwner", "")
-            LOGGER.warn("account.accountNameOwner is null.")
+            logger.warn("account.accountNameOwner is null.")
         }
         if( account.accountType != null ) {
             jgen.writeStringField("accountType", account.accountType)
         } else {
             jgen.writeStringField("accountType", "")
-            LOGGER.warn("account.accountType is null.")
+            logger.warn("account.accountType is null.")
         }
         if( account.activeStatus != null ) {
             jgen.writeStringField("activeStatus", account.activeStatus)
         } else {
             jgen.writeStringField("activeStatus", "")
-            LOGGER.warn("account.activeStatus is null.")
+            logger.warn("account.activeStatus is null.")
         }
 
         if( account.moniker != null ) {
             jgen.writeStringField("moniker", account.moniker)
         } else {
             jgen.writeStringField("moniker", "")
-            LOGGER.warn("account.moniker is null.")
+            logger.warn("account.moniker is null.")
         }
 
         //jgen.writeStringField("totals", java.lang.Double.toString(account.totals))

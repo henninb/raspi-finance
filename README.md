@@ -36,7 +36,7 @@ DATASOURCE=jdbc:h2:mem:finance_db;DB_CLOSE_DELAY\=-1
 DATASOURCE_USERNAME=henninb
 DATASOURCE_PASSWORD=monday1
 DATASOURCE_DRIVER=org.h2.Driver
-JSON_FILES_INPUT_PATH=json_in
+JSON_FILES_INPUT_PATH=C:\usr\finance_data\json_in
 SERVER_PORT=8080
 AMQ_BROKER_URL=ssl://hornsup:61617
 AMQ_USERNAME=
@@ -67,7 +67,7 @@ export DATASOURCE=jdbc:postgresql://192.168.100.25:5432/finance_db
 export DATASOURCE_USERNAME=henninb
 export DATASOURCE_PASSWORD=monday1
 export DATASOURCE_DRIVER=org.postgresql.Driver
-export JSON_FILES_INPUT_PATH=json_in
+export JSON_FILES_INPUT_PATH=C:\usr\finance_data\json_in
 export SERVER_PORT=8080
 export AMQ_BROKER_URL=ssl://archlinux:61617
 export AMQ_USER=

@@ -11,18 +11,18 @@ import java.nio.charset.StandardCharsets
 
 class TransactionSerializer @JvmOverloads constructor(t: Class<Transaction>? = null) : StdSerializer<Transaction>(t) {
     private val logger = LoggerFactory.getLogger(this.javaClass)
-    private val ASCII = StandardCharsets.US_ASCII.newEncoder()
+    private val ascii = StandardCharsets.US_ASCII.newEncoder()
 
     @Throws(IOException::class, JsonProcessingException::class)
     override fun serialize(transaction: Transaction, jgen: JsonGenerator, provider: SerializerProvider) {
 
         jgen.writeStartObject()
-        if( transaction.guid != null ) {
+        //if( transaction.guid != null ) {
             jgen.writeStringField("guid", transaction.guid)
-        } else {
-            jgen.writeStringField("guid", "")
-            logger.warn("transaction.guid is null.")
-        }
+        //} else {
+        //    jgen.writeStringField("guid", "")
+        //    logger.warn("transaction.guid is null.")
+        //}
         if( transaction.sha256 != null ) {
             jgen.writeStringField("sha256", transaction.sha256)
         } else {
@@ -43,7 +43,7 @@ class TransactionSerializer @JvmOverloads constructor(t: Class<Transaction>? = n
         }
 
         if( transaction.description != null ) {
-            if( ASCII.canEncode(transaction.description) ) {
+            if( ascii.canEncode(transaction.description) ) {
                 jgen.writeStringField("description", transaction.description)
             } else {
                 logger.warn("description has invaid chars: " + transaction.description)
@@ -62,7 +62,7 @@ class TransactionSerializer @JvmOverloads constructor(t: Class<Transaction>? = n
         }
 
         if( transaction.notes != null ) {
-            if( ASCII.canEncode(transaction.notes) ) {
+            if( ascii.canEncode(transaction.notes) ) {
                 jgen.writeStringField("notes", transaction.notes)
             } else {
                 logger.warn("notes has invaid chars: " + transaction.notes)

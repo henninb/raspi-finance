@@ -4,11 +4,9 @@ import org.apache.activemq.ActiveMQConnectionFactory
 import org.apache.activemq.ActiveMQSslConnectionFactory
 import org.apache.camel.component.jms.JmsComponent
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.EnableTransactionManagement
 import kotlin.system.exitProcess
 
@@ -18,7 +16,7 @@ import kotlin.system.exitProcess
 open class ActivemqConfig {
 
     //@Autowired
-    var activemqProperties: ActivemqProperties = ActivemqProperties();
+    private var activemqProperties: ActivemqProperties = ActivemqProperties()
 
     @Value("\${spring.activemq.broker-url}")
     private val amqBrokerUrl: String? = null
@@ -48,10 +46,10 @@ open class ActivemqConfig {
     //private val sslEnabled: Boolean? = null
     private val scheme: String = activemqProperties.scheme
 
-    private val LOGGER = LoggerFactory.getLogger(this.javaClass)
+    private val logger = LoggerFactory.getLogger(this.javaClass)
 
     //activemq-ssl for camel
-    @Bean(name = arrayOf("activemq"))
+    @Bean(name = [("activemq")])
     open fun activeMQSslJmsComponent(): JmsComponent {
         val jmsComponent = JmsComponent()
         if( scheme == "ssl" ) {
@@ -63,7 +61,7 @@ open class ActivemqConfig {
             jmsComponent.setTransacted(true)
             jmsComponent.setReceiveTimeout(receiveTimeout)
         } else {
-            LOGGER.info("scheme needs to be set to 'ssl' or 'tcp': " + scheme)
+            logger.info("scheme needs to be set to 'ssl' or 'tcp': $scheme")
             exitProcess(255)
         }
         return jmsComponent
