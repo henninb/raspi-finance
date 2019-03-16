@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement
 import org.h2.server.web.WebServlet
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Bean
 import org.springframework.jdbc.datasource.DriverManagerDataSource
 import javax.sql.DataSource
@@ -21,15 +20,15 @@ import org.springframework.jdbc.core.JdbcTemplate
 @PropertySource("classpath:database-h2.properties")
 open class H2Config {
 
-    private val LOGGER = LoggerFactory.getLogger(this.javaClass)
+    private val logger = LoggerFactory.getLogger(this.javaClass)
 
     @Autowired
     lateinit var environment: Environment
 
-    val URL = "url"
-    val USERNAME = "dbuser"
-    val DRIVER = "driver"
-    val PASSWORD = "dbpassword"
+    private val url = "url"
+    private val username = "dbuser"
+    private val driver = "driver"
+    private val password = "dbpassword"
 
 //https://www.tutorialspoint.com/spring_boot/spring_boot_database_handling.htm
 //    @Bean(name = arrayOf("dbuserservice"))
@@ -46,16 +45,16 @@ open class H2Config {
     @Bean
     open fun dataSource(): DataSource {
         val dataSource = DriverManagerDataSource()
-        val driverName = environment.getProperty(DRIVER);
+        val driverName = environment.getProperty(driver)
         if( driverName == null ) {
             //TODO: need to take action
-            LOGGER.info("driverName is NULL.")
+            logger.info("driverName is NULL.")
         } else {
             dataSource.setDriverClassName(driverName)
         }
-        dataSource.url = environment.getProperty(URL)
-        dataSource.username = environment.getProperty(USERNAME)
-        dataSource.password = environment.getProperty(PASSWORD)
+        dataSource.url = environment.getProperty(url)
+        dataSource.username = environment.getProperty(username)
+        dataSource.password = environment.getProperty(password)
 
         //TODO: The block below is not working
         //val initSchema = ClassPathResource("schema-h2.sql")

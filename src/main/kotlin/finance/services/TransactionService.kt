@@ -15,20 +15,19 @@ import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.util.*
-import java.util.function.Consumer
 
 @Service
 open class TransactionService {
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
     @Autowired
-    lateinit var transactionRepository: TransactionRepository<Transaction>
+    private lateinit var transactionRepository: TransactionRepository<Transaction>
 
     @Autowired
-    lateinit var accountRepository: AccountRepository<Account>
+    private lateinit var accountRepository: AccountRepository<Account>
 
     @Autowired
-    lateinit var categoryRepository: CategoryRepository<Category>
+    private lateinit var categoryRepository: CategoryRepository<Category>
 
     fun findAllTransactions(pageable: Pageable) : Page<Transaction> {
         return transactionRepository.findAll(pageable)
@@ -38,38 +37,9 @@ open class TransactionService {
         return transactionRepository.findByAccountNameOwnerIgnoreCaseOrderByTransactionDate(pageable, accountNameOwner)
     }
 
-    fun findAll(): List<Transaction> {
-        val transactions = ArrayList<Transaction>()
-
-        this.transactionRepository.findAll().forEach(
-            Consumer<Transaction> {
-            transactions.add(it)
-            }
-        )
-        if (transactions.isEmpty() ) {
-            //TODO: this failure should already be handled.
-        }
-        return transactions
-    }
-
-    fun findByAccountNameOwnerAndCleared( accountNameOwner: String, cleared: Int) : List<Transaction> {
-        val transactions = ArrayList<Transaction>()
-
-        this.transactionRepository.findByAccountNameOwnerAndClearedOrderByTransactionDateDesc(accountNameOwner, cleared).forEach {
-            Consumer<Transaction> {
-                transactions.add(it)
-            }
-        }
-        return transactions
-        //return this.transactionRepository.findByAccountNameOwnerAndClearedOrderByTransactionDateDesc(accountNameOwner, cleared)
-    }
-
     fun deleteByGuid(guid: String): Boolean {
         val transactionOptional: Optional<Transaction> = transactionRepository.findByGuid(guid)
         if( transactionOptional.isPresent) {
-            //if( transactionDAO.deleteTransactionByGuid(guid) == 1 ) {
-            //    return true
-            //}
             transactionRepository.deleteByGuid(guid)
             return true
         }
@@ -126,10 +96,6 @@ open class TransactionService {
         }
         return Totals()
     }
-
-    //fun fetchAccoutTotals(accountNameOwner: String): Double {
-    //    return transactionRepository!!.fetchAccoutTotals(accountNameOwner)
-    //}
 
     fun findByAccountNameOwnerIgnoreCaseOrderByTransactionDate(accountNameOwner: String): List<Transaction> {
         val transactions: List<Transaction> = transactionRepository.findByAccountNameOwnerIgnoreCaseOrderByTransactionDateDesc(accountNameOwner)
@@ -194,6 +160,4 @@ open class TransactionService {
             return false
         }
     }
-
-
 }

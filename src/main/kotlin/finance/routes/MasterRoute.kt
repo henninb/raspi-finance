@@ -5,7 +5,6 @@ import finance.models.Transaction
 import finance.processors.InsertTransactionProcessor
 import finance.processors.JsonTransactionProcessor
 import finance.processors.StringTransactionProcessor
-import org.apache.camel.Exchange
 import org.apache.camel.builder.RouteBuilder
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -35,7 +34,7 @@ class MasterRoute : RouteBuilder() {
 
     @Throws(Exception::class)
     override fun configure() {
-        LOGGER.info("jsonFilesInputPath: " + jsonFilesInputPath)
+        logger.info("jsonFilesInputPath: $jsonFilesInputPath")
 
         //val p1 = header("name").isEqualTo(constant("does-not-apply"))
         //connection related exception
@@ -56,7 +55,7 @@ class MasterRoute : RouteBuilder() {
           .log(LoggingLevel.ERROR, "\${exception.class} :: \${exception.message}")
         .end()
 
-        from("file:" + jsonFilesInputPath + "?delete=true&moveFailed=.failedWithErrors")
+        from("file:$jsonFilesInputPath?delete=true&moveFailed=.failedWithErrors")
           .autoStartup(true)
           .routeId("processJsonInputFiles")
           .choice()
@@ -98,9 +97,9 @@ class MasterRoute : RouteBuilder() {
           //.`when`(simple("\${header.isValid} == Yes"))
             //TODO: need to add logic here for Kafka
             .to("activemq:queue:" + "finance_drop")
-            .log(LoggingLevel.INFO, " ***** activemq *****")
+            .log(LoggingLevel.INFO, " ***** consume activemq *****")
           .otherwise()
-            .to("direct:publishToKafkaRoute")
+            //.to("direct:publishToKafkaRoute")
             .log(LoggingLevel.INFO, " ***** kafka *****")
           .end()
         .end()
@@ -116,33 +115,33 @@ class MasterRoute : RouteBuilder() {
           .to("activemq:queue:" + "finance_drop_complete")
         .end()
 
-        from("direct:publishToKafkaRoute")
-          .log(LoggingLevel.INFO, "INFO: publish to topic: " + kafkaProperties.topic)
-          // .process { exchange -> exchange.`in`.setHeader(KafkaConstants.PARTITION_KEY, 0) }
-          // .process { exchange -> exchange.`in`.setHeader(KafkaConstants.KEY, "1") }
-          .choice()
-          .`when`(Predicate { true })
-            .log(LoggingLevel.INFO, "always true")
-          .otherwise()
-            .to("kafka:" + kafkaProperties.serverNamePort + "?topic=" + kafkaProperties.topic
-              + "&serializerClass=org.apache.kafka.common.serialization.StringSerializer&keySerializerClass=org.apache.kafka.common.serialization.StringSerializer"
-              + "&partitioner=org.apache.kafka.clients.producer.internals.DefaultPartitioner&sslKeymanagerAlgorithm=PKIX"
-              + "&brokers=" + kafkaProperties.serverNamePort
-              // +"&securityProtocol=SSL" + "&sslKeystoreLocation="+kafkaProperties.getSslKeystoreLocation()+"&sslKeystorePassword="+ kafkaProperties.getSslKeystorePassword() +"&sslTruststoreLocation="+kafkaProperties.getSslTruststoreLocation()+"&sslTruststorePassword=" +kafkaProperties.getSslTruststorePassword()
-            )
-          .end()
-        .end()
-
-        from("direct:readFromKafkaRoute")
-          .autoStartup(true)
-          .routeId("kafkaInsertTransaction")
-          .convertBodyTo(String::class.java)
-          .process(insertTransactionProcessor)
-          .log(LoggingLevel.INFO, "inserted Transaction successfully.")
-        .end()
+//        from("direct:publishToKafkaRoute")
+//          .log(LoggingLevel.INFO, "INFO: publish to topic: " + kafkaProperties.topic)
+//          // .process { exchange -> exchange.`in`.setHeader(KafkaConstants.PARTITION_KEY, 0) }
+//          // .process { exchange -> exchange.`in`.setHeader(KafkaConstants.KEY, "1") }
+//          .choice()
+//          .`when`(Predicate { true })
+//            .log(LoggingLevel.INFO, "always true")
+//          .otherwise()
+//            .to("kafka:" + kafkaProperties.serverNamePort + "?topic=" + kafkaProperties.topic
+//              + "&serializerClass=org.apache.kafka.common.serialization.StringSerializer&keySerializerClass=org.apache.kafka.common.serialization.StringSerializer"
+//              + "&partitioner=org.apache.kafka.clients.producer.internals.DefaultPartitioner&sslKeymanagerAlgorithm=PKIX"
+//              + "&brokers=" + kafkaProperties.serverNamePort
+//              // +"&securityProtocol=SSL" + "&sslKeystoreLocation="+kafkaProperties.getSslKeystoreLocation()+"&sslKeystorePassword="+ kafkaProperties.getSslKeystorePassword() +"&sslTruststoreLocation="+kafkaProperties.getSslTruststoreLocation()+"&sslTruststorePassword=" +kafkaProperties.getSslTruststorePassword()
+//            )
+//          .end()
+//        .end()
+//
+//        from("direct:readFromKafkaRoute")
+//          .autoStartup(true)
+//          .routeId("kafkaInsertTransaction")
+//          .convertBodyTo(String::class.java)
+//          .process(insertTransactionProcessor)
+//          .log(LoggingLevel.INFO, "inserted Transaction successfully.")
+//        .end()
     }
 
     companion object {
-        private val LOGGER = LoggerFactory.getLogger(MasterRoute::class.java)
+        private val logger = LoggerFactory.getLogger(MasterRoute::class.java)
     }
 }

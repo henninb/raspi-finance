@@ -55,8 +55,8 @@ ALTER TABLE t_transaction ADD CONSTRAINT transaction_constraint UNIQUE (account_
 
 CREATE UNIQUE INDEX guid_idx ON t_transaction(guid);
 
---CREATE TABLE t_test (
---  test_id INTEGER
---)
+CREATE TABLE t_test2 (
+  test_id INTEGER
+)
 
 --insert t_test(test_id) VALUES(1)

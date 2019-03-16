@@ -1,11 +1,7 @@
 package finance.models
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import javax.persistence.*
 import javax.validation.constraints.Size
-import java.util.HashSet
-
-
 
 @Entity(name = "CategoryEntity")
 @Table(name = "t_category")

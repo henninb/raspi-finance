@@ -14,7 +14,7 @@ import java.time.ZonedDateTime
 
 @Component
 open class InsertTransactionProcessor : Processor {
-    private val LOGGER = LoggerFactory.getLogger(this.javaClass)
+    private val logger = LoggerFactory.getLogger(this.javaClass)
 
     @Autowired
     lateinit var transactionService: TransactionService
@@ -31,7 +31,7 @@ open class InsertTransactionProcessor : Processor {
 
             transactionFailure = transaction
             transactionService.insertTransaction(transaction)
-            LOGGER.info("transaction inserted, guid=" + transaction.guid + " description=" + transaction.description)
+            logger.info("transaction inserted, guid=" + transaction.guid + " description=" + transaction.description)
 
             resultMessage.message = "Successfully processed add message."
             resultMessage.resultCode = 0
@@ -48,7 +48,7 @@ open class InsertTransactionProcessor : Processor {
                 resultMessage.guid = transactionFailure!!.guid
                 resultMessage.setDate(ZonedDateTime.now())
                 resultString = mapper.writeValueAsString(resultMessage)
-                LOGGER.error(resultString)
+                logger.error(resultString)
                 exchange.`in`.body = transactionFailure.toString()
             }
         } catch (e: Exception) {
@@ -56,11 +56,11 @@ open class InsertTransactionProcessor : Processor {
             resultMessage.resultCode = 203
             resultMessage.setDate(ZonedDateTime.now())
             resultString = mapper.writeValueAsString(resultMessage)
-            LOGGER.error(resultString)
+            logger.error(resultString)
             exchange.`in`.body = transactionFailure.toString()
         }
         finally {
-            LOGGER.info("end InsertTransaction Processor")
+            logger.info("end InsertTransaction Processor")
         }
     }
 

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component
 @Component
 @ConfigurationProperties(prefix = "project.activemq", ignoreUnknownFields = false)
 class ActivemqProperties {
-    private val LOGGER = LoggerFactory.getLogger(this.javaClass)
+    private val logger = LoggerFactory.getLogger(this.javaClass)
 
     var username: String = ""
     var password: String = ""

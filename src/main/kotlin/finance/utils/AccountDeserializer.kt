@@ -15,13 +15,13 @@ import java.text.Normalizer
 
 class AccountDeserializer @JvmOverloads constructor(vc: Class<*>? = null) : StdDeserializer<Account>(vc) {
     private val logger = LoggerFactory.getLogger(this.javaClass)
-    private val ASCII = StandardCharsets.US_ASCII.newEncoder()
+    private val ascii = StandardCharsets.US_ASCII.newEncoder()
 
     fun deserializeString(node: JsonNode?, name: String) : String {
         var str = ""
         try {
             str = node!!.get(name).asText()
-            if( !ASCII.canEncode(str) ) {
+            if( !ascii.canEncode(str) ) {
                 logger.warn("invalid chars in " + name)
             }
             str = Normalizer.normalize(str, Normalizer.Form.NFD)
@@ -31,7 +31,7 @@ class AccountDeserializer @JvmOverloads constructor(vc: Class<*>? = null) : StdD
                     .replace("\\s{2}+".toRegex(), " ")
         }
         catch(ex: Exception) {
-            logger.warn(name + " was null.")
+            logger.warn("$name was null.")
         }
         return str
     }
