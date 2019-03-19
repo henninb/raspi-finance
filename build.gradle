@@ -13,12 +13,16 @@ buildscript {
         hibernateVersion='5.4.1.Final'
         h2Version='1.4.199'
         clojureVersion='1.10.0'
-        gradleVersion='4.10.3'
+        //gradleVersion='4.10.3'
+        gradleVersion='5.2.1'
         mongoVersion='3.10.0'
         wmqVersion='7.0.1.9'
         swaggerVersion='2.9.2'
         cucumberVersion='4.2.3'
         springJmsVersion='5.1.5.RELEASE'
+        lombokVersion='1.18.6'
+        bootstrapVersion='4.3.1'
+        jqueryVersion='3.3.1-2'
     }
     repositories {
         mavenLocal()
@@ -39,7 +43,7 @@ apply plugin: 'groovy'
 apply plugin: 'java'
 apply plugin: 'kotlin'
 apply plugin: 'org.springframework.boot'
-apply plugin: 'codenarc'
+//apply plugin: 'codenarc'
 //apply plugin: 'findbugs'
 apply plugin: 'maven'
 //apply plugin: 'org.flywaydb.flyway'
@@ -115,7 +119,7 @@ dependencies {
     compile("org.codehaus.groovy:groovy:${groovyVersion}")
     
     //Codenarc
-    codenarc "org.codenarc:CodeNarc:${codenarcPluginVersion}"
+    //codenarc "org.codenarc:CodeNarc:${codenarcPluginVersion}"
 
     //Spring Boot
     compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
@@ -159,7 +163,10 @@ dependencies {
     compile("ch.qos.logback:logback-classic:1.2.3")
 
     //Lombock
-    compile("org.projectlombok:lombok:1.16.20")
+    compile("org.projectlombok:lombok:${lombokVersion}")
+
+    //micrometer
+    compile("io.micrometer:micrometer-registry-influx:1.1.3")
 
     //ActiveMQ
     //http://activemq.apache.org/initial-configuration.html#InitialConfiguration-RequiredJARs
@@ -181,8 +188,8 @@ dependencies {
     //rabbitmq
     //compile("com.rabbitmq:amqp-client:3.6.6")
 
-    compile("org.webjars:bootstrap:4.1.3")
-    compile("org.webjars:jquery:3.3.1-1")
+    compile("org.webjars:bootstrap:${bootstrapVersion}")
+    compile("org.webjars:jquery:${jqueryVersion}")
     //compile("org.webjars:bootstrap-datepicker:1.0.1")
 
     //swagger
@@ -192,7 +199,7 @@ dependencies {
     compile("com.jcraft:jsch:0.1.55")
 
     //graphql
-    compile("com.graphql-java:graphql-java:2019-01-04T03-07-40-a61f4ee")
+    compile("com.graphql-java:graphql-java:2019-03-15T05-33-44-d008832")
 
     //IBM MQ
     //compile("com.ibm.mq:mq:${wmqVersion}")
