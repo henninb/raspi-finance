@@ -115,30 +115,30 @@ class MasterRoute : RouteBuilder() {
           .to("activemq:queue:" + "finance_drop_complete")
         .end()
 
-//        from("direct:publishToKafkaRoute")
-//          .log(LoggingLevel.INFO, "INFO: publish to topic: " + kafkaProperties.topic)
-//          // .process { exchange -> exchange.`in`.setHeader(KafkaConstants.PARTITION_KEY, 0) }
-//          // .process { exchange -> exchange.`in`.setHeader(KafkaConstants.KEY, "1") }
-//          .choice()
-//          .`when`(Predicate { true })
-//            .log(LoggingLevel.INFO, "always true")
-//          .otherwise()
-//            .to("kafka:" + kafkaProperties.serverNamePort + "?topic=" + kafkaProperties.topic
-//              + "&serializerClass=org.apache.kafka.common.serialization.StringSerializer&keySerializerClass=org.apache.kafka.common.serialization.StringSerializer"
-//              + "&partitioner=org.apache.kafka.clients.producer.internals.DefaultPartitioner&sslKeymanagerAlgorithm=PKIX"
-//              + "&brokers=" + kafkaProperties.serverNamePort
-//              // +"&securityProtocol=SSL" + "&sslKeystoreLocation="+kafkaProperties.getSslKeystoreLocation()+"&sslKeystorePassword="+ kafkaProperties.getSslKeystorePassword() +"&sslTruststoreLocation="+kafkaProperties.getSslTruststoreLocation()+"&sslTruststorePassword=" +kafkaProperties.getSslTruststorePassword()
-//            )
-//          .end()
-//        .end()
-//
-//        from("direct:readFromKafkaRoute")
-//          .autoStartup(true)
-//          .routeId("kafkaInsertTransaction")
-//          .convertBodyTo(String::class.java)
-//          .process(insertTransactionProcessor)
-//          .log(LoggingLevel.INFO, "inserted Transaction successfully.")
-//        .end()
+        from("direct:publishToKafkaRoute")
+          .log(LoggingLevel.INFO, "INFO: publish to topic: " + kafkaProperties.topic)
+          // .process { exchange -> exchange.`in`.setHeader(KafkaConstants.PARTITION_KEY, 0) }
+          // .process { exchange -> exchange.`in`.setHeader(KafkaConstants.KEY, "1") }
+          .choice()
+          .`when`(Predicate { true })
+            .log(LoggingLevel.INFO, "always true")
+          .otherwise()
+            .to("kafka:" + kafkaProperties.serverNamePort + "?topic=" + kafkaProperties.topic
+              + "&serializerClass=org.apache.kafka.common.serialization.StringSerializer&keySerializerClass=org.apache.kafka.common.serialization.StringSerializer"
+              + "&partitioner=org.apache.kafka.clients.producer.internals.DefaultPartitioner&sslKeymanagerAlgorithm=PKIX"
+              + "&brokers=" + kafkaProperties.serverNamePort
+              // +"&securityProtocol=SSL" + "&sslKeystoreLocation="+kafkaProperties.getSslKeystoreLocation()+"&sslKeystorePassword="+ kafkaProperties.getSslKeystorePassword() +"&sslTruststoreLocation="+kafkaProperties.getSslTruststoreLocation()+"&sslTruststorePassword=" +kafkaProperties.getSslTruststorePassword()
+            )
+          .end()
+        .end()
+
+        from("direct:readFromKafkaRoute")
+          .autoStartup(true)
+          .routeId("kafkaInsertTransaction")
+          .convertBodyTo(String::class.java)
+          .process(insertTransactionProcessor)
+          .log(LoggingLevel.INFO, "inserted Transaction successfully.")
+        .end()
     }
 
     companion object {
