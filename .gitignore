@@ -32,3 +32,4 @@ nbdist/
 .nb-gradle/
 
 *.gz
+LOGS_IS_UNDEFINED/
