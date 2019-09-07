@@ -6,7 +6,7 @@ buildscript {
         groovyVersion = '2.5.6'
         qualityPluginVersion='3.0.0'
         codenarcPluginVersion='0.20.0'
-        activemqVersion='5.15.8'
+        activemqVersion='5.15.9'
         jolokiaVersion='1.6.0'
         postgresqlVersion='42.2.5'
         kafkaVersion='2.1.0'
@@ -117,7 +117,7 @@ dependencies {
 
     //Groovy
     compile("org.codehaus.groovy:groovy:${groovyVersion}")
-    
+
     //Codenarc
     //codenarc "org.codenarc:CodeNarc:${codenarcPluginVersion}"
 
