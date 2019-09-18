@@ -1,6 +1,7 @@
 FROM openjdk:8
 
-COPY . /usr/src/myapp
-WORKDIR /usr/src/myapp
-RUN javac Main.java
+RUN mkdir -p /opt/raspi_finance
+COPY . /opt/raspi_finance
+WORKDIR /opt/raspi_finance
+#RUN javac Main.java
 CMD ["java", "Main"]
