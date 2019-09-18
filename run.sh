@@ -1,6 +1,8 @@
 #!/bin/sh
 
-docker build -t my-java-app .
-docker run -it --rm --name my-running-app my-java-app
+./mvnw package -Dmaven.test.skip=true
+./gradlew clean build
+docker build -t raspi_finance .
+docker run -it --rm --name raspi_finance raspi_finance
 
 exit 0
