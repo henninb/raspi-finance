@@ -67,6 +67,7 @@ open class H2Config {
 
     @Bean
     open fun h2servletRegistration(): ServletRegistrationBean<*> {
+        //return org.h2.tools.Server.createWebServer("-web","-webAllowOthers","-webDaemon","-webPort", "8080");
         val registration = ServletRegistrationBean(WebServlet())
         registration.addUrlMappings("/h2-console/*")
         return registration

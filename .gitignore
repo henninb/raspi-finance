@@ -34,3 +34,14 @@ nbdist/
 *.gz
 LOGS_IS_UNDEFINED/
 env
+env.mac
+logs
+*.jks
+*.pem
+*.p12
+*.ks
+*.der
+*.ts
+json_in
+activemq-hornsup-client-cert
+activemq-hornsup-server-cert
