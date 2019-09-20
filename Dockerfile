@@ -8,10 +8,9 @@ COPY ./build/libs/raspi_finance.jar /opt/raspi_finance/bin
 WORKDIR /opt/raspi_finance/bin
 #CMD ["java", "-jar" "/opt/raspi_finance/raspi_finance.jar"]
 
-RUN echo "172.17.0.1 hornsup" | tee -a /etc/hosts
+#RUN echo "172.17.0.1 hornsup" | tee -a /etc/hosts
 #RUN ping $(ip route|awk '/default/ { print $3 }')
 #hornsup:9092
 USER henninb
 
-
-CMD java -jar raspi_finance.jar
+CMD sleep 5 && java -jar raspi_finance.jar
