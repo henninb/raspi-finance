@@ -267,3 +267,88 @@ INSERT INTO t_category(category) VALUES('vacation');
 INSERT INTO t_category(category) VALUES('vehicle');
 INSERT INTO t_category(category) VALUES('withdrawal');
 INSERT INTO t_category(category) VALUES('work_expense');
+INSERT INTO t_transaction(guid, transaction_date, description, category, amount, cleared, reoccurring, notes, date_updated, date_added, account_name_owner) VALUES('83e30475-fcfc-4f30-8395-0bb40e89b568',to_timestamp('1353456000'),'Initial Balance','','0.00','1','false','Account Opened',to_timestamp('1487300996'),to_timestamp('1487300996'),'amazon_store_brian');
+INSERT INTO t_transaction(guid, transaction_date, description, category, amount, cleared, reoccurring, notes, date_updated, date_added, account_name_owner) VALUES('233b26e3-1aec-4d9a-a8e5-bf1e14f59a68',to_timestamp('1353542400'),'Amazon.com','online','30.99','1','false','',to_timestamp('1487300996'),to_timestamp('1487300996'),'amazon_store_brian');
+INSERT INTO t_transaction(guid, transaction_date, description, category, amount, cleared, reoccurring, notes, date_updated, date_added, account_name_owner) VALUES('e11fc0e5-6be6-4389-8f96-871393261e01',to_timestamp('1353801600'),'Amazon.com','online','0.99','1','false','mp3',to_timestamp('1487300996'),to_timestamp('1487300996'),'amazon_store_brian');
+INSERT INTO t_transaction(guid, transaction_date, description, category, amount, cleared, reoccurring, notes, date_updated, date_added, account_name_owner) VALUES('9b9aea08-0dc2-4720-b20c-00b0df6af8ce',to_timestamp('1353801600'),'Amazon.com','online','-0.99','1','false','reversal',to_timestamp('1487300996'),to_timestamp('1487300996'),'amazon_store_brian');
+INSERT INTO t_transaction(guid, transaction_date, description, category, amount, cleared, reoccurring, notes, date_updated, date_added, account_name_owner) VALUES('ce678c51-5a87-45b2-87df-208a7356a6a3',to_timestamp('1354147200'),'Payment','bcu','-30.99','1','false','Confirmation Number: 446132529',to_timestamp('1487300996'),to_timestamp('1487300996'),'amazon_store_brian');
+INSERT INTO t_transaction(guid, transaction_date, description, category, amount, cleared, reoccurring, notes, date_updated, date_added, account_name_owner) VALUES('38739c5b-e2c6-41cc-82c2-d41f39a33f9a',to_timestamp('1513156823'),'Last Updated','','0.00','-3','false','Statement Closing Date - TBD',to_timestamp('1513212329'),to_timestamp('1513212329'),'amazon_store_brian');
+
+INSERT INTO t_transaction(guid, transaction_date, description, category, amount, cleared, reoccurring, notes, date_updated, date_added, account_name_owner) VALUES('4cd48585-8d29-4926-bef6-2f54cda860b0',to_timestamp('1489881600'),'Initial Balance','','13.68','1','false','Account Opened',to_timestamp('1489979141'),to_timestamp('1489979141'),'amazongift_brian');
+INSERT INTO t_transaction(guid, transaction_date, description, category, amount, cleared, reoccurring, notes, date_updated, date_added, account_name_owner) VALUES('bd515232-ef71-4c2b-ab79-08ad60afecd3',to_timestamp('1489968000'),'Amazon Gift Card','online','3.32','1','false','',to_timestamp('1490011928'),to_timestamp('1490011928'),'amazongift_brian');
+INSERT INTO t_transaction(guid, transaction_date, description, category, amount, cleared, reoccurring, notes, date_updated, date_added, account_name_owner) VALUES('b965fee5-fa70-44ad-b0e4-41542dd56520',to_timestamp('1490140800'),'Amazon Gift Card','online','30.00','1','false','',to_timestamp('1490238126'),to_timestamp('1490238126'),'amazongift_brian');
+INSERT INTO t_transaction(guid, transaction_date, description, category, amount, cleared, reoccurring, notes, date_updated, date_added, account_name_owner) VALUES('d1711371-7270-49a3-8062-e143d8a21ed2',to_timestamp('1490140800'),'Amazon Gift Card','online','13.91','1','false','',to_timestamp('1490238157'),to_timestamp('1490238157'),'amazongift_brian');
+INSERT INTO t_transaction(guid, transaction_date, description, category, amount, cleared, reoccurring, notes, date_updated, date_added, account_name_owner) VALUES('ef1ded0c-fce0-4eba-bf80-9512f1b8b6f3',to_timestamp('1490313600'),'Amazon Gift Card','online','3.95','1','false','',to_timestamp('1490361725'),to_timestamp('1490361725'),'amazongift_brian');
+INSERT INTO t_transaction(guid, transaction_date, description, category, amount, cleared, reoccurring, notes, date_updated, date_added, account_name_owner) VALUES('3b011e62-1a75-42d7-9cae-9e69d28db603',to_timestamp('1490400000'),'Amazon Gift Card','online','4.00','1','false','',to_timestamp('1490453087'),to_timestamp('1490453087'),'amazongift_brian');
+INSERT INTO t_transaction(guid, transaction_date, description, category, amount, cleared, reoccurring, notes, date_updated, date_added, account_name_owner) VALUES('5405b2bb-8d19-420d-a569-f4301e3d87b1',to_timestamp('1491264000'),'Amazon Gift Card','online','0.99','1','false','',to_timestamp('1491438860'),to_timestamp('1491438860'),'amazongift_brian');
+
+
+SELECT count(*) into void_record_i from t_transaction WHERE amount='0.00' AND cleared=1 AND description = 'void' AND notes='';
+RAISE notice 'Number of void records deleted: %', void_record_i;
+
+SELECT count(*) into none_record_i from t_transaction WHERE amount='0.00' AND cleared=1 AND description = 'none' AND notes='';
+RAISE notice 'Number of none records deleted: %', none_record_i;
+
+DELETE FROM t_transaction WHERE amount='0.00' AND cleared=1 AND description = 'void' AND notes='';
+DELETE FROM t_transaction WHERE amount='0.00' AND cleared=1 AND description = 'none' AND notes='';
+
+--UPDATE t_transaction set amount = (amount * -1.0) where account_type = 'credit';
+
+UPDATE t_transaction SET account_id = x.account_id, account_type = x.account_type FROM (SELECT account_id, account_name_owner, account_type FROM t_account) x WHERE t_transaction.account_name_owner = x.account_name_owner;
+
+SELECT account_name_owner, SUM(amount) AS credits FROM t_transaction WHERE account_type = 'credit' GROUP BY account_name_owner ORDER BY account_name_owner;
+SELECT account_name_owner, SUM(amount) AS totals FROM t_transaction GROUP BY account_name_owner ORDER BY account_name_owner;
+
+SELECT A.debits AS DEBITS, B.credits AS CREDITS FROM
+      ( SELECT SUM(amount) AS debits FROM t_transaction WHERE account_type = 'debit' ) A,
+      ( SELECT SUM(amount) AS credits FROM t_transaction WHERE account_type = 'credit' ) B;
+
+RAISE NOTICE 'Not sure';
+UPDATE t_account SET totals = x.totals FROM (SELECT (A.debits - B.credits) AS totals FROM  
+      ( SELECT SUM(amount) AS debits FROM t_transaction WHERE account_type = 'debit' ) A,
+      ( SELECT SUM(amount) AS credits FROM t_transaction WHERE account_type = 'credit' ) B) x WHERE t_account.account_name_owner = 'grand.total_dummy'; 
+
+RAISE NOTICE 'Grand Total';
+SELECT (A.debits - B.credits) AS TOTALS FROM  
+      ( SELECT SUM(amount) AS debits FROM t_transaction WHERE account_type = 'debit' ) A,
+      ( SELECT SUM(amount) AS credits FROM t_transaction WHERE account_type = 'credit' ) B; 
+
+RAISE NOTICE 'Looking for dupliate GUIDs';
+SELECT guid FROM t_transaction GROUP BY 1 HAVING COUNT(*) > 1;
+
+CREATE OR REPLACE FUNCTION fn_ins_summary() RETURNS void AS $$
+  INSERT INTO t_summary(summary_id, guid, account_name_owner, totals, totals_balanced, date_updated, date_added)
+  (SELECT nextval('t_summary_summary_id_seq'), C.uuid AS guid, A.account_name_owner, A.totals AS totals, B.totals_balanced AS totals_balanced, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP FROM
+    ( SELECT account_name_owner, SUM(amount) AS totals FROM t_transaction GROUP BY account_name_owner ) A,
+    ( SELECT account_name_owner, SUM(amount) AS totals_balanced FROM t_transaction WHERE cleared=1 GROUP BY account_name_owner ) B, 
+    ( SELECT uuid_generate_v4() AS uuid ) C
+   WHERE A.account_name_owner = B.account_name_owner);
+   UPDATE t_account SET totals = x.totals FROM (SELECT account_name_owner, SUM(amount) AS totals FROM t_transaction GROUP BY account_name_owner) x WHERE t_account.account_name_owner = x.account_name_owner;
+   UPDATE t_account SET totals_balanced = x.totals_balanced FROM (SELECT account_name_owner, SUM(amount) AS totals_balanced FROM t_transaction WHERE cleared = 1 GROUP BY account_name_owner) x WHERE t_account.account_name_owner = x.account_name_owner;
+   UPDATE t_account SET totals = x.totals FROM (SELECT (A.debits - B.credits) AS totals FROM
+      ( SELECT SUM(amount) AS debits FROM t_transaction WHERE account_type = 'debit' ) A,
+      ( SELECT SUM(amount) AS credits FROM t_transaction WHERE account_type = 'credit' ) B) x WHERE t_account.account_name_owner = 'grand.total_dummy'; 
+
+$$ LANGUAGE SQL;
+
+RAISE NOTICE 'Populate Summary';
+SELECT NULL AS 'Populate Summary';
+SELECT fn_ins_summary();
+
+RAISE NOTICE 'Summary by account';
+SELECT NULL AS 'Summary by account';
+SELECT * FROM t_summary WHERE guid IN (SELECT guid FROM t_summary ORDER BY date_added DESC LIMIT 1) ORDER BY account_name_owner;
+
+RAISE NOTICE 'Two or more spaces in the description';
+SELECT NULL AS 'Two or more spaces in the description';
+SELECT description FROM t_transaction WHERE description like '%  %';
+
+RAISE NOTICE 'Two or more spaces in the notes';
+SELECT NULL AS 'Two or more spaces in the notes';
+SELECT notes FROM t_transaction WHERE notes like '%  %';
+
+RAISE NOTICE 'Two or more spaces in the category';
+SELECT NULL AS 'Two or more spaces in the category';
+SELECT category FROM t_transaction WHERE category like '%  %';
+
+\copy (SELECT * FROM t_transaction) TO finance_db.csv WITH (FORMAT csv, HEADER true)
