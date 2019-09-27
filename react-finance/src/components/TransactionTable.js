@@ -302,7 +302,7 @@ export class TransactionTable extends Component {
                 <DialogFormUpdate handler={this.handler} transaction={row} accountNameOwnerList={this.state.accountNameOwnerList} />
               </div>
               </TableCell>
-              <TableCell>{this.fromEpochDate(row.transactionDate)}</TableCell>
+              <TableCell>{row.transactionDate}</TableCell>
               <TableCell>{row.description}</TableCell>
               <TableCell>{row.category}</TableCell>
               <TableCell className={this.props.classes.currency}>{row.amount}</TableCell>

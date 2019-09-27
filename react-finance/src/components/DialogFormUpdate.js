@@ -122,6 +122,15 @@ class DialogFormUpdate extends Component {
     }
   }
 
+  handleDate = (dt) => {
+    var timestamp = Date.parse(dt);
+
+    if (isNaN(timestamp) == false) {
+      var d = new Date(timestamp);
+    }
+    return d
+  }
+
   componentDidMount () {
     let clearedList = []
     let accountNameOwnerList = []
@@ -156,7 +165,11 @@ class DialogFormUpdate extends Component {
             <DialogContentText>Update transaction details.</DialogContentText>
            <div>
             <Select label="Account Name Owner" id="accountNameOwner" key="accountNameOwner" defaultValue="" placeholder="account name owner..." onChange={this.handleAccountNameOwnerChange} options={this.state.accountNameOwnerOptions} />
-            <TextField autoFocus label="Transaction Date" id="transactionDate" type="date" key="transactionDate" defaultValue={dateFormat(new Date(transaction.transactionDate * 1000), 'yyyy-mm-dd')} margin="dense" fullWidth />
+        
+            <TextField autoFocus label="Transaction Date" id="transactionDate" type="text" key="transactionDate" defaultValue={
+              this.handleDate(transaction.transactionDate)
+              } margin="dense" fullWidth />
+           
             <TextField autoFocus label="Description" required id="description" type="text" placeholder="transaction description..." defaultValue={transaction.description} onKeyDown={this.validateText} margin="dense" fullWidth />
             <TextField autoFocus label="Category" id="category" key="category" type="text" placeholder="transaction category..." defaultValue={transaction.category} margin="dense" fullWidth />
             <TextField autoFocus label="Amount" type="text" id="amount" key="amount" defaultValue={transaction.amount} autoComplete="on" margin="dense" />
