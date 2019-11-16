@@ -19,9 +19,9 @@ open class InsertTransactionProcessor : Processor {
     @Autowired
     lateinit var transactionService: TransactionService
 
-    var transactionFailure: Transaction? = null
-    val resultMessage = ResultMessage()
-    var resultString:String = ""
+    private var transactionFailure: Transaction? = null
+    private val resultMessage = ResultMessage()
+    private var resultString:String = ""
 
     @Throws(Exception::class)
     override fun process(exchange: Exchange) {
