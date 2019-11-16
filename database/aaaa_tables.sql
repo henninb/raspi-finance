@@ -29,7 +29,8 @@ CREATE TABLE IF NOT EXISTS t_account(
   account_name CHAR(20), -- NULL for now
   account_owner CHAR(20), -- NULL for now
   account_type CHAR(6) NOT NULL,
-  active_status CHAR(1) NOT NULL,
+  --active_status CHAR(1) NOT NULL,
+  active_status BOOLEAN NOT NULL,
   moniker CHAR(4),
   totals DECIMAL(12,2) DEFAULT 0.0,
   totals_balanced DECIMAL(12,2) DEFAULT 0.0,

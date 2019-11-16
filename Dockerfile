@@ -13,4 +13,4 @@ WORKDIR /opt/raspi_finance/bin
 #hornsup:9092
 USER henninb
 
-CMD sleep 5 && java -jar raspi_finance.jar
+CMD java -jar raspi_finance.jar

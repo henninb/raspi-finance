@@ -147,3 +147,5 @@ client/server persistent
 embedded in-memory
 embedded persistent
 And, you have have hybrids of all the above.
+
+/usr/local/var/postgres

@@ -87,7 +87,7 @@ export class TransactionTable extends Component {
 
   handler = (e) => {
     //e.preventDefault()
-    if( this.props.accountNameOwner !== '' && this.props.accountNameOwner !== null && this.props.accountNameOwner.length != 0 ) {
+    if( this.props.accountNameOwner !== '' && this.props.accountNameOwner !== null && this.props.accountNameOwner.length !== 0 ) {
       this.props.setAccount(false, this.props.accountNameOwner)
     }
   }
