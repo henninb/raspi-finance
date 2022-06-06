@@ -6,7 +6,7 @@ authors = ["Brian <henninb@msn.com>"]
 [dependencies]
 #rocket = "0.3.16"
 #rocket_codegen = "0.3.16"
-hyper = "0.12.10"
+hyper = "0.14.5"
 serde = "1.0.79"
 serde_derive = "1.0.79"
 serde_json = "1.0.31"
